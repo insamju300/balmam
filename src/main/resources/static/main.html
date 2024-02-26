@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "#7EC8E3",
+            secondary: "#F2A65A",
+            accent: "#FF9A8D",
+            neutral: "#005377",
+            bg_main: "#F4E8C1"
+          },
+        },
+      },
+    }
+
+    function showFullScreenMenu() {
+      $('#full_size_slide_menu').addClass("top-0");
+      $('#full_size_slide_menu').removeClass("-top-full");
+    }
+
+    function hideFullScreenMenu(e) {
+      console.log(e.target.tagName);
+
+
+      if (e.target.tagName === "DIV") {
+        $('#full_size_slide_menu').addClass("-top-full");
+        $('#full_size_slide_menu').removeClass("top-0");
+      }
+    }
+
+    function uprise(target) {
+      anime({
+        targets: target,
+        translateY: -10,
+        easing: 'easeInOutExpo'
+      });
+
+    }
+
+
+
+  </script>
+
+
+  <!-- 테일윈드 불러오기 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" />
+  <!-- daisy ui 불러오기 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/daisyui/4.6.1/full.css" />
+
+
+
+  <!-- 폰트어썸 불러오기 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+
+  <!-- 제이쿼리 불러오기 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <!-- anime js 불러오기 아직 안씀-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
+
+  <!--공통사항-->
+  <link rel="stylesheet" href="./common.css">
+</head>
+
+<body>
+  <!-- <div class="top-0 fixed z-50 bg-primary"> tailwind config test</div> -->
+  <div class="navbar top-0 fixed z-40 p-5">
+    <div class="navbar-start">
+      <a href="main.html"><img src="images/logo/logoWithText.png" class="h-16 z-50"></a>
+      <!-- <div class="dropdown">
+            <div tabindex="0" role="button" class="btn btn-ghost btn-circle">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" /></svg>
+            </div>
+            <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+              <li><a>Homepage</a></li>
+              <li><a>Portfolio</a></li>
+              <li><a>About</a></li>
+            </ul> 
+          </div> -->
+    </div>
+
+    <div class="navbar-center w-2/5">
+
+      <label class="input input-bordered flex items-center gap-2 h-16 rounded-3xl w-full">
+        <input type="text" class="grow w-full" placeholder="검색어를 입력해 주세요" />
+        <button class="btn btn-ghost btn-circle">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </button>
+      </label>
+    </div>
+    <div class="navbar-end">
+      <!-- <button class="btn btn-ghost btn-circle">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+          </button>
+          <button class="btn btn-ghost btn-circle">
+            <div class="indicator">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
+              <span class="badge badge-xs badge-primary indicator-item"></span>
+            </div> -->
+
+      <button class="btn btn-ghost btn-circle text-primary h-16 w-16 text-4xl">
+        <div class="indicator">
+          <i class="fa-regular fa-bell"></i>
+          <span class="badge badge-xs badge-error indicator-item"></span>
+        </div>
+      </button>
+      <div class="avatar">
+        <div class="w-12 rounded-full">
+          <img src="images/profile/boy.webp" />
+        </div>
+      </div>
+      <button class="btn btn-ghost btn-circle text-primary h-16 w-16 text-4xl">
+        <i class="fa-solid fa-user"></i>
+      </button>
+      <button class="btn btn-ghost btn-circle text-primary h-16 w-16 text-4xl" onclick="showFullScreenMenu()">
+        <i class="fa-solid fa-bars"></i>
+
+      </button>
+
+
+    </div>
+
+
+
+  </div>
+  </div>
+  <div id="full_size_slide_menu" class="-top-full absolute w-full h-full glass left-0 duration-100 z-40">
+    <div id="sibal" onClick="hideFullScreenMenu(event)"
+      class="flex w-full h-full justify-center content-center bg-bg_main opacity-50">
+      <ul class="flex text-neutral text-6xl  flex-col justify-center -translate-x-1/4">
+        <li class="m-5" onMouseOver="uprise(this)"><a href="#">발자취</a></li>
+        <li class="m-5" onMouseOver="uprise(this)"><a href="#">여행기</a></li>
+        <li class="m-5" onMouseOver="uprise(this)"><a href="#">이런 여행 어때요</a></li>
+        <li class="m-5" onMouseOver="uprise(this)"><a href="#">표창식</a></li>
+      </ul>
+    </div>
+
+  </div>
+
+
+
+  <video muted autoplay loop class="fixed w-screen h-screen object-cover top-0 left-0 ">
+    <source src="videos/main_background.mp4" type="video/mp4">
+  </video>
+
+</body>
+
+</html>
