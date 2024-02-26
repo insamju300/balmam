@@ -133,10 +133,20 @@
           <span class="badge badge-xs badge-error indicator-item"></span>
         </div>
       </button>
+      <div class="dropdown dropdown-hover">
+        <div tabindex="0" role="button" class="btn m-1 btn-ghost">
       <div class="avatar">
-        <div class="w-12 rounded-full">
-          <img src="images/profile/boy.webp" />
-        </div>
+              <div class="w-12 rounded-full">
+                <img src="images/profile/boy.webp" />
+              </div>
+            </div>
+      </div>
+        <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+          <li class="hover:text-accent"><a>내 정보 보기</a></li>
+          <li class="hover:text-accent"><a>구독</a></li>
+          <li class="hover:text-accent"><a>책갈피</a></li>
+          <li class="hover:text-accent"><a>로그아웃</a></li>
+        </ul>
       </div>
       <button class="btn btn-ghost btn-circle text-primary h-16 w-16 text-4xl">
         <i class="fa-solid fa-user"></i>
