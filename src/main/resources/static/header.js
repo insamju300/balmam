@@ -14,11 +14,21 @@ function showFullScreenMenu() {
   }
 
   function hideFullScreenMenu(e) {
-    console.log(e.target.tagName);
-
-
     if (e.target.tagName === "DIV") {
-      $('#full_size_slide_menu').addClass("-top-full");
-      $('#full_size_slide_menu').removeClass("top-0");
+        $('#full_size_slide_menu').addClass("-top-full");
+        $('#full_size_slide_menu').removeClass("top-0");
     }
+  }
+
+  function drowPath(ele){
+    let path="#"+ $(ele).attr("id") +" path";
+    anime({
+        targets: path,
+        strokeDashoffset: [anime.setDashoffset, 0],
+        easing: 'easeInOutSine',
+        duration: 1200,
+        delay: function(el, i) { return i * 300 },
+        direction: 'nomal',
+        loop: false
+    });
   }
