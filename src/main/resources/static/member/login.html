@@ -25,6 +25,13 @@
 
   <!--파비콘. 적용 안되는거같으니 확인 요망-->
   <link rel="favicon" href="/images/logo/logo.ico">
+
+  <style>
+    html {
+      background: url(/images/background/member_bg.png) no-repeat center center fixed;
+      background-size: cover;
+    }
+  </style>
 </head>
 
 <body>
@@ -160,12 +167,186 @@
 
     </div>
   </header>
+  <div class="h-32"></div> 
+  <main class="flex w-screen h-screen justify-center">
 
-  <main>
-    <video muted autoplay loop class="fixed w-screen h-screen object-cover top-0 left-0 ">
-      <source src="videos/main_background.mp4" type="video/mp4">
-    </video>
+    <div class="w-1/4 h-3/6 flex flex-col px-6 py-6">
+
+      
+        <form class="space-y-6" action="#" method="POST" id="login_form">
+          <div>
+            <label for="email" class="block text-2xl text-neutral">Email</label>
+            <div class="mt-2">
+              <label class="input input-bordered flex items-center gap-2 text-neutral text-xl">
+                <svg xmlns=" http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"
+                  class="w-4 h-4 opacity-70">
+                  <path
+                    d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" />
+                  <path
+                    d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
+                </svg>
+                <input id="login_form_email_input" type="text" name="email" class="grow" placeholder="Email"
+                  maxlength="41" />
+              </label>
+            </div>
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between">
+              <label for="password" class="block text-2xl text-neutral">비밀번호</label>
+            </div>
+            <div class="mt-2">
+              <label class="input input-bordered flex items-center gap-2 block text-2xl text-neutral">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"
+                  class="w-4 h-4 opacity-70">
+                  <path fill-rule="evenodd"
+                    d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z"
+                    clip-rule="evenodd" />
+                </svg>
+                <input id="login_form_password_input" type="password" name="password" class="grow" placeholder="*****"
+                  maxlength="16" />
+              </label>
+
+            </div>
+          </div>
+          <div id="login_form_validation_message_container" class="flex items-center justify-between">
+            <p class="block text-2xl text-error">
+            </p>
+          </div>
+          <div>
+            <button onclick="loginValidationCheck(this); return false;" class="btn flex w-full justify-center border-2 border-secondary bg-transparent text-neutral_soft
+            hover:border-0 hover:bg-secondary hover:text-bg_main text-2xl">로그인</button>
+          </div>
+        </form>
+
+        <div class="mt-5 p-3 flex justify-center">
+          <a href="#" onclick="password_restoration_modal.showModal(); return false;"
+            class="font-semibold text-neutral_soft text-2xl hover:text-neutral_hard duration-100">비밀번호를
+            잊으셨나요?</a>
+          <dialog id="password_restoration_modal" class="modal text-neutral">
+            <div class="modal-box">
+              <h3 class="font-bold text-lg">비밀번호 찾기</h3>
+              <p class="py-4">비밀번호를 확인할 email을 입력해 주세요.</p>
+              <label class="input input-bordered flex items-center gap-2 text-xl">
+                <svg xmlns=" http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"
+                  class="w-4 h-4 opacity-70">
+                  <path
+                    d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" />
+                  <path
+                    d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
+                </svg>
+                <input id="password_restoration_modal_email_input" type="text" name="email" class="grow" placeholder="Email"
+                  maxlength="41" />
+              </label>
+
+              <div id="password_restoration_validation_message_container" class="flex items-center justify-between">
+                <p class="block text-2xl text-error">
+                </p>
+              </div>
+
+              <div class="modal-action">
+                <form method="dialog ">
+                  <!-- if there is a button in form, it will close the modal -->
+                  <button class="btn text-neutral">취소</button>
+                </form>
+                <button onclick="doPasswordRestoration()" class="btn text-neutral">비밀번호 찾기</button>
+              </div>
+            </div>
+          </dialog>
+        </div>
+
+        <p class=" text-center text-neutral_soft text-xl">
+          아직 우리 회원이 아니신가요?
+          <a href="/member/join.html" class="font-semibold leading-6 text-secondary hover:text-secondary_hard">가입 하기</a>
+        </p>
+
+        
+        <dialog id="send_email_alert_modal" class="modal">
+          <div class="modal-box">
+            <h3 class="font-bold text-lg">메일을 전송하였습니다.</h3>
+            <p class="py-4">비밀번호 변경을 위한 링크를 메일로 전송하였습니다. <br> 전송된 링크에서 비밀번호를 변경해 주세요.</p>
+          </div>
+          <form method="dialog" class="modal-backdrop">
+            <button>close</button>
+          </form>
+        </dialog>
+
+    </div>
+    
+
+
+
   </main>
+
+
+  <script>
+    // 테스트 데이터 작성
+    messageInformation = {
+      isValidationFail: true,
+      message: "이메일을 잘못 입력했습니다. 입력하신 내용을 다시 확인해주세요"
+      //비밀번호를 잘못 입력했습니다. 입력하신 내용을 다시 확인해주세요.
+    }
+
+
+    console.log(messageInformation.message);
+
+    function init() {
+      if (messageInformation != null && messageInformation.isValidationFail == true) {
+        setValidationText(messageInformation.message);
+
+      }
+    }
+
+    init();
+
+    function loginValidationCheck(ele) {
+      let email = $("#login_form_email_input").val();
+      let password = $("#login_form_password_input").val();
+
+
+
+
+      if (email.trim() === '') {
+        setValidationText("이메일을 입력해 주세요.");
+        return;
+      }
+      if (password.trim() === '') {
+        setValidationText("비밀번호를 입력해 주세요.");
+        return;
+      }
+
+      $("#login_form").submit();
+    }
+
+    function setValidationText(msg) {
+      $("#login_form_validation_message_container>p").text(msg);
+    }
+
+    function doPasswordRestoration(){
+      let email = $("#password_restoration_modal_email_input").val();
+      console.log("테스트"+validationEmail(email));
+      if(!validationEmail(email)){
+        $("#password_restoration_validation_message_container>p").text("이메일의 형식이 올바르지 않습니다. 다시 확인해주세요.");
+
+      }else{
+        
+        $("#password_restoration_validation_message_container>p").text("");
+        $("#password_restoration_modal_email_input").val("");
+        document.getElementById('password_restoration_modal').close();
+        //todo 실제로 email 보내는 로직 구현
+
+        //이메일을 ajax로 전송했다고 가정.
+        document.getElementById('send_email_alert_modal').showModal();
+      }
+    }
+
+    function validationEmail(email) {
+      var regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,3}$/;
+      return regex.test(email);
+    }
+
+  </script>
 </body>
+
 
 </html>

@@ -1,0 +1,19 @@
+/* 폰트 */
+/*기본은 고운밤, 나머지는 roboto'*/
+@font-face {
+  font-family: "Cafe24Oneprettynight";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_twelve@1.1/Cafe24Oneprettynight.woff")
+    format("woff");
+  font-weight: normal;
+  font-style: normal;
+  unicode-range: U+AC00-D7A3, U+3130-314E, U+314F-3163;
+}
+
+
+html > body {
+  font-family: "Roboto", "Cafe24Oneprettynight", "sans-serif";
+}
+
+* {
+  font-family: inherit;
+}
