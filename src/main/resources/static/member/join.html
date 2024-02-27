@@ -171,27 +171,41 @@
             </div>
 
         </div>
+
+        <dialog id="coommons_alert_modal" class="modal">
+            <div class="modal-box">
+                <h3 class="font-bold text-lg"></h3>
+                <p class="py-4"></p>
+            </div>
+            <form method="dialog" class="modal-backdrop">
+                <button>close</button>
+            </form>
+        </dialog>
     </header>
     <div class="h-32"></div>
 
-   
+
 
     <main class="flex w-screen  justify-center ">
-        <div class="w-3/6 flex flex-col px-6 py-6 bg-primary">
+        <div class="w-2/6 flex flex-col px-6 py-6 ">
 
             <div class="flex px-3 py-3 justify-center">
+                <!-- 프로필 아바타 관련 처리 시작 -->
                 <div class="dropdown dropdown-hover">
                     <div tabindex="0" role="button" class="btn m-1 bg-transparent hover:bg-transparent border-0">
                         <div class="avatar">
-                            <div class="w-32 rounded-full">
+                            <div class="w-60 rounded-full">
                                 <img id="join_form_avatar_img" src="/images/avatar/boy.webp" />
                             </div>
                         </div>
                     </div>
-                    <input type="file" class="hidden-upload hidden" accept=".jpg, .jpeg, .png, .gif, .webp" required multiple>
 
-                    <div tabindex="0" class="dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-52
-                    flex flex-wrap justify-around">
+
+                    <input type="file" class="hidden-upload hidden" accept=".jpg, .jpeg, .png, .gif, .webp" required
+                        multiple>
+
+                    <div tabindex="0" class="dropdown-content z-[1] p-2  shadow bg-base-100 rounded-box w-52
+                    flex flex-wrap justify-around translate-x-11">
                         <div class="avatar m-2">
                             <div onclick="changeProfileAvatar(this)" img_src_data="boy"
                                 class="w-12 rounded-full cursor-pointer"><img class="hover:scale-125 duration-100"
@@ -228,110 +242,241 @@
                                 업로드</div>
                         </div>
                     </div>
-                </div>
 
+
+                </div>
+                <!-- 프로필 아바타 관련 처리 끝 -->
             </div>
+            <form>
+
+                <div class="overflow-x-auto">
+                    <table class="table text-neutral text-xl">
+                        <tbody>
+                            <!-- row 1 -->
+                            <tr class="ring-0">
+                                <th>Email</th>
+                                <td>
+                                    <label class="input input-bordered flex items-center gap-2 max-w-md">
+                                        <svg xmlns=" http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"
+                                            class="w-4 h-4 opacity-70">
+                                            <path
+                                                d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" />
+                                            <path
+                                                d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
+                                        </svg>
+                                        <input onBlur="emailValidationCheck(this)" id="login_form_email_input"
+                                            type="text" name="email" class="grow" placeholder="Email" maxlength="41"
+                                            autocomplete="off" />
+                                    </label>
+                                    <p id="join_form_email_validation_message"></p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>비밀번호</th>
+                                <td>
+                                    <label class="input input-bordered flex items-center gap-2 block max-w-md">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"
+                                            class="w-4 h-4 opacity-70">
+                                            <path fill-rule="evenodd"
+                                                d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z"
+                                                clip-rule="evenodd" />
+                                        </svg>
+                                        <input onBlur="passwordValidationCheck(this)" id="login_form_password_input"
+                                            type="password" name="password" class="grow" placeholder="*****"
+                                            maxlength="12" />
+
+                                    </label>
+                                    <p id="join_form_password_validation_message"></p>
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>비밀번호 확인</th>
+                                <td>
+                                    <label class="input input-bordered flex items-center gap-2 max-w-md">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"
+                                            class="w-4 h-4 opacity-70">
+                                            <path fill-rule="evenodd"
+                                                d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z"
+                                                clip-rule="evenodd" />
+                                        </svg>
+                                        <input onBlur="confirmPasswordValidationCheck(this)"
+                                            id="login_form_confirm_password_input" type="password" name="password"
+                                            class="grow" placeholder="*****" maxlength="12" />
+                                    </label>
+                                    <p id="join_form_confirm_password_validation_message"></p>
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>닉네임</th>
+                                <td>
+                                    <label class="input input-bordered flex items-center gap-2 max-w-md">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"
+                                            class="w-4 h-4 opacity-70">
+                                            <path
+                                                d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" />
+                                        </svg>
+                                        <input onBlur="nicknameValidationCheck(this)" type="text" class="grow"
+                                            placeholder="닉네임" maxlength="10" />
+                                    </label>
+                                    <p id="join_form_nickname_validation_message"></p>
+
+                                </td>
+                            </tr>
+                            <!-- row 3 -->
+                            <tr>
+                                <th>자기소개</th>
+                                <td><textarea
+                                        class="textarea textarea-bordered textarea-lg w-full max-w-md maxlength=1000"></textarea>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <div class="flex justify-center">
+                                        <button class="btn bg-base_white text-secondary_hard
+                                         hover:bg-secondary_hard hover:text-bg_main text-2xl">회원가입</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+
+
+
         </div>
 
-        <dialog id="coommon-alert-modal" class="modal">
-            <div class="modal-box">
-              <h3 class="font-bold text-lg"></h3>
-              <p class="py-4"></p>
-            </div>
-            <form method="dialog" class="modal-backdrop">
-              <button>close</button>
-            </form>
-          </dialog>
+
 
     </main>
 
     <script>
         function changeProfileAvatar(ele) {
-           
+
             let img_src_data = ele.getAttribute("img_src_data");
             console.log(img_src_data);
-            
+
 
             const default_img_path = '/images/avatar/';
             const default_img_extention = ".webp";
-            let image_path=default_img_path+img_src_data+default_img_extention;
+            let image_path = default_img_path + img_src_data + default_img_extention;
 
-            if(img_src_data=='upload'){
+            if (img_src_data == 'upload') {
                 $(".hidden-upload").click();
                 return;
             }
             $("#join_form_avatar_img").attr('src', image_path);
 
-        
+
         }
 
         //이미지 
-        $(".hidden-upload").change(function(){
+        $(".hidden-upload").change(function () {
             //테스트용
             let fileSize = this.files[0].size;
             let nameBits = this.files[0].name.split('.');
             let extension = nameBits.pop().toLowerCase();
-            let name= nameBits.join(".");
-            
-            if(!fileSize || !name){
-                document.getElementById("common-alert-modal").showModal();
+            let name = nameBits.join(".");
 
-                alert("파일의 이름이나 사이즈가 비어있습니다. 확인해주세요.")
+            if (!fileSize) {
+                commonsAlert("파일의 사이즈가 0입니다. 빈 파일은 업로드할 수 없습니다.");
+                return;
+            }
+
+            if (!name) {
+                commonsAlert("이름 또는 확장자가 비어있습니다. 파일 명을 확인해 주세요.");
                 return;
             }
 
             let maxSize = 5 * 1024 * 1024;
             let allowedExtensionList = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-            
 
-            if(!allowedExtensionList.includes(extension)){
-                coommon-alert-modal.showModal();
-                alert("이상한 확장자 군요...");
+
+            if (!allowedExtensionList.includes(extension)) {
+                commonsAlert("지원하지 않는 확장자 입니다. 지원되는 확장자는 다음과 같습니다. <br>.jpg .jpeg .png .gif .webp");
                 return;
             }
 
-            if(fileSize > maxSize){
-                coommon-alert-modal.showModal();
-                alert("파일 사이즈가 5M보다 커요. 우리 서버를 마비시킬건가요?");
+            if (fileSize > maxSize) {
+                commonsAlert("파일의 사이즈가 5MB를 넘습니다. 파일의 용량을 줄여주세요.");
                 return;
             }
 
-            // let imageFile = $(this).fullFileName.files[0];
-            // let imageName = $(this).val();
-            // let extension=fullFileName.split('.').pop().toLowerCase();
-            
-            // //확장자 체크
-            // if($.inArray(extension,['jpg', 'jpeg', 'png', 'gif', 'webp'])==-1){
-            //     $(this).val('');
-            //     alert("저희가 허용하는 확장자는 (.jpg, .jpeg, .png, .gif, .webp) 입니다." + extension);
-            //     return;
-            // }
-            //용량체크
-            
-
-            //다 되면 ajax로 파일 보내서 저장 하고
-            //경로 full로 받아와서 표시이미지 바꿔 끼워주고
-            //form에 hidden으로 avartarImagePullName 에 값 넣어주고. 끝? 이건 default boy로 될듯
+            //todo ajax처리로 파일 등록후 파일 이미지의 db 번호 가져오기.
 
 
-
-
-
-
-            //할거 확장자 체크
-    //         var str = $(this).val();
-    //     var fileName = str.split('\\').pop().toLowerCase();
-    //     var ext =  str.split('.').pop().toLowerCase();
-    // if($.inArray(ext, ['bmp' , 'hwp', 'jpg', 'pdf', 'png', 'xls', 'zip', 'pptx', 'xlsx', 'jpeg', 'doc', 'gif']) == -1) {
- 
-    //     //alert(ext);
-    //     alert(ext+'파일은 업로드 하실 수 없습니다.');
-    // }
-            //할거 용량 체크
-            
-
-            
         });
+
+        function emailValidationCheck(ele) {
+            let validationMessage = "";
+            let email = $(ele).val();
+            if (email === "") {
+                validationMessage = "email은 필수 입력사항입니다.";
+            } else if (!validateEmailFormat(email)) {
+                validationMessage = "유효하지 않은 emial 형식입니다.";
+            } else if (!isEmailDuplicated(email)) {
+                validationMessage = "이미 등록된 email 입니다.";
+            }
+            $("#join_form_email_validation_message").text(validationMessage);
+
+
+        }
+        function passwordValidationCheck(ele) {
+            let validationMessage = "";
+            let password = $(ele).val();
+            if (!validatePasswordFormat(password)) {
+                validationMessage = "비밀번호는 대문자, 소문자, 숫자, 특수문자(@$!%*?&)를 포함하여 8~12자여야 합니다. ";
+            };
+            $("#join_form_password_validation_message").text(validationMessage);
+
+        }
+        function confirmPasswordValidationCheck(ele) {
+            let validationMessage = "";
+            let password = $("#login_form_password_input").val();
+            let confirmPassword = $(ele).val();
+            if (password != confirmPassword) {
+                validationMessage = "비밀번호와 비밀번호 확인의 값이 일치하지 않습니다.";
+            }
+            $("#join_form_confirm_password_validation_message").text(validationMessage);
+        }
+        function nicknameValidationCheck(ele) {
+            let validationMessage = "";
+            let nickname = $(ele).val();
+
+            if (!validateNicknameFormat(nickname)) {
+                validationMessage = "닉네임은 숫자, 한글(가-힣), 영문, 특수문자(-, _)만 허용되며, 1~10자까지 사용할 수 있습니다.";
+            } else if (!isNicknameDuplicated(nickname)) {
+                validationMessage = "이미 등록되어있는 닉네임입니다.";
+            }
+            $("#join_form_nickname_validation_message").text(validationMessage);
+        }
+
+        function validateEmailFormat(email) {
+            var regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,3}$/;
+            return regex.test(email);
+        }
+
+        function validatePasswordFormat(password) {
+            var regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,12}$/;
+            return regex.test(password);
+        }
+
+        function validateNicknameFormat(nickname) {
+            var regex = /^[0-9a-zA-Z가-힣-_]{1,10}$/;
+            return regex.test(nickname);
+        }
+
+        function isEmailDuplicated(email) {
+            return true; //todo ajax
+
+        }
+        function isNicknameDuplicated(nickname) {
+            return true; //todo ajax
+
+        }
+
     </script>
 </body>
 

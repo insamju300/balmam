@@ -36,3 +36,9 @@ function drowPath(ele) {
     loop: false,
   });
 }
+
+function commonsAlert(message = "", title = "") {
+  $("#coommons_alert_modal p").html(message);
+  $("#coommons_alert_modal h3").html(title);
+  document.getElementById("coommons_alert_modal").showModal();
+}
