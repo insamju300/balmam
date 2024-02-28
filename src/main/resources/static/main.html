@@ -36,7 +36,7 @@
 
       <div class="navbar-center md:w-2/5 w-full m-2 ">
         <label class="input input-bordered flex items-center gap-2 h-16 rounded-3xl w-full">
-          <input type="text" class="grow w-full" placeholder="검색어를 입력해 주세요" />
+          <input type="text" class="grow w-full" placeholder="검색어를 입력해 주세요" autocomplete="off" />
           <button class="btn btn-ghost btn-circle">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
               stroke="currentColor">
@@ -63,7 +63,7 @@
           </div>
           <ul tabindex="0"
             class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52 text-2xl -translate-x-1/4">
-            <li class="hover:text-secondary"><a>내 정보 보기</a></li>
+            <li class="hover:text-secondary"><a href="/member/detail.html">내 정보 보기</a></li>
             <li class="hover:text-secondary"><a>구독</a></li>
             <li class="hover:text-secondary"><a>책갈피</a></li>
             <li class="hover:text-secondary"><a>로그아웃</a></li>
@@ -84,7 +84,8 @@
 
     </div>
     </div>
-    <div id="full_size_slide_menu" class="-top-full fixed w-full h-screen glass left-0 duration-100 z-40 -translate-y-80">
+    <div id="full_size_slide_menu"
+      class="-top-full fixed w-full h-screen glass left-0 duration-100 z-40 -translate-y-80">
       <div onClick="hideFullScreenMenu(event)"
         class="flex w-full h-full justify-center content-center bg-bg_main opacity-50">
         <ul class="flex text-neutral text-6xl  flex-col justify-center -translate-x-1/4">

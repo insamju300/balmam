@@ -2,39 +2,41 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>발맘</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>발맘</title>
 
-    <!-- 테일윈드 불러오기 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- daisy ui 불러오기 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/daisyui/4.6.1/full.css" />
-    <!-- 폰트어썸 불러오기 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
-    <!-- anime js 불러보기-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
-    <!-- 제이쿼리 불러오기 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <!-- 테일윈드 불러오기 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- daisy ui 불러오기 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/daisyui/4.6.1/full.css" />
+  <!-- 폰트어썸 불러오기 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+  <!-- anime js 불러보기-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
+  <!-- 제이쿼리 불러오기 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
-    <!--공통 및 헤드 css, js-->
-    <link rel="stylesheet" href="/css/common.css">
-    <script src="/js/common.js"></script>
-    <script src="/js/header.js"></script>
+  <!--공통 및 헤드 css, js-->
+  <link rel="stylesheet" href="/css/common.css">
+  <script src="/js/common.js"></script>
+  <script src="/js/header.js"></script>
 
-    <!--파비콘. 적용 안되는거같으니 확인 요망-->
-    <link rel="favicon" href="/images/logo/logo.ico">
+  <script src="/js/member.js"></script>
 
-    <style>
-        html {
-            background: url(/images/background/member_bg.png) no-repeat center center fixed;
-            background-size: cover;
-        }
-    </style>
+  <!--파비콘. 적용 안되는거같으니 확인 요망-->
+  <link rel="favicon" href="/images/logo/logo.ico">
+
+  <style>
+    /* html {
+      background: url(/images/background/member_bg.png) no-repeat center center fixed;
+      background-size: cover;
+    } */
+  </style>
 </head>
 
-<body>
+<body class="bg-bg_main">
 
   <header>
     <div id="navbar" class="navbar top-0 fixed z-40 p-5  glass md:flex-row flex-col">
@@ -44,7 +46,7 @@
 
       <div class="navbar-center md:w-2/5 w-full m-2 ">
         <label class="input input-bordered flex items-center gap-2 h-16 rounded-3xl w-full">
-          <input type="text" class="grow w-full" placeholder="검색어를 입력해 주세요" />
+          <input type="text" class="grow w-full" placeholder="검색어를 입력해 주세요" autocomplete="off" />
           <button class="btn btn-ghost btn-circle">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
               stroke="currentColor">
@@ -71,7 +73,7 @@
           </div>
           <ul tabindex="0"
             class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52 text-2xl -translate-x-1/4">
-            <li class="hover:text-secondary"><a>내 정보 보기</a></li>
+            <li class="hover:text-secondary"><a href="/member/detail.html">내 정보 보기</a></li>
             <li class="hover:text-secondary"><a>구독</a></li>
             <li class="hover:text-secondary"><a>책갈피</a></li>
             <li class="hover:text-secondary"><a>로그아웃</a></li>
@@ -92,7 +94,8 @@
 
     </div>
     </div>
-    <div id="full_size_slide_menu" class="-top-full fixed w-full h-screen glass left-0 duration-100 z-40 -translate-y-80">
+    <div id="full_size_slide_menu"
+      class="-top-full fixed w-full h-screen glass left-0 duration-100 z-40 -translate-y-80">
       <div onClick="hideFullScreenMenu(event)"
         class="flex w-full h-full justify-center content-center bg-bg_main opacity-50">
         <ul class="flex text-neutral text-6xl  flex-col justify-center -translate-x-1/4">
@@ -182,52 +185,91 @@
   <header id="ghost_header" class="w-screen">
 
   </header>
-    
-    <!--과제 1 header 사이즈 높이 가져와서 연동해야된다. -->
-    <!--과제 2 거기서 알맞는 본문 레이아웃 잡아야된다. 잡아야할 레이아웃은 높이와  마진이다. -->
-    <main class="flex w-screen justify-center p-5 text-neutral">
-      <div class="xl:w-4/6 w-full flex md:flex-row flex-col p-6 mt-2">
-        <div class="md:w-2/6 w-full flex-col p-2">
-          <div class="avatar flex justify-center">
-            <div class="w-52 rounded-full">
-              <img id="join_form_avatar_img" src="/images/avatar/boy.webp" />
+
+  <!--과제 1 header 사이즈 높이 가져와서 연동해야된다. -->
+  <!--과제 2 거기서 알맞는 본문 레이아웃 잡아야된다. 잡아야할 레이아웃은 높이와  마진이다. -->
+  <main class="flex w-screen justify-center p-5 text-neutral">
+    <div class="xl:w-4/6 w-full flex md:flex-row flex-col p-6 mt-2">
+      <div class="md:w-2/6 w-full flex-col p-2">
+        <div class="avatar flex justify-center">
+          <div class="w-52 rounded-full">
+            <img id="form_avatar_img" src="/images/avatar/boy.webp" />
+          </div>
+        </div>
+        <p class="text-center text-2xl font-bold mt-2">태정태세여행가세</p>
+        <p class="text-lg mt-2">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas efficitur id leo et pellentesque. Etiam
+          consequat luctus mi vitae tempor. Aenean tincidunt semper massa. Morbi placerat lorem quis eleifend viverra.
+          Aenean erat velit, efficitur non porta sed, ullamcorper vel nisi. Nunc imperdiet felis sed tristique
+          venenatis. Cras ornare ligula eleifend elit tincidunt, a interdum turpis pulvinar. Nullam vel condimentum
+          tortor. Suspendisse potenti. Etiam pellentesque pulvinar commodo. Donec laoreet tincidunt metus, maximus
+          rhoncus erat gravida ac. Quisque dictum leo sed suscipit malesuada. Nam a est at orci interdum tempor a quis
+          quam. Cras tempus, enim a eleifend sagittis, neque ante maximus.
+        </p>
+        <div class="flex justify-center mt-2">
+          <button type="button" onclick="location.href='/member/modify.html'" class="btn bg-base_white text-secondary_hard
+            hover:bg-secondary_hard hover:text-bg_main text-2xl mr-5">수정</button>
+          <button type="button" onclick="confirm_for_withdrawa_modal.showModal();" class="btn bg-base_white text-secondary_hard
+            hover:bg-secondary_hard hover:text-bg_main text-2xl">삭제</button>
+
+        </div>
+
+        <dialog id="confirm_for_withdrawa_modal" class="modal text-neutral">
+          <div class="modal-box">
+            <h3 class="font-bold text-lg">정말로 탈퇴하시겠습니까?</h3>
+            <p class="py-4">탈퇴 후에는 해당 계정으로 발맘의 서비스를 이용할 수 없습니다. <br> 그래도 탈퇴를 희망하신다면 비밀번호를 입력해 주세요.</p>
+            <div class="input input-bordered flex items-center gap-2 text-neutral text-xl grow">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"
+                class="w-4 h-4 opacity-70">
+                <path fill-rule="evenodd"
+                  d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z"
+                  clip-rule="evenodd" />
+              </svg>
+              <input id="confirm_for_withdrawa_modal_password_input" type="password" name="password" class="grow"
+                placeholder="*****" maxlength="12" autocomplete="off" />
+            </div>
+
+            <div id="password_restoration_validation_message_container" class="flex items-center justify-between">
+              <p class="block text-2xl text-error">
+              </p>
+            </div>
+
+            <div class="modal-action">
+              <form method="dialog ">
+                <!-- if there is a button in form, it will close the modal -->
+                <button class="btn text-neutral">취소</button>
+              </form>
+              <button onclick="doWithdrawa()" class="btn text-neutral">탈퇴하겠습니다.</button>
             </div>
           </div>
-          <p class="text-center text-2xl font-bold mt-2">태정태세여행가세</p>
-          <p class="text-lg mt-2">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas efficitur id leo et pellentesque. Etiam consequat luctus mi vitae tempor. Aenean tincidunt semper massa. Morbi placerat lorem quis eleifend viverra. Aenean erat velit, efficitur non porta sed, ullamcorper vel nisi. Nunc imperdiet felis sed tristique venenatis. Cras ornare ligula eleifend elit tincidunt, a interdum turpis pulvinar. Nullam vel condimentum tortor. Suspendisse potenti. Etiam pellentesque pulvinar commodo. Donec laoreet tincidunt metus, maximus rhoncus erat gravida ac. Quisque dictum leo sed suscipit malesuada. Nam a est at orci interdum tempor a quis quam. Cras tempus, enim a eleifend sagittis, neque ante maximus.
-          </p>
-          <div class="flex justify-center mt-2">
-            <button type="submit" class="btn bg-base_white text-secondary_hard
-            hover:bg-secondary_hard hover:text-bg_main text-2xl mr-5">수정</button>
-            <button type="submit" class="btn bg-base_white text-secondary_hard
-            hover:bg-secondary_hard hover:text-bg_main text-2xl">삭제</button>
-            
-          </div>
+        </dialog>
 
 
-        </div>
-        <div class=" md:w-4/6 flex flex-wrap w-full">
-          <div class="lg:w-1/2 w-full  h-28 box-border m-0 p-0">
-            <h1 class="text-center text-2xl font-bold">방문한 도시</h1>
-            <p class="text-center text-lg mt-2">총 30개의 도시를 방문하였습니다.</p>
-          </div>
-          <div class="lg:w-1/2 w-full h-28 box-border m-0 p-0">
-            <h1 class="text-center text-2xl font-bold">등록한 발자취 수</h1>
-            <p class="text-center text-lg mt-2">총 50개의 발자취를 작성하였습니다.</p>
-          </div>
-          <div class="lg:w-1/2 w-full h-28 box-border m-0 p-0">
-            <h1 class="text-center text-2xl font-bold">등록한 여행기 수</h1>
-            <p class="text-center text-lg mt-2">총 10개의 여행기를 등록하였습니다.</p>
-          </div>
-          <div class="lg:w-1/2 w-full h-28 box-border m-0 p-0">
-            <h1 class="text-center text-2xl font-bold">구독자 수</h1>
-            <p class="text-center text-lg mt-2">총 30명이 태정태세여행가세님을 구독중입니다.</p>
-          </div>
-        </div>
-        
       </div>
-    </main>
+
+
+
+      <div class=" md:w-4/6 flex flex-wrap w-full content-start  pt-7">
+        <div class="lg:w-1/2 w-full  h-28 box-border mt-10">
+          <h1 class="text-center text-2xl font-bold">방문한 도시</h1>
+          <p class="text-center text-lg mt-2">총 30개의 도시를 방문하였습니다.</p>
+        </div>
+        <div class="lg:w-1/2 w-full h-28 box-border mt-10">
+          <h1 class="text-center text-2xl font-bold">등록한 발자취 수</h1>
+          <p class="text-center text-lg mt-2">총 50개의 발자취를 작성하였습니다.</p>
+        </div>
+        <div class="lg:w-1/2 w-full h-28 box-border mt-10">
+          <h1 class="text-center text-2xl font-bold">등록한 여행기 수</h1>
+          <p class="text-center text-lg mt-2">총 10개의 여행기를 등록하였습니다.</p>
+        </div>
+        <div class="lg:w-1/2 w-full h-28 box-border mt-10">
+          <h1 class="text-center text-2xl font-bold">구독자 수</h1>
+          <p class="text-center text-lg mt-2">총 30명이 태정태세여행가세님을 구독중입니다.</p>
+        </div>
+      </div>
+
+    </div>
+  </main>
 </body>
 
 

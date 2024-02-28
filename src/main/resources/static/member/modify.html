@@ -244,54 +244,22 @@
         </div>
         <!-- 프로필 아바타 관련 처리 끝 -->
       </div>
-      <form onsubmit="joinFormValidationCheck(this); return false;">
+      <form onsubmit="modifyFormValidationCheck(this); return false;">
 
 
-        <div class="flex md:flex-row flex-col mt-2">
-          <label for="email" class="block text-2xl text-neutral mx-2 w-36">Email</label>
-          <div class="input input-bordered flex items-center gap-2 text-neutral text-xl grow">
-            <svg xmlns=" http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-4 h-4 opacity-70">
-              <path
-                d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" />
-              <path
-                d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
-            </svg>
-            <input onBlur="emailValidationCheck()" id="form_email_input" type="text" name="email" class="grow"
-              placeholder="Email" maxlength="41" autocomplete="off" />
-          </div>
+        <div class="flex md:flex-row flex-col mt-2 text-neutral">
+          <label for="email" class="block text-2xl  mx-2 w-36">Email</label>
+          <p class="text-xl">travelboy@travle.co.kr</p>
         </div>
         <p class="text-accent_hard" id="form_email_validation_message"></p>
 
         <div class="flex md:flex-row flex-col mt-2 md:mt-10">
           <label for="email" class="block text-2xl text-neutral mx-2 w-36">비밀번호</label>
-          <div class="input input-bordered flex items-center gap-2 text-neutral text-xl grow">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-4 h-4 opacity-70">
-              <path fill-rule="evenodd"
-                d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z"
-                clip-rule="evenodd" />
-            </svg>
-            <input onBlur="passwordValidationCheck()" id="form_password_input" type="password" name="password"
-              class="grow" placeholder="*****" maxlength="12" autocomplete="off" />
-          </div>
+          <!--임시로 넘겨준 email 나중에 변경 필요.-->
+          <button type="button" onclick="sendMailForPasswordRestoration('travelboy@travle.co.kr')" class="btn btn-md bg-base_white text-secondary_hard
+      hover:bg-secondary_hard hover:text-bg_main text-md">비밀번호 변경 링크 전송</button>
 
         </div>
-        <p class="text-accent_hard" id="form_password_validation_message"></p>
-
-
-        <div class="flex md:flex-row flex-col mt-2 md:mt-10">
-          <label for="email" class="block text-2xl text-neutral mx-2 w-36">비밀번호 확인</label>
-          <div class="input input-bordered flex items-center gap-2 text-neutral text-xl grow">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-4 h-4 opacity-70">
-              <path fill-rule="evenodd"
-                d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z"
-                clip-rule="evenodd" />
-            </svg>
-            <input onBlur="confirmPasswordValidationCheck()" id="form_confirm_password_input" type="password"
-              name="password" class="grow" placeholder="*****" maxlength="12" autocomplete="off" />
-          </div>
-
-        </div>
-        <p class="text-accent_hard" id="form_confirm_password_validation_message"></p>
 
         <div class="flex md:flex-row flex-col mt-2 md:mt-10">
           <label for="email" class="block text-2xl text-neutral mx-2 w-36">닉네임</label>
@@ -318,184 +286,12 @@
 
         <div class="flex justify-center mt-2 md:mt-10">
           <button type="submit" class="btn bg-base_white text-secondary_hard
-      hover:bg-secondary_hard hover:text-bg_main text-2xl">회원가입</button>
+      hover:bg-secondary_hard hover:text-bg_main text-2xl">수정하기</button>
         </div>
 
       </form>
     </div>
   </main>
-  <script>
-
-
-    function changeProfileAvatar(ele) {
-
-      let img_src_data = ele.getAttribute("img_src_data");
-      console.log(img_src_data);
-
-
-      const default_img_path = '/images/avatar/';
-      const default_img_extention = ".webp";
-      let image_path = default_img_path + img_src_data + default_img_extention;
-
-      if (img_src_data == 'upload') {
-        $(".hidden-upload").click();
-        return;
-      }
-      $("#form_avatar_img").attr('src', image_path);
-
-
-    }
-
-    //이미지 
-    $(".hidden-upload").change(function () {
-      //테스트용
-      let fileSize = this.files[0].size;
-      let nameBits = this.files[0].name.split('.');
-      let extension = nameBits.pop().toLowerCase();
-      let name = nameBits.join(".");
-
-      if (!fileSize) {
-        commonsAlert("파일의 사이즈가 0입니다. 빈 파일은 업로드할 수 없습니다.");
-        return;
-      }
-
-      if (!name) {
-        commonsAlert("이름 또는 확장자가 비어있습니다. 파일 명을 확인해 주세요.");
-        return;
-      }
-
-      let maxSize = 5 * 1024 * 1024;
-      let allowedExtensionList = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-
-
-      if (!allowedExtensionList.includes(extension)) {
-        commonsAlert("지원하지 않는 확장자 입니다. 지원되는 확장자는 다음과 같습니다. <br>.jpg .jpeg .png .gif .webp");
-        return;
-      }
-
-      if (fileSize > maxSize) {
-        commonsAlert("파일의 사이즈가 5MB를 넘습니다. 파일의 용량을 줄여주세요.");
-        return;
-      }
-
-      //todo ajax처리로 파일 등록후 파일 이미지의 db 번호 가져오기.
-
-
-
-
-    });
-
-    function emailValidationCheck() {
-      let validationMessage = "";
-
-      let email = $("#form_email_input").val();
-      if (email === "") {
-        validationMessage = "email 입력은 필수입니다.";
-      } else if (!validateEmailFormat(email)) {
-        validationMessage = "유효하지 않은 emial 형식입니다.";
-      } else if (!isEmailDuplicated(email)) {
-        validationMessage = "이미 등록된 email 입니다.";
-      }
-      $("#form_email_validation_message").text(validationMessage);
-
-      if (validationMessage === "") {
-        return true;
-      }
-      return false;
-
-    }
-    function passwordValidationCheck() {
-      let validationMessage = "";
-      let password = $("#form_password_input").val();
-      if (password === "") {
-        validationMessage = "비밀번호 입력은 필수입니다.";
-      } else if (!validatePasswordFormat(password)) {
-        validationMessage = "비밀번호는 대문자, 소문자, 숫자, 특수문자(@$!%*?&)를 포함하여 8~12자여야 합니다. ";
-      };
-      $("#form_password_validation_message").text(validationMessage);
-
-      if (validationMessage === "") {
-        return true;
-      }
-      return false;
-
-    }
-    function confirmPasswordValidationCheck() {
-      let validationMessage = "";
-      let password = $("#form_password_input").val();
-      let confirmPassword = $("#form_confirm_password_input").val();
-      if (confirmPassword === "") {
-        validationMessage = "비밀번호 확인은 필수입니다.";
-      } else if (password != confirmPassword) {
-        validationMessage = "비밀번호와 비밀번호 확인의 값이 일치하지 않습니다.";
-      }
-      $("#form_confirm_password_validation_message").text(validationMessage);
-
-      if (validationMessage === "") {
-        return true;
-      }
-      return false;
-    }
-    function nicknameValidationCheck() {
-      let validationMessage = "";
-      let nickname = $("#form_nickname_input").val();
-
-      if (nickname === "") {
-        validationMessage = "닉네임 입력은 필수입니다.";
-      } else if (!validateNicknameFormat(nickname)) {
-        validationMessage = "닉네임은 숫자, 한글(가-힣), 영문, 특수문자(-, _)만 허용되며, 1~10자까지 사용할 수 있습니다.";
-      } else if (!isNicknameDuplicated(nickname)) {
-        validationMessage = "이미 등록되어있는 닉네임입니다.";
-      }
-      $("#form_nickname_validation_message").text(validationMessage);
-
-      if (validationMessage === "") {
-        return true;
-      }
-      return false;
-    }
-
-    function validateEmailFormat(email) {
-      var regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,3}$/;
-      return regex.test(email);
-    }
-
-    function validatePasswordFormat(password) {
-      var regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,12}$/;
-      return regex.test(password);
-    }
-
-    function validateNicknameFormat(nickname) {
-      var regex = /^[0-9a-zA-Z가-힣-_]{1,10}$/;
-      return regex.test(nickname);
-    }
-
-    function isEmailDuplicated(email) {
-      return true; //todo ajax
-
-    }
-    function isNicknameDuplicated(nickname) {
-      return true; //todo ajax
-
-    }
-
-    function joinFormValidationCheck(ele) {
-      let isValidationOk = emailValidationCheck();
-      isValidationOk = passwordValidationCheck() && isValidationOk;
-      isValidationOk = confirmPasswordValidationCheck() && isValidationOk;
-      isValidationOk = nicknameValidationCheck() && isValidationOk;
-
-      if (isValidationOk) {
-        $(ele).submit();
-
-      }
-    }
-
-    // todo 회원 가입이 정상적으로 가입되면 다음 메시지를 담아서 historyback or home 화면 보낼것.
-    // 인증 링크가 이메일로 전송되었습니다. 이메일을 확인하여 계정을 인증해주세요. 만약 이메일을 받지 못하셨다면 스팸 메일함을 확인해보세요.
-    // header에는 query에 message가 있는 경우 message를 alert로 출력하는 기능을 넣어 줄 것. //추후 개발
-
-  </script>
 </body>
 
 
