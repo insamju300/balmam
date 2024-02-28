@@ -29,12 +29,12 @@
 
 <body>
   <header>
-    <div class="navbar top-0 fixed z-40 p-5  glass">
-      <div class="navbar-start">
+    <div id="navbar" class="navbar top-0 fixed z-40 p-5  glass md:flex-row flex-col">
+      <div class="navbar-start flex md:justify-start justify-center m-2 ">
         <a href="/main.html"><img src="/images/logo/logoWithText.png" class="h-16 z-50"></a>
       </div>
 
-      <div class="navbar-center w-2/5">
+      <div class="navbar-center md:w-2/5 w-full m-2 ">
         <label class="input input-bordered flex items-center gap-2 h-16 rounded-3xl w-full">
           <input type="text" class="grow w-full" placeholder="검색어를 입력해 주세요" />
           <button class="btn btn-ghost btn-circle">
@@ -46,14 +46,13 @@
           </button>
         </label>
       </div>
-      <div class="navbar-end">
-
-        <button class="btn btn-ghost btn-circle text-primary h-16 w-16 text-4xl">
-          <div class="indicator">
-            <i class="fa-regular fa-bell"></i>
-            <span class="badge badge-xs badge-error indicator-item"></span>
-          </div>
+      <div class="navbar-end md:justify-end justify-center m-2">
+        <button onclick="location.href='/member/login.html'"
+          class="btn btn-ghost btn-circle text-primary h-16 w-16 text-4xl">
+          <i class="fa-solid fa-user"></i>
         </button>
+
+
         <div class="dropdown dropdown-hover">
           <div tabindex="0" role="button" class="btn m-1 btn-ghost">
             <div class="avatar">
@@ -62,16 +61,19 @@
               </div>
             </div>
           </div>
-          <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52 text-2xl">
+          <ul tabindex="0"
+            class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52 text-2xl -translate-x-1/4">
             <li class="hover:text-secondary"><a>내 정보 보기</a></li>
             <li class="hover:text-secondary"><a>구독</a></li>
             <li class="hover:text-secondary"><a>책갈피</a></li>
             <li class="hover:text-secondary"><a>로그아웃</a></li>
           </ul>
         </div>
-        <button onclick="location.href='/member/login.html'"
-          class="btn btn-ghost btn-circle text-primary h-16 w-16 text-4xl">
-          <i class="fa-solid fa-user"></i>
+        <button class="btn btn-ghost btn-circle text-primary h-16 w-16 text-4xl">
+          <div class="indicator">
+            <i class="fa-regular fa-bell"></i>
+            <span class="badge badge-xs badge-error indicator-item"></span>
+          </div>
         </button>
         <button class="btn btn-ghost btn-circle text-primary h-16 w-16 text-4xl" onclick="showFullScreenMenu()">
           <i class="fa-solid fa-bars"></i>
@@ -82,7 +84,7 @@
 
     </div>
     </div>
-    <div id="full_size_slide_menu" class="-top-full absolute w-full h-full glass left-0 duration-100 z-40">
+    <div id="full_size_slide_menu" class="-top-full fixed w-full h-screen glass left-0 duration-100 z-40 -translate-y-80">
       <div onClick="hideFullScreenMenu(event)"
         class="flex w-full h-full justify-center content-center bg-bg_main opacity-50">
         <ul class="flex text-neutral text-6xl  flex-col justify-center -translate-x-1/4">
@@ -168,6 +170,9 @@
         <button>close</button>
       </form>
     </dialog>
+  </header>
+  <header id="ghost_header" class="w-screen">
+
   </header>
 
   <main>

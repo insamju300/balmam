@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>발맘</title>
+  <title>발맘 : 로그인</title>
 
   <!-- 테일윈드 불러오기 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" />
@@ -36,12 +36,12 @@
 
 <body>
   <header>
-    <div class="navbar top-0 fixed z-40 p-5  glass">
-      <div class="navbar-start">
+    <div id="navbar" class="navbar top-0 fixed z-40 p-5  glass md:flex-row flex-col">
+      <div class="navbar-start flex md:justify-start justify-center m-2 ">
         <a href="/main.html"><img src="/images/logo/logoWithText.png" class="h-16 z-50"></a>
       </div>
 
-      <div class="navbar-center w-2/5">
+      <div class="navbar-center md:w-2/5 w-full m-2 ">
         <label class="input input-bordered flex items-center gap-2 h-16 rounded-3xl w-full">
           <input type="text" class="grow w-full" placeholder="검색어를 입력해 주세요" />
           <button class="btn btn-ghost btn-circle">
@@ -53,14 +53,13 @@
           </button>
         </label>
       </div>
-      <div class="navbar-end">
-
-        <button class="btn btn-ghost btn-circle text-primary h-16 w-16 text-4xl">
-          <div class="indicator">
-            <i class="fa-regular fa-bell"></i>
-            <span class="badge badge-xs badge-error indicator-item"></span>
-          </div>
+      <div class="navbar-end md:justify-end justify-center m-2">
+        <button onclick="location.href='/member/login.html'"
+          class="btn btn-ghost btn-circle text-primary h-16 w-16 text-4xl">
+          <i class="fa-solid fa-user"></i>
         </button>
+
+
         <div class="dropdown dropdown-hover">
           <div tabindex="0" role="button" class="btn m-1 btn-ghost">
             <div class="avatar">
@@ -69,16 +68,19 @@
               </div>
             </div>
           </div>
-          <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52 text-2xl">
+          <ul tabindex="0"
+            class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52 text-2xl -translate-x-1/4">
             <li class="hover:text-secondary"><a>내 정보 보기</a></li>
             <li class="hover:text-secondary"><a>구독</a></li>
             <li class="hover:text-secondary"><a>책갈피</a></li>
             <li class="hover:text-secondary"><a>로그아웃</a></li>
           </ul>
         </div>
-        <button onclick="location.href='/member/login.html'"
-          class="btn btn-ghost btn-circle text-primary h-16 w-16 text-4xl">
-          <i class="fa-solid fa-user"></i>
+        <button class="btn btn-ghost btn-circle text-primary h-16 w-16 text-4xl">
+          <div class="indicator">
+            <i class="fa-regular fa-bell"></i>
+            <span class="badge badge-xs badge-error indicator-item"></span>
+          </div>
         </button>
         <button class="btn btn-ghost btn-circle text-primary h-16 w-16 text-4xl" onclick="showFullScreenMenu()">
           <i class="fa-solid fa-bars"></i>
@@ -89,7 +91,7 @@
 
     </div>
     </div>
-    <div id="full_size_slide_menu" class="-top-full absolute w-full h-full glass left-0 duration-100 z-40">
+    <div id="full_size_slide_menu" class="-top-full fixed w-full h-screen glass left-0 duration-100 z-40 -translate-y-80">
       <div onClick="hideFullScreenMenu(event)"
         class="flex w-full h-full justify-center content-center bg-bg_main opacity-50">
         <ul class="flex text-neutral text-6xl  flex-col justify-center -translate-x-1/4">
@@ -176,47 +178,39 @@
       </form>
     </dialog>
   </header>
-  <div class="h-32"></div>
-  <main class="flex w-screen h-screen justify-center">
+  <header id="ghost_header" class="w-screen">
 
-    <div class="w-1/4 h-3/6 flex flex-col px-6 py-6">
-
-
-      <form class="space-y-6" action="#" method="POST" id="login_form">
-        <div>
-          <label for="email" class="block text-2xl text-neutral">Email</label>
-          <div class="mt-2">
-            <label class="input input-bordered flex items-center gap-2 text-neutral text-xl">
-              <svg xmlns=" http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"
-                class="w-4 h-4 opacity-70">
-                <path
-                  d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" />
-                <path
-                  d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
-              </svg>
-              <input id="login_form_email_input" type="text" name="email" class="grow" placeholder="Email"
-                maxlength="41" />
-            </label>
+  </header>
+  <main class="flex w-screen justify-center p-5">
+    <div class="2xl:w-2/6 lg:w-2/4 w-full h-full flex flex-col p-6 mt-2">
+      <form  action="#" method="POST" id="login_form">
+        <div class="flex md:flex-row flex-col mt-2">
+          <label for="email" class="block text-2xl text-neutral mx-2 w-36">Email</label>
+          <div class="input input-bordered flex items-center gap-2 text-neutral text-xl grow">
+            <svg xmlns=" http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"
+            class="w-4 h-4 opacity-70">
+            <path
+                d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" />
+            <path
+                d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
+        </svg>
+            <input id="login_form_email_input" type="text" name="email" class="w-full" placeholder="Email"
+              maxlength="41" />
           </div>
         </div>
 
-        <div>
-          <div class="flex items-center justify-between">
-            <label for="password" class="block text-2xl text-neutral">비밀번호</label>
-          </div>
-          <div class="mt-2">
-            <label class="input input-bordered flex items-center gap-2 block text-2xl text-neutral">
+        <div class="flex md:flex-row flex-col mt-2 md:mt-10">
+            <label for="password" class="block text-2xl text-neutral mx-2 w-36">비밀번호</label>
+            <div class="input input-bordered flex items-center gap-2 block text-2xl text-neutral grow">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"
-                class="w-4 h-4 opacity-70">
-                <path fill-rule="evenodd"
+              class="w-4 h-4 opacity-70">
+              <path fill-rule="evenodd"
                   d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z"
                   clip-rule="evenodd" />
-              </svg>
-              <input id="login_form_password_input" type="password" name="password" class="grow" placeholder="*****"
+          </svg>
+              <input id="login_form_password_input" type="password" name="password" class="w-full" placeholder="*****"
                 maxlength="12" />
-            </label>
-
-          </div>
+            </div>
         </div>
         <div id="login_form_validation_message_container" class="flex items-center justify-between">
           <p class="block text-2xl text-error">
@@ -224,13 +218,13 @@
         </div>
         <div>
           <button onclick="loginValidationCheck(this); return false;" class="btn flex w-full justify-center bg-base_white text-secondary_hard
-          hover:bg-secondary_hard hover:text-bg_main text-2xl">로그인</button>
+          hover:bg-secondary_hard hover:text-bg_main text-2xl mt-2 md:mt-10">로그인</button>
         </div>
       </form>
 
-      <div class="mt-5 p-3 flex justify-center">
+      <div class="mt-5 p-3 flex justify-center mt-2 md:mt-10">
         <a href="#" onclick="password_restoration_modal.showModal(); return false;"
-          class="font-semibold text-neutral_soft text-2xl hover:text-neutral_hard duration-100">비밀번호를
+          class="font-semibold text-neutral_soft text-2xl hover:text-neutral_hard duration-100 ">비밀번호를
           잊으셨나요?</a>
         <dialog id="password_restoration_modal" class="modal text-neutral">
           <div class="modal-box">
@@ -264,19 +258,15 @@
         </dialog>
       </div>
 
-      <p class=" text-center text-neutral_soft text-xl">
+      <div class="flex justify-center md:flex-row flex-col ">
+      <p class="text-neutral_soft text-xl text-center md:mr-5">
         아직 우리 회원이 아니신가요?
-        <a href="/member/join.html" class="font-semibold leading-6 text-secondary hover:text-secondary_hard">가입 하기</a>
       </p>
-
-
-
-
+      <a href="/member/join.html" class="text-center font-semibold leading-6 text-secondary hover:text-secondary_hard">가입 하기</a>
     </div>
 
 
-
-
+    </div>
   </main>
 
 
