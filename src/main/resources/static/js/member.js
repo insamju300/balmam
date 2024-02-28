@@ -200,6 +200,32 @@ function showEmailAlertForPasswordRestoration(email) {
   );
 }
 
+
+function joinFormValidationCheck(ele) {
+  let isValidationOk = emailValidationCheck();
+  isValidationOk = passwordValidationCheck() && isValidationOk;
+  isValidationOk = confirmPasswordValidationCheck() && isValidationOk;
+  isValidationOk = nicknameValidationCheck() && isValidationOk;
+
+  if (isValidationOk) {
+    $(ele).submit();
+
+  }
+}
+
+function passwordRestorationFormValidationCheck(ele) {
+  let isValidationOk = passwordValidationCheck() && isValidationOk;
+  isValidationOk = confirmPasswordValidationCheck() && isValidationOk;
+
+  if (isValidationOk) {
+    $(ele).submit();
+
+  }
+}
+
+
+
 // todo 회원 가입이 정상적으로 가입되면 다음 메시지를 담아서 historyback or home 화면 보낼것.
 // 인증 링크가 이메일로 전송되었습니다. 이메일을 확인하여 계정을 인증해주세요. 만약 이메일을 받지 못하셨다면 스팸 메일함을 확인해보세요.
 // header에는 query에 message가 있는 경우 message를 alert로 출력하는 기능을 넣어 줄 것. //추후 개발
+

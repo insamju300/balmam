@@ -41,9 +41,9 @@ function drowPath(ele) {
 }
 
 function commonsAlert(message = "", title = "") {
-  $("#coommons_alert_modal p").html(message);
-  $("#coommons_alert_modal h3").html(title);
-  document.getElementById("coommons_alert_modal").showModal();
+  $("#commons_alert_modal p").html(message);
+  $("#commons_alert_modal h3").html(title);
+  document.getElementById("commons_alert_modal").showModal();
 }
 
 window.addEventListener("resize", function() {

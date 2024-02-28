@@ -12,7 +12,7 @@ function init() {
     messageInformation != null &&
     messageInformation.isValidationFail == true
   ) {
-    setValidationText(messageInformation.message);
+    setLoginValidationText(messageInformation.message);
   }
 }
 

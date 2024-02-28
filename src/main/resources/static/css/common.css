@@ -12,8 +12,11 @@
 
 html > body {
   font-family: "Roboto", "Cafe24Oneprettynight", "sans-serif";
+
+  color: #BBB4AB;
 }
 
 * {
   font-family: inherit;
+  color: inherit;
 }
