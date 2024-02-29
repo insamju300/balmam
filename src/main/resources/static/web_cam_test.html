@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Webcam Capture</title>
+    <style>
+        video, canvas {
+            -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+        }
+        @media (orientation: landscape) {
+            video, canvas {
+                -webkit-transform: rotate(90deg);
+                transform: rotate(90deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <video id="video" width="640" height="480" autoplay></video>
+    <button id="snap">Snap Photo</button>
+    <canvas id="canvas" width="640" height="480"></canvas>
+    <script>
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const context = canvas.getContext('2d');
+        const snapButton = document.getElementById('snap');
+
+        // Get access to the camera
+        if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+                video.srcObject = stream;
+                video.play();
+            });
+        }
+
+        // Capture and display the photo
+        snapButton.addEventListener('click', function() {
+            context.drawImage(video, 0, 0, 640, 480);
+            const imageDataUrl = canvas.toDataURL('image/png');
+            localStorage.setItem('capturedImage', imageDataUrl);
+            // Display the captured image
+            const img = document.createElement('img');
+            img.src = imageDataUrl;
+            document.body.appendChild(img);
+        });
+    </script>
+</body>
+</html>
