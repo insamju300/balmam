@@ -10,6 +10,7 @@ const pathLines=[];
 const pathCoordinatesGroups=[];
 let watchId;
 let intervalId;
+let intervalIdForTimeCheck;
 
 let timestampInHours = 1000*60*60;
 let timestampInMinutes = 1000*60;
@@ -79,6 +80,14 @@ async function initMap() {
       handleLocationError(true);
     }
   );
+
+  intervalIdForTimeCheck = setInterval(() => {
+    if(Date.now()-recodingStartTime-getTotalPuseTime()>recodingLimitTime){
+      commonsAlert(`최대 실녹화 시간(${Math.floor(recodingLimitTime/timestampInMinutes)}분)까지 녹화되어 다음 단계로 넘어갑니다.`, "녹화 종료 알림");
+      stopTraceRecoding();
+      return;
+    }
+  }, 1000); 
 }
 
 function handleLocationError(browserHasGeolocation) {
@@ -172,6 +181,7 @@ function pauseTraceRecoding(){
 
 function stopTraceRecoding(){
   clearInterval(intervalId);
+  clearInterval(intervalIdForTimeCheck);
   navigator.geolocation.clearWatch(watchId);
   
   if(puseTime && !puseTime.endTime){
@@ -243,14 +253,6 @@ function successWatch(position){
     }
     lastUpdateTime = now;
 
-
-
-    if(lastUpdateTime-recodingStartTime-getTotalPuseTime()>recodingLimitTime){
-      commonsAlert(`최대 실녹화 시간(${Math.floor(recodingLimitTime/timestampInMinutes)}분)까지 녹화되어 다음 단계로 넘어갑니다.`, "녹화 종료 알림");
-      stopTraceRecoding();
-      return;
-    }
-
     const userLocation = getUserLocation(position);
 
     //사용자의 현재 위치로 마커 업데이트
@@ -275,4 +277,3 @@ function getTotalPuseTime(){
 
   return totalPuseTime;
 }
-
