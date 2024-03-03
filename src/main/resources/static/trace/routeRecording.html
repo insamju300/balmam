@@ -27,17 +27,10 @@
   <script src="/js/common.js"></script>
 
 
+
   <!--파비콘. 적용 안되는거같으니 확인 요망-->
   <link rel="favicon" href="/images/logo/logo.ico">
 
-
-
-  <style>
-    /* html {
-      background: url(/images/background/member_bg.png) no-repeat center center fixed;
-      background-size: cover;
-    } */
-  </style>
 </head>
 
 <body>
@@ -198,10 +191,10 @@
       <!--과제 2 1초 간격으로 찍히는 선 표시 ㅇ-->
       <!--과제 3 일시정지 기능 추가 ㅇ-->
       <!--과제 4. 정지 버튼 눌릴 때 까지의 시간 기록 기능 추가.  ㅇ-->
-      <!--과제 5. 3시간 지나면 자동 정지 기능 추가 (임시로 3분으로 테스트) ㅇ -->
-      <!--과제 6. 3시간 안에 일시정지 시간이 들어가지 않도록 조정. (임시로 3분으로 테스트) ㅇ -->
-      <!--과제 7. 머물고있는 도시 리스트 저장 -->
-      <!--과제 8. 머물고 있는 관광지 리스트 저장-->
+      <!--과제 5. 3시간 지나면 자동 정지 기능 추가 *  ㅇ-->
+      <!--과제 6. 3시간 안에 일시정지 시간이 들어가지 않도록 조정. ㅇ-->
+      <!--과제 7. 머물고있는 도시 리스트 저장 ㅇ -->
+      <!--과제 8. 머물고 있는 관광지 리스트 저장 포기-->
       <!--과제 9.  현재 웹캠 화면 표시-->
       <!--과제 10. 영상 촬영 -->
       <!--과제 11. 사진 앞 뒤 돌리기-->
@@ -232,7 +225,7 @@
 <!-- prettier-ignore -->
 <script>
   (g => { var h, a, k, p = "The Google Maps JavaScript API", c = "google", l = "importLibrary", q = "__ib__", m = document, b = window; b = b[c] || (b[c] = {}); var d = b.maps || (b.maps = {}), r = new Set, e = new URLSearchParams, u = () => h || (h = new Promise(async (f, n) => { await (a = m.createElement("script")); e.set("libraries", [...r] + ""); for (k in g) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]); e.set("callback", c + ".maps." + q); a.src = `https://maps.${c}apis.com/maps/api/js?` + e; d[q] = f; a.onerror = () => h = n(Error(p + " could not load.")); a.nonce = m.querySelector("script[nonce]")?.nonce || ""; m.head.append(a) })); d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n)) })
-    ({ key: getGoogleMapKey(), v: "weekly" });</script>
+    ({ key: getGoogleMapKey(), v: "weekly",region: "KR", language: "ko" });</script>
 
 <!--경로녹화 관련 trace-->
 <script src="/js/routeRecording.js"></script>
