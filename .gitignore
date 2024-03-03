@@ -98,3 +98,4 @@ replay_pid*
 
 *.env
 js_keys.js
+js_key.js

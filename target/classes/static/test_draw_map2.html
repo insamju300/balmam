@@ -1,0 +1,198 @@
+<!--https://developers.google.com/maps/documentation/javascript/examples/overlay-symbol-animate 기능 참조-->
+
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Real-Time Path Tracker</title>
+  <style>
+    #map {
+      height: 400px;
+      width: 100%;
+    }
+  </style>
+  <script src="/js_keys.js"></script>
+</head>
+
+<body>
+  <div id="map"></div>
+  <button id="startRecording">녹화 시작</button>
+  <button id="pauseRecording">일시 정지 / 재개</button>
+  <button id="stopRecording">녹화 중지</button>
+  <button id="loadPath">경로 불러오기</button>
+  <script>
+    let map;
+    let pathLine;
+    let watchId = null;
+    const pathCoordinates = [];
+    let isRecording = false;
+
+    function initMap() {
+      // 사용자의 현재 위치를 지도의 중심으로 설정
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+          const { latitude, longitude } = position.coords;
+          const startPos = new google.maps.LatLng(latitude, longitude);
+          map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 18, // 건물이 표시될 정도의 배율로 설정
+            center: startPos,
+          });
+          pathLine = new google.maps.Polyline({
+            path: [],
+            strokeColor: '#FF0000',
+            strokeOpacity: 1.0,
+            strokeWeight: 2,
+          });
+          pathLine.setMap(map);
+        });
+      } else {
+        console.error("Geolocation is not supported by this browser.");
+      }
+    }
+
+
+    // handleRecording 함수는 현재 상태에 따라 작업을 분기합니다.
+    function handleRecording(action) {
+      switch (action) {
+        case 'start':
+          if (!isRecording) {
+            // 녹화 시작
+            isRecording = true;
+            watchId = navigator.geolocation.watchPosition(position => {
+              const { latitude, longitude } = position.coords;
+              const newPos = new google.maps.LatLng(latitude, longitude);
+              pathCoordinates.push(newPos);
+              pathLine.setPath(pathCoordinates);
+              map.panTo(newPos);
+            }, error => {
+              console.error('Error: ', error);
+            }, {
+              enableHighAccuracy: true,
+              maximumAge: 0,
+              timeout: 5000,
+            });
+            console.log("녹화 시작됨");
+          }
+          break;
+        case 'pause':
+          // 녹화 일시 정지 / 재개
+          if (isRecording) {
+            navigator.geolocation.clearWatch(watchId);
+            watchId = null;
+            isRecording = false;
+            console.log("녹화 일시 정지됨");
+          } else {
+            // 여기서는 일시 정지 후 다시 시작하는 로직을 구현합니다.
+            // "start"와 유사하지만, 경로를 초기화하지 않고 이어서 추가합니다.
+            isRecording = true;
+            watchId = navigator.geolocation.watchPosition(position => {
+              const { latitude, longitude } = position.coords;
+              const newPos = new google.maps.LatLng(latitude, longitude);
+              pathCoordinates.push(newPos);
+              pathLine.setPath(pathCoordinates);
+              map.panTo(newPos);
+            }, error => {
+              console.error('Error: ', error);
+            }, {
+              enableHighAccuracy: true,
+              maximumAge: 0,
+              timeout: 5000,
+            });
+            console.log("녹화 재개됨");
+          }
+          break;
+        case 'stop':
+          // 녹화 중지
+          if (isRecording || watchId !== null) {
+            navigator.geolocation.clearWatch(watchId);
+            watchId = null;
+            isRecording = false;
+            console.log("녹화 중지됨");
+            // 경로를 localStorage에 저장하고, 콘솔에 출력합니다.
+            localStorage.setItem("savedPath", JSON.stringify(pathCoordinates));
+            console.log("저장된 경로: ", JSON.stringify(pathCoordinates));
+            // 경로 초기화
+            pathCoordinates.length = 0;
+            pathLine.setPath(pathCoordinates);
+          }
+          break;
+        default:
+          console.log("알 수 없는 액션입니다.");
+      }
+    }
+
+    function animatePath(path) {
+      const step = path.length / 100; // 10초 동안 애니메이션
+      let index = 0;
+      function drawNextSegment() {
+        if (index < path.length) {
+          const currentSegment = path.slice(0, Math.floor(index));
+          pathLine.setPath(currentSegment);
+          map.panTo(currentSegment[currentSegment.length - 1]); // 중심을 현재 그리는 위치로 이동
+          index += step;
+          requestAnimationFrame(drawNextSegment);
+        } else {
+          pathLine.setPath(path);
+        }
+      }
+      drawNextSegment();
+    }
+
+    // 녹화, 일시 정지/재개, 중지 버튼 이벤트 리스너...
+    document.getElementById("stopRecording").addEventListener("click", function () {
+      handleRecording('stop');
+    });
+
+    // 경로 불러오기 버튼 이벤트 리스너...
+    // 기타 이벤트 리스너 및 함수 구현...
+    document.getElementById("startRecording").addEventListener("click", function () {
+      handleRecording('start');
+    });
+
+    document.getElementById("pauseRecording").addEventListener("click", function () {
+      handleRecording('pause');
+    });
+    document.getElementById("loadPath").addEventListener("click", function () {
+      const savedPath = JSON.parse(localStorage.getItem("savedPath"));
+      if (savedPath && savedPath.length > 0) {
+        animatePath(savedPath);
+      } else {
+        console.log("저장된 경로가 없습니다.");
+      }
+    });
+
+    function animatePath(path) {
+      const step = path.length / 100; // 10초 동안 애니메이션
+      let index = 0;
+
+      function drawNextSegment() {
+        if (index < path.length) {
+          const currentSegment = path.slice(0, Math.floor(index + 1));
+          pathLine.setPath(currentSegment);
+          const currentPos = currentSegment[currentSegment.length - 1];
+          map.setCenter(currentPos);
+          map.setZoom(17); // 건물이 표시될 정도의 배율로 설정
+          index += step;
+          requestAnimationFrame(drawNextSegment);
+        } else {
+          // 마지막 위치에서 애니메이션 완료
+          pathLine.setPath(path);
+          const lastPos = path[path.length - 1];
+          map.setCenter(lastPos);
+          map.setZoom(17);
+        }
+      }
+
+      drawNextSegment();
+    }
+
+  </script>
+  <script id="script" type="text/javascript" charset="utf-8" defer></script>
+  <script>
+    document.getElementById("script").src = 'https://maps.googleapis.com/maps/api/js?key=' + GOOGLE_MAP_KEY + '&callback=initMap&v=weekly';
+
+
+  </script>
+</body>
+
+</html>

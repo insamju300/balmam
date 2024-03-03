@@ -48,7 +48,7 @@ function handleLocationError(browserHasGeolocation, pos) {
 }
 
   
-  initMap();
+initMap();
 
 
   
