@@ -19,8 +19,10 @@ let recodingStartTime;
 let recodingEndTime;
 let recodingLimitTime = 3*timestampInMinutes;
 
-let totalPuseTime;
-let puseTime;
+let puseTime=null;
+let puseTimes=[];
+
+
 
 
 
@@ -70,39 +72,8 @@ async function initMap() {
 
 
   watchId = navigator.geolocation.watchPosition(
-    function (position) {
-      //https://developer.mozilla.org/ko/docs/Web/API/Geolocation/watchPosition
-
-      let now = Date.now();
-
-      if (
-        lastUpdateTime &&
-        now - lastUpdateTime < intervalGap
-      ) {
-        return;
-      }
-      lastUpdateTime = now;
-      if(lastUpdateTime-recodingStartTime>recodingLimitTime){
-        commonsAlert(`최대 녹화 시간(${Math.floor(recodingLimitTime/timestampInMinutes)}분)까지 녹화되어 다음 단계로 넘어갑니다.`, "녹화 종료 알림");
-        stopTraceRecoding();
-        return;
-      }
-      
-      const userLocation = getUserLocation(position);
-
-      //사용자의 현재 위치로 마커 업데이트
-      marker.position = userLocation;
-      
-      //선 그리기
-      pathCoordinates.push(userLocation);
-      pathLine.setPath(pathCoordinates);
-      map.panTo(userLocation);
-
-
-      // 지도의 중앙을 사용자의 현재 위치로 설정
-      map.setCenter(userLocation);
-
-      
+    function(position){
+    successWatch(position);
     },
     function () {
       handleLocationError(true);
@@ -121,6 +92,12 @@ function handleLocationError(browserHasGeolocation) {
 initMap();
 
 function resumeTraceRecoding(){
+
+  puseTime.endTime = Date.now();
+  puseTimes.push(puseTime);
+  puseTime= null;
+
+
   navigator.geolocation.getCurrentPosition(
     function (position) {
       const userLocation = getUserLocation(position);
@@ -137,37 +114,9 @@ function resumeTraceRecoding(){
   clearInterval(intervalId);
 
   watchId = navigator.geolocation.watchPosition(
-    function (position) {
-      //https://developer.mozilla.org/ko/docs/Web/API/Geolocation/watchPosition
-
-      let now = Date.now();
-
-      if (
-        lastUpdateTime &&
-        now - lastUpdateTime < intervalGap
-      ) {
-        return;
-      }
-      lastUpdateTime = now;
-      if(lastUpdateTime-recodingStartTime>recodingLimitTime){
-        commonsAlert(`최대 녹화 시간(${Math.floor(recodingLimitTime/timestampInMinutes)}분)까지 녹화되어 다음 단계로 넘어갑니다.`, "녹화 종료 알림");
-        stopTraceRecoding();
-        return;
-      }
-
-      const userLocation = getUserLocation(position);
-
-      //사용자의 현재 위치로 마커 업데이트
-      marker.position = userLocation;
-      
-      //선 그리기
-      pathCoordinates.push(userLocation);
-      pathLine.setPath(pathCoordinates);
-      map.panTo(userLocation);
-
-      // 지도의 중앙을 사용자의 현재 위치로 설정
-      map.setCenter(userLocation);
-    },
+    function(position){
+      successWatch(position);
+      },
     function () {
       handleLocationError(true);
     }
@@ -185,6 +134,8 @@ function pauseTraceRecoding(){
     return;
   }
   pathLines.push(pathLine);
+  puseTime=new Object();
+  puseTime.startTime = Date.now();
  
 
   pathCoordinates=[];
@@ -222,7 +173,11 @@ function pauseTraceRecoding(){
 function stopTraceRecoding(){
   clearInterval(intervalId);
   navigator.geolocation.clearWatch(watchId);
-
+  
+  if(puseTime && !puseTime.endTime){
+    puseTime.endTime = Date.now();
+    puseTimes.push(puseTime);
+  }
 
   recodingEndTime = Date.now();
   let totalRecodingTime = recodingEndTime - recodingStartTime;
@@ -231,9 +186,14 @@ function stopTraceRecoding(){
   let minutes = Math.floor(totalRecodingTime/timestampInMinutes);
   totalRecodingTime %= timestampInMinutes;
   let seconds = Math.floor(totalRecodingTime/timestampInSeconds);
+  console.log("전체 레코딩 시간");
   console.log(hours + ":" + minutes + ":" + seconds);
-
+  console.log("녹화된 경로");
   console.log(pathCoordinatesGroups);
+  console.log("일시정지 시간");
+  console.log(puseTimes);
+  console.log("전체 일시정지 시간");
+  console.log(getTotalPuseTime());
 
   const date = new Date((recodingEndTime-recodingStartTime) * 1000);
   alert(date);
@@ -268,3 +228,51 @@ function getUserLocation(position){
 
   return userLocation;
 }
+
+function successWatch(position){
+
+    //https://developer.mozilla.org/ko/docs/Web/API/Geolocation/watchPosition
+
+    let now = Date.now();
+
+    if (
+      lastUpdateTime &&
+      now - lastUpdateTime < intervalGap
+    ) {
+      return;
+    }
+    lastUpdateTime = now;
+
+
+
+    if(lastUpdateTime-recodingStartTime-getTotalPuseTime()>recodingLimitTime){
+      commonsAlert(`최대 실녹화 시간(${Math.floor(recodingLimitTime/timestampInMinutes)}분)까지 녹화되어 다음 단계로 넘어갑니다.`, "녹화 종료 알림");
+      stopTraceRecoding();
+      return;
+    }
+
+    const userLocation = getUserLocation(position);
+
+    //사용자의 현재 위치로 마커 업데이트
+    marker.position = userLocation;
+    
+    //선 그리기
+    pathCoordinates.push(userLocation);
+    pathLine.setPath(pathCoordinates);
+    map.panTo(userLocation);
+
+    // 지도의 중앙을 사용자의 현재 위치로 설정
+    map.setCenter(userLocation);
+  
+}
+
+function getTotalPuseTime(){
+  const initialValue = 0;
+  const totalPuseTime = puseTimes.reduce(
+    (accumulator, puseTime) => accumulator + (puseTime.endTime - puseTime.startTime),
+  initialValue,
+  );
+
+  return totalPuseTime;
+}
+
