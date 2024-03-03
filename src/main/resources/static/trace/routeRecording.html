@@ -18,6 +18,9 @@
   <!-- 제이쿼리 불러오기 -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
+  <!--지도 그리기 불러오기-->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+
   <!--공통 및 헤드 css, js-->
   <link rel="stylesheet" href="/css/common.css">
   <link rel="stylesheet" href="/css/trace.css">
@@ -86,7 +89,8 @@
             <span class="badge badge-xs badge-error indicator-item"></span>
           </div>
         </button>
-        <button class="btn btn-ghost btn-circle text-primary hover:text-primary_hard h-16 w-16 text-4xl" onclick="showFullScreenMenu()">
+        <button class="btn btn-ghost btn-circle text-primary hover:text-primary_hard h-16 w-16 text-4xl"
+          onclick="showFullScreenMenu()">
           <i class="fa-solid fa-bars"></i>
         </button>
       </div>
@@ -190,10 +194,10 @@
   <main class="flex w-screen justify-center p-5 text-neutral">
     <div class="xl:w-4/6 w-full flex md:flex-row flex-col p-6 mt-2 ">
 
-      <!--과제 1 현제 위치 정보 표시-->
+      <!--과제 1 현재 위치 정보 표시-->
       <!--과제 2 30초 간격으로 찍히는 선 표시-->
       <!--과제 3 일시정지 기능 추가-->
-      <!--과제 4. 녹화 버튼 눌릴 때 까지의 시간 기록 기능 추가.-->
+      <!--과제 4. 정지 버튼 눌릴 때 까지의 시간 기록 기능 추가.-->
       <!--과제 5. 5시간 지나면 자동 정지 기능 추가-->
       <!--과제 6. 5시간 안에 일시정지 시간이 들어가지 않도록 조정. -->
       <!--과제 7. 머물고있는 도시 리스트 저장 -->
@@ -203,25 +207,35 @@
       <!--과제 11. 사진 앞 뒤 돌리기-->
       <!--과제 12. 촬영된 사진 표시-->
       <div class="md:w-4/6 w-full flex-col p-2">
-          <div id="map" class="h-96 w-full bg-primary"></div>
+        <div id="map" class="h-96 w-full bg-primary"></div>
+        <div class="flex justify-center text-error mt-2"> 
+          <button onclick="resumeTraceRecoding()" id = "trace_recoding_resume_btn" class="btn btn-ghost text-4xl hidden"> <i class="fa-regular fa-circle-dot"></i> </button>
+          <button onclick="pauseTraceRecoding()" id = "trace_recoding_pause_btn" class="btn btn-ghost text-4xl"> <i class="fa-regular fa-circle-pause"></i> </button>
+          <button onclick="stopTraceRecoding()" id = "trace_recoding_stop_btn" class="btn btn-ghost text-4xl"> <i class="fa-regular fa-circle-stop"></i> </button>
+          
+        </div>
       </div>
+      <!--일시정지, 재생 토글 버튼 만들기
+      -->
+
 
 
 
     </div>
   </main>
-  
+
 </body>
-      <script src="/js/header.js"></script>
+<script src="/js/header.js"></script>
 
-      <script src="/js_keys.js"></script>
-      <script id="script" type="text/javascript" charset="utf-8" defer></script>
-      <!-- prettier-ignore -->
-      <script>
-      (g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})
-        ({key: getGoogleMapKey(), v: "weekly"});</script>
+<script src="/js_keys.js"></script>
+<script id="script" type="text/javascript" charset="utf-8" defer></script>
+<!-- prettier-ignore -->
+<script>
+  (g => { var h, a, k, p = "The Google Maps JavaScript API", c = "google", l = "importLibrary", q = "__ib__", m = document, b = window; b = b[c] || (b[c] = {}); var d = b.maps || (b.maps = {}), r = new Set, e = new URLSearchParams, u = () => h || (h = new Promise(async (f, n) => { await (a = m.createElement("script")); e.set("libraries", [...r] + ""); for (k in g) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]); e.set("callback", c + ".maps." + q); a.src = `https://maps.${c}apis.com/maps/api/js?` + e; d[q] = f; a.onerror = () => h = n(Error(p + " could not load.")); a.nonce = m.querySelector("script[nonce]")?.nonce || ""; m.head.append(a) })); d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n)) })
+    ({ key: getGoogleMapKey(), v: "weekly" });</script>
 
-          <!--경로녹화 관련 trace-->
-      <script src="/js/routeRecording.js"></script>
+<!--경로녹화 관련 trace-->
+<script src="/js/routeRecording.js"></script>
+
 
 </html>
