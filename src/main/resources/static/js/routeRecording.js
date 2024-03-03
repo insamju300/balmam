@@ -1,7 +1,7 @@
 let map;
 let marker;
 let lastUpdateTime;
-const intervalGap = 2000;
+const intervalGap = 1000;
 let pathLine;
 let pathCoordinates=[];
 let pauseCount=0;
@@ -11,11 +11,27 @@ const pathCoordinatesGroups=[];
 let watchId;
 let intervalId;
 
+let timestampInHours = 1000*60*60;
+let timestampInMinutes = 1000*60;
+let timestampInSeconds = 1000;
+
+let recodingStartTime;
+let recodingEndTime;
+let recodingLimitTime = 3*timestampInMinutes;
+
+let totalPuseTime;
+let puseTime;
+
+
+
+
+
 
 
 
 async function initMap() {
   // Request needed libraries.
+  recodingStartTime = Date.now();
   const { Map } = await google.maps.importLibrary("maps");
   const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
   const balmami = document.createElement("img");
@@ -43,28 +59,35 @@ async function initMap() {
       });
 
       creatNewPathLine(userLocation);
-      lastUpdateTime = new Date();
+      lastUpdateTime = Date.now();
     },
     function () {
       handleLocationError(true);
     }
   );
 
+ 
+
+
   watchId = navigator.geolocation.watchPosition(
     function (position) {
       //https://developer.mozilla.org/ko/docs/Web/API/Geolocation/watchPosition
 
-      let now = new Date();
+      let now = Date.now();
 
       if (
         lastUpdateTime &&
-        now.getTime() - lastUpdateTime.getTime() < intervalGap
+        now - lastUpdateTime < intervalGap
       ) {
         return;
       }
       lastUpdateTime = now;
+      if(lastUpdateTime-recodingStartTime>recodingLimitTime){
+        commonsAlert(`최대 녹화 시간(${Math.floor(recodingLimitTime/timestampInMinutes)}분)까지 녹화되어 다음 단계로 넘어갑니다.`, "녹화 종료 알림");
+        stopTraceRecoding();
+        return;
+      }
       
-
       const userLocation = getUserLocation(position);
 
       //사용자의 현재 위치로 마커 업데이트
@@ -102,7 +125,7 @@ function resumeTraceRecoding(){
     function (position) {
       const userLocation = getUserLocation(position);
       creatNewPathLine(userLocation)
-      lastUpdateTime = new Date();
+      lastUpdateTime = Date.now();
     },
     function () {
       handleLocationError(true);
@@ -117,15 +140,20 @@ function resumeTraceRecoding(){
     function (position) {
       //https://developer.mozilla.org/ko/docs/Web/API/Geolocation/watchPosition
 
-      let now = new Date();
+      let now = Date.now();
 
       if (
         lastUpdateTime &&
-        now.getTime() - lastUpdateTime.getTime() < intervalGap
+        now - lastUpdateTime < intervalGap
       ) {
         return;
       }
       lastUpdateTime = now;
+      if(lastUpdateTime-recodingStartTime>recodingLimitTime){
+        commonsAlert(`최대 녹화 시간(${Math.floor(recodingLimitTime/timestampInMinutes)}분)까지 녹화되어 다음 단계로 넘어갑니다.`, "녹화 종료 알림");
+        stopTraceRecoding();
+        return;
+      }
 
       const userLocation = getUserLocation(position);
 
@@ -157,7 +185,7 @@ function pauseTraceRecoding(){
     return;
   }
   pathLines.push(pathLine);
-  pathCoordinatesGroups.push(pathCoordinates);
+ 
 
   pathCoordinates=[];
 
@@ -192,14 +220,33 @@ function pauseTraceRecoding(){
 }
 
 function stopTraceRecoding(){
-  
+  clearInterval(intervalId);
+  navigator.geolocation.clearWatch(watchId);
+
+
+  recodingEndTime = Date.now();
+  let totalRecodingTime = recodingEndTime - recodingStartTime;
+  let hours = Math.floor(totalRecodingTime/timestampInHours);
+  totalRecodingTime %= timestampInHours;
+  let minutes = Math.floor(totalRecodingTime/timestampInMinutes);
+  totalRecodingTime %= timestampInMinutes;
+  let seconds = Math.floor(totalRecodingTime/timestampInSeconds);
+  console.log(hours + ":" + minutes + ":" + seconds);
+
+  console.log(pathCoordinatesGroups);
+
+  const date = new Date((recodingEndTime-recodingStartTime) * 1000);
+  alert(date);
+
 }
 
 
 
 function creatNewPathLine(userLocation){
   
-  pathCoordinates = [userLocation];
+  const tmpPathCoordinates = [userLocation];
+  pathCoordinatesGroups.push(tmpPathCoordinates);
+  pathCoordinates=tmpPathCoordinates;
 
   pathLine = new google.maps.Polyline({
     path: pathCoordinates,
@@ -212,6 +259,7 @@ function creatNewPathLine(userLocation){
 
 
 function getUserLocation(position){
+  
   const userLocation = {
     lat: position.coords.latitude,
     lng: position.coords.longitude,
