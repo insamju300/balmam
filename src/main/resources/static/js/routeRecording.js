@@ -19,7 +19,7 @@ let timestampInSeconds = 1000;
 
 let recodingStartTime;
 let recodingEndTime;
-let recodingLimitTime = 3 * timestampInMinutes;
+let recodingLimitTime = 3 * timestampInHours;
 
 let puseTime = null;
 let puseTimes = [];
@@ -36,6 +36,19 @@ let recordedSize = 0; // 녹화된 데이터의 크기를 추적하는 변수
 const cameraView = document.getElementById("camera_view");
 const canvas = document.getElementById("canvas");
 const context = canvas.getContext("2d"); // 다양한 그리기 메서드와 속성에 접근할 수 있게 해줌
+
+let mediaCount = 0;
+const maxMediaCount = 50; //todo 개발 후 50으로 바꿀 것.
+let isExceededMaxMediaCount = false;
+let isVideoRecording = false;
+
+let geoMedias = new Map();
+let geoMarkers = new Map();
+let tmpId = 0; //임시 테스트용 시퀀스.
+
+let recordTimeoutId;
+
+//동영상 촬영중엔 모드 변경 불가.
 
 if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
   //브라우저가 mediaDevices API를 지원하고, 그 안에 getUserMedia 메소드가 존재하는지 확인. 안되면 어떻게할까..
@@ -222,6 +235,10 @@ function stopTraceRecoding() {
   clearInterval(intervalId);
   clearInterval(intervalIdForTimeCheck);
   navigator.geolocation.clearWatch(watchId);
+  if(isVideoRecording){
+    stopVideo();
+  }
+
 
   if (puseTime && !puseTime.endTime) {
     puseTime.endTime = Date.now();
@@ -267,6 +284,8 @@ function stopTraceRecoding() {
   console.log(getTotalPuseTime());
   console.log("머문 도시 리스트");
   console.log(stayedCities);
+  console.log("지오 미디어 리스트");
+  console.log(geoMedias);
 }
 
 function creatNewPathLine(userLocation) {
@@ -292,6 +311,7 @@ function getUserLocation(position) {
 
   return userLocation;
 }
+
 
 function successWatch(position) {
   //const {PlacesService} = await google.maps.importLibrary("places");
@@ -380,9 +400,24 @@ function getTotalPuseTime() {
 }
 
 async function takePhoto() {
+
+  
+  if(isExceededMaxMediaCount){
+    commonsAlert("최대 촬영 횟수에 달하여 더이상 사진 촬영 및 녹화가 불가능합니다. 2");
+    return;
+  }
+
   const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary(
     "marker"
   );
+
+  let tmpPosition = JSON.stringify({lat: marker.position.lat, lng: marker.position.lng});
+  if(geoMarkers.has(tmpPosition)){
+    let existingMarker = geoMarkers.get(tmpPosition);
+    existingMarker.setMap(null);
+    existingMarker = null;
+  }
+
   // 사진 찍어서 마크찍기
   // console.log(cameraView.offsetWidth + ", " + cameraView.offsetHeight);
 
@@ -420,14 +455,31 @@ async function takePhoto() {
     content: pin.element,
   });
 
-  const alertImg = document.createElement("img");
-  alertImg.src = imageDataUrl;
+  
 
-  mediaMarker.addListener("click", ({ domEvent, latLng }) => {
-    const { target } = domEvent;
+  if(geoMedias.has(tmpPosition)){
+    let geoMediaList = geoMedias.get(tmpPosition);
+    geoMediaList.push({time:Date.now(), mediaId:tmpId++, mediaType: "photo", url: imageDataUrl});
+  }else{
+    geoMedias.set(tmpPosition, [{time:Date.now(), mediaId:tmpId++, mediaType: "photo", url: imageDataUrl}]);
+  }
 
-    commonsAlert(alertImg.outerHTML);
-  });
+  geoMarkers.set(tmpPosition, mediaMarker);
+  
+  
+
+  // const alertImg = document.createElement("img");
+  // alertImg.src = imageDataUrl;
+
+  // mediaMarker.addListener("click", ({ domEvent, latLng }) => {
+  //   const { target } = domEvent;
+
+  //   commonsAlert(alertImg.outerHTML);
+  // });
+
+  createSlideImageForMediaMarker(geoMedias.get(tmpPosition), mediaMarker);
+  mediaCount++;
+  mediaCountCheck();
 }
 
 function videoToggle() {
@@ -438,6 +490,10 @@ function videoToggle() {
 }
 
 function photoToggle() {
+  if(isVideoRecording){
+    commonsAlert("아직 비디오 녹화가 진행중입니다.");
+    return;
+  }
   $("#take_photo_button").show();
   $("#take_video_button").hide();
   $("#video_toggle_button").show();
@@ -445,8 +501,16 @@ function photoToggle() {
 }
 
 function takeVideo() {
+  if(isExceededMaxMediaCount){
+    commonsAlert("최대 촬영 횟수에 달하여 더이상 사진 촬영 및 녹화가 불가능합니다. 2");
+    return;
+  }
+
+  
+
   if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-    let maxRecordSize = 5 * 1024 * 1024;
+    let maxRecordSize = 5 * 1024 * 1024; // 5MB = 5 * 1024 * 1024 bytes
+    isVideoRecording = true;
 
     navigator.mediaDevices
       .getUserMedia({ video: true })
@@ -457,7 +521,6 @@ function takeVideo() {
 
         mediaRecorder.ondataavailable = function (event) {
           if (event.data.size > 0 && recordedSize <= maxRecordSize) {
-            // 1MB = 1024 * 1024 bytes
             recordedChunks.push(event.data);
             recordedSize += event.data.size; // 누적 데이터 크기 업데이트
 
@@ -473,8 +536,13 @@ function takeVideo() {
 
         mediaRecorder.start(); // 녹화 시작
 
+        if (recordTimeoutId) {
+          clearTimeout(recordTimeoutId);
+        }
+        
+
         // 10초 후 자동 녹화 중지
-        setTimeout(() => {
+        recordTimeoutId = setTimeout(() => {
           if (mediaRecorder.state !== "inactive") {
             commonsAlert("녹화 가능한 최대 시간을 초과하여 녹화를 중지합니다."); //todo: 최대 녹화시간 명기
             stopVideo();
@@ -488,15 +556,28 @@ function takeVideo() {
       .catch((err) => {
         console.error("Failed to start video capture:", err);
       });
+
+      
   } else {
     alert("Your browser does not support video capture.");
   }
 }
 
 async function stopVideo() {
+  let tmpPosition = JSON.stringify({lat: marker.position.lat, lng: marker.position.lng});
+  if(geoMarkers.has(tmpPosition)){
+    let existingMarker = geoMarkers.get(tmpPosition);
+    existingMarker.setMap(null);
+    existingMarker = null;
+  }
+  
+
   const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary(
     "marker"
   );
+
+  isVideoRecording = false;
+
   mediaRecorder.stop(); // 녹화를 중지합니다.
   mediaRecorder.onstop = async function () {
     const blob = new Blob(recordedChunks, { type: "video/mp4" }); // 녹화된 청크들을 합쳐 하나의 Blob 객체를 생성합니다.
@@ -538,25 +619,46 @@ async function stopVideo() {
           position: marker.position,
           content: pin.element,
         });
+
+
+        if(geoMedias.has(tmpPosition)){
+          let geoMediaList = geoMedias.get(tmpPosition);
+          let id1 = tmpId++;
+          let id2 = tmpId++;
+          geoMediaList.push({time:Date.now(), mediaId:id1, mediaType: "video", url:videoURL});
+          geoMediaList.push({time:Date.now(), mediaId:id2, mediaType: "thumbnail", parentMedia: id1, url:thumbnailURL});
+        }else{
+          let id1 = tmpId++;
+          let id2 = tmpId++;
+          geoMedias.set(tmpPosition, [{time:Date.now(), mediaId:id1, mediaType: "video",  url:videoURL}, {time:Date.now(), mediaId:id2, mediaType: "thumbnail", parentMedia: id1}]);
+        }
+
+        geoMarkers.set(tmpPosition, mediaMarker);
     
         // 녹화된 비디오를 페이지에 추가하기 위한 비디오 엘리먼트를 생성하고 설정합니다.
-        const videosContainer = document.getElementById("recordedVideos");
-        const videoElement = document.createElement("video");
-        videoElement.src = videoURL; // 생성된 URL을 비디오 요소의 소스로 설정합니다.
-        videoElement.controls = true; // 비디오 컨트롤을 활성화합니다.
+        //const videosContainer = document.getElementById("recordedVideos");
+        // const videoElement = document.createElement("video");
+        // videoElement.src = videoURL; // 생성된 URL을 비디오 요소의 소스로 설정합니다.
+        // videoElement.controls = true; // 비디오 컨트롤을 활성화합니다.
     
-        mediaMarker.addListener("click", ({ domEvent, latLng }) => {
-          const { target } = domEvent;
+        // mediaMarker.addListener("click", ({ domEvent, latLng }) => {
+        //   const { target } = domEvent;
     
-          commonsAlert(videoElement.outerHTML);
-        });
+        //   commonsAlert(videoElement.outerHTML);
+        // });
+
+        createSlideImageForMediaMarker(geoMedias.get(tmpPosition), mediaMarker);
+
+
     
       });
-
-
-
     });
- 
+
+   
+
+
+    mediaCount++;
+    mediaCountCheck();
 
     // videoElement.style.width = '100%'; // 비디오 너비를 100%로 설정합니다.
     // videosContainer.appendChild(videoElement); // 생성된 비디오 요소를 동영상 목록 컨테이너에 추가합니다.
@@ -585,4 +687,119 @@ function createThumbnail(video) {
     return img;
     // document.getElementById('recordedVideos').appendChild(img); // 생성된 이미지를 동영상 목록 컨테이너에 추가합니다.
   });
+}
+
+
+function mediaCountCheck(){
+  if(mediaCount>=maxMediaCount){
+    isExceededMaxMediaCount = true;
+  }
+}
+
+function createSlideImageForMediaMarker(geoMediaList, mediaMarker){
+        let slideIdCount=1;
+        let carousel=document.createElement('div');
+
+        carousel.classList.add("carousel", "w-full");
+
+        const geoMediaListWithoutThumbnail = geoMediaList.filter((geoMedia) => geoMedia.mediaType != "thumbnail");
+
+        
+
+        geoMediaListWithoutThumbnail.forEach( function(geoMedia){
+              if(geoMedia.mediaType==='video'){
+              const carouselItem = document.createElement("div");
+              carouselItem.classList.add("carousel-item", "relative", "w-full");
+              carouselItem.id="slide"+(slideIdCount++);
+              
+
+               const videoElement = document.createElement("video");
+               videoElement.src = geoMedia.url;
+               videoElement.controls = true;
+               videoElement.classList.add("w-full");
+               carouselItem.appendChild(videoElement);
+               if(geoMediaListWithoutThumbnail.length > 1){
+                const carouselBtns = document.createElement("div");
+                carouselBtns.classList.add("absolute" ,"flex", "justify-between" , "transform", "-translate-y-1/2", "left-5", "right-5" ,"top-1/2");
+                let beforSlideId = slideIdCount-2;
+                if(beforSlideId<1){
+                  beforSlideId = geoMediaListWithoutThumbnail.length;
+                }
+                let afterSlideId = slideIdCount;
+                if(afterSlideId>geoMediaListWithoutThumbnail.length){
+                  afterSlideId = 1;
+                }
+
+                let beforBtn = document.createElement("a");
+                beforBtn.href="#slide"+beforSlideId;
+                beforBtn.classList.add("btn", "btn-circle");
+                beforBtn.innerText = "❮";
+
+
+                let afterBtn = document.createElement("a");
+                afterBtn.href="#slide"+afterSlideId;
+                afterBtn.classList.add("btn", "btn-circle");
+                afterBtn.innerHTML="❯";
+
+                carouselBtns.appendChild(beforBtn);
+                carouselBtns.appendChild(afterBtn);
+
+                carouselItem.appendChild(carouselBtns)
+                carousel.appendChild(carouselItem);
+
+               }
+
+
+              }else if(geoMedia.mediaType === 'photo'){
+                
+
+                const carouselItem = document.createElement("div");
+                carouselItem.classList.add("carousel-item", "relative", "w-full");
+                carouselItem.id="slide"+(slideIdCount++);
+
+                const img = document.createElement("img");
+                img.src = geoMedia.url;
+                img.classList.add("w-full");
+                carouselItem.appendChild(img);
+
+                if(geoMediaListWithoutThumbnail.length > 1){
+                  const carouselBtns = document.createElement("div");
+                  carouselBtns.classList.add("absolute" ,"flex", "justify-between" , "transform", "-translate-y-1/2", "left-5", "right-5" ,"top-1/2");
+                  let beforSlideId = slideIdCount-2;
+                  if(beforSlideId<1){
+                    beforSlideId = geoMediaListWithoutThumbnail.length;
+                  }
+                  let afterSlideId = slideIdCount;
+                  if(afterSlideId>geoMediaListWithoutThumbnail.length){
+                    afterSlideId = 1;
+                  }
+  
+                  let beforBtn = document.createElement("a");
+                  beforBtn.href="#slide"+beforSlideId;
+                  beforBtn.classList.add("btn", "btn-circle");
+                  beforBtn.innerText = "❮";
+  
+  
+                  let afterBtn = document.createElement("a");
+                  afterBtn.href="#slide"+afterSlideId;
+                  afterBtn.classList.add("btn", "btn-circle");
+                  afterBtn.innerHTML="❯";
+  
+                  carouselBtns.appendChild(beforBtn);
+                  carouselBtns.appendChild(afterBtn);
+  
+                  carouselItem.appendChild(carouselBtns)
+                  carousel.appendChild(carouselItem);
+  
+                 }
+
+              }
+        });
+
+
+        mediaMarker.addListener("click", ({ domEvent, latLng }) => {
+          const { target } = domEvent;
+    
+          commonsAlert(carousel.outerHTML);
+        });
 }
