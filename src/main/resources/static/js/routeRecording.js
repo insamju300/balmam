@@ -29,12 +29,14 @@ let currentStayedCityName;
 let currentStayedCityStartTime;
 let currentStayedCityEndTime;
 
-const video = document.getElementById('video');
-// Get access to the camera
-if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-  navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
-      video.srcObject = stream;
-      video.play();
+const cameraView = document.getElementById('camera_view');
+const canvas = document.getElementById('canvas');
+const context =  canvas.getContext('2d'); // 다양한 그리기 메서드와 속성에 접근할 수 있게 해줌
+
+if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) { //브라우저가 mediaDevices API를 지원하고, 그 안에 getUserMedia 메소드가 존재하는지 확인. 안되면 어떻게할까..
+  navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) { //메소드를 호출하여 비디오 입력을 요청합니다. { video: true }는 비디오(카메라) 스트림에 접근하고자 함을 나타냅니다. 이 메소드는 프로미스를 반환하며, 성공적으로 미디어 스트림에 접근했을 때 실행될 콜백 함수를 .then으로 연결합니다.
+    cameraView.srcObject = stream; //콜백 함수 내부에서, stream 변수를 통해 받은 미디어 스트림을 HTML 문서 내의 비디오 태그(여기서는 cameraView로 가정)의 srcObject 속성에 할당합니다. 이를 통해 비디오 태그에서 카메라 스트림을 재생할 수 있게 됩니다.
+    cameraView.play(); //비디오 태그에 스트림이 할당된 후, play 메소드를 호출하여 카메라 스트림의 재생을 시작합니다. 사용자의 카메라로부터 실시간 비디오 피드가 화면에 표시되기 시작합니다.
   });
 }else{
   //사진 촬영이 불가능함을 표시
@@ -47,7 +49,7 @@ async function initMap() {
   recodingStartTime = Date.now();
   const { Map } = await google.maps.importLibrary("maps");
   const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
-  const {Geocoder} = await google.maps.importLibrary("geocoding")
+  const {Geocoder} = await google.maps.importLibrary("geocoding");
   const balmami = document.createElement("img");
   balmami.src = "/images/character/balmami.png";
   balmami.classList.add("h-16");
@@ -89,7 +91,6 @@ async function initMap() {
             if (cityName) {
               currentStayedCityName = cityComponent.long_name;
               currentStayedCityStartTime = Date.now();
-              console.log(currentStayedCityName);
             }
           } else {
             console.log("Geocoder 실패: " + status);
@@ -311,7 +312,6 @@ function successWatch(position) {
           component.types.includes("political")
         );
         const cityName = cityComponent ? cityComponent.long_name : null;
-        console.log(addressComponents);
 
         if (cityName && cityName !== currentStayedCityName) {
           if (!currentStayedCityName) {
@@ -375,3 +375,74 @@ function getTotalPuseTime() {
 
 
 
+async function takePhoto(){
+  
+  const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary("marker");
+  // 사진 찍어서 마크찍기
+  // console.log(cameraView.offsetWidth + ", " + cameraView.offsetHeight);
+  
+  // let videoWidth = cameraView.videoWidth;
+  // let videoHeight = cameraView.videoHeight;
+  // console.log("canvas : " + canvas.width + "," +  canvas.height)
+  // console.log("cameraView : " +cameraView.width + "," +  cameraView.height)
+  // console.log("canvasOffset : " + canvas.offsetWidth + "," +  canvas.offsetHeight)
+  // console.log("cameraViewOffset : " +cameraView.offsetWidth + "," +  cameraView.offsetHeight)
+  
+  canvas.width = cameraView.offsetWidth;
+  canvas.height = cameraView.offsetHeight;
+
+
+  context.drawImage(cameraView, 0, 0, canvas.width, canvas.height);
+
+  //사진 저장
+  const imageDataUrl = canvas.toDataURL('image/png');
+  // localStorage.setItem('capturedImage', imageDataUrl);
+
+
+
+  // Display the captured image
+  const img = document.createElement('img');
+  img.src = imageDataUrl;
+  img.style.width = "100%"; 
+  img.style.height = "100%"; 
+
+  const pin = new PinElement({
+    glyph: img,
+    background: '#E07A5F',
+    borderColor: '#B3614C',
+  });
+
+  console.log("여기는 옴")
+
+  let mediaMarker = new AdvancedMarkerElement({
+    map,
+    position: marker.position,
+    content: pin.element,
+  });
+
+  const alertImg = document.createElement('img');
+  alertImg.src = imageDataUrl;
+
+  mediaMarker.addListener("click", ({ domEvent, latLng }) => {
+    const { target } = domEvent;
+    
+
+    commonsAlert(alertImg.outerHTML);
+  });
+
+}
+
+
+function videoToggle(){
+  $("#take_video_button").show();
+  $("#take_photo_button").hide();
+  $("#photo_toggle_button").show();
+  $("#video_toggle_button").hide();
+}
+
+function photoToggle(){
+  $("#take_photo_button").show();
+  $("#take_video_button").hide();
+  $("#video_toggle_button").show();
+  $("#photo_toggle_button").hide();
+}

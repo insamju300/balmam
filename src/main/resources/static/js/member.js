@@ -14,12 +14,14 @@ function changeProfileAvatar(ele) {
 }
 
 //이미지
-$(".hidden-upload").change(function () {
+$(document).on('change', '.hidden-upload', function () {
+
   //테스트용
   let fileSize = this.files[0].size;
   let nameBits = this.files[0].name.split(".");
   let extension = nameBits.pop().toLowerCase();
   let name = nameBits.join(".");
+  
 
   if (!fileSize) {
     commonsAlert("파일의 사이즈가 0입니다. 빈 파일은 업로드할 수 없습니다.");
@@ -48,6 +50,7 @@ $(".hidden-upload").change(function () {
 
   //todo ajax처리로 파일 등록후 파일 이미지의 db 번호 가져오기.
 });
+
 
 function emailValidationCheck() {
   let validationMessage = "";

@@ -173,7 +173,7 @@
     <dialog id="commons_alert_modal" class="modal text-neutral">
       <div class="modal-box">
         <h3 class="font-bold text-lg text-primary"></h3>
-        <p class="py-4"></p>
+        <p class="py-4 flex justify-center"></p>
       </div>
       <form method="dialog" class="modal-backdrop">
         <button>close</button>
@@ -185,7 +185,7 @@
   </header>
 
   <main class="flex w-screen justify-center p-1 md:p-5 text-neutral">
-    <div class="xl:w-4/6 w-full flex md:flex-row flex-col p-1 md:p-6 mt-2 ">
+    <div class="xl:w-4/6 w-full flex md:flex-row flex-col md:p-6 mt-2 ">
 
       <!--과제 1 현재 위치 정보 표시 ㅇ-->
       <!--과제 2 1초 간격으로 찍히는 선 표시 ㅇ-->
@@ -195,10 +195,10 @@
       <!--과제 6. 3시간 안에 일시정지 시간이 들어가지 않도록 조정. ㅇ-->
       <!--과제 7. 머물고있는 도시 리스트 저장 ㅇ -->
       <!--과제 8. 머물고 있는 관광지 리스트 저장 포기-->
-      <!--과제 9.  현재 웹캠 화면 표시-->
+      <!--과제 9.  현재 웹캠 화면 표시 ㅇ-->
       <!--과제 10. 영상 촬영 -->
       <!--과제 11. 사진 앞 뒤 돌리기-->
-      <!--과제 12. 촬영된 사진 표시-->
+      <!--과제 12. 촬영된 사진 표시 ㅇ-->
       <div class="md:w-4/6 w-full flex-col p-2">
         <div id="map" class="h-96 w-full shadow-xl"></div>
         <div class="flex justify-center text-error mt-2"> 
@@ -210,8 +210,30 @@
       </div>
       <!--일시정지, 재생 토글 버튼 만들기
       -->
-      <div class="md:w-2/6 w-full flex-col p-2">
-        <video id="video" class="h-96 w-full shadow-xl object-cover" autoplay></video>
+      <div class="md:w-2/6 w-full flex-col p-5">
+        <div class="mockup-phone">
+          <div class="camera"></div> 
+          <div class="display flex-col">
+            <div class="w-full h-80 flex items-center bg-neutral_hard">
+              <video id="camera_view" class="w-full h-auto" autoplay></video>
+              <canvas id="canvas" class="hidden"><canvas>
+          </div>
+            <div class="h-24 w-full bg-black">
+              <div class="text-white text-xl flex justify-center">
+                <button onclick="photoToggle()" id="photo_toggle_button" class="btn btn-ghost hidden hover:text-primary">사진 모드</button>
+                <button onclick="videoToggle()" id="video_toggle_button" class="btn btn-ghost hover:text-primary">동영상 모드</button>
+              </div>
+              <div class="flex justify-center w-full">
+                  <i onclick="takePhoto()" id="take_photo_button" class="fa-solid fa-circle text-white text-4xl cursor-pointer hover:text-primary"></i>
+                  <i id="take_video_button" class="fa-regular fa-circle-dot hidden text-white text-4xl cursor-pointer hover:text-primary"></i>
+                  <i id="stop_video_button" class="fa-regular fa-circle-stop hidden text-white text-4xl cursor-pointer hover:text-primary"></i>
+                  
+              </div>
+              
+            </div>
+          </div>
+        </div>
+        
       </div>
 
 
