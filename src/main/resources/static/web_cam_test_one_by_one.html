@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Webcam Capture</title>
+<style>
+  /* Basic styles for layout */
+  #camera-stream, #capture, #photos-gallery {
+    display: block;
+    margin: 10px auto;
+  }
+  #photos-gallery img {
+    width: 100px;
+    margin: 5px;
+    display: inline-block;
+  }
+</style>
+</head>
+<body>
+<video id="camera-stream" width="400" autoplay></video>
+<button id="capture">Capture Photo</button>
+
+<script>
+   //로컬스토리지 비우기.
+   window.localStorage.clear(); 
+
+    document.addEventListener('DOMContentLoaded', function() {
+  let video = document.getElementById('camera-stream');
+  let captureButton = document.getElementById('capture');
+  let photosGallery = document.getElementById('photos-gallery');
+
+  // Access the webcam
+  if (navigator.mediaDevices.getUserMedia) {
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(function(stream) {
+        video.srcObject = stream;
+      })
+      .catch(function(error) {
+        console.log("Something went wrong accessing the webcam!");
+      });
+  }
+
+  // Capture and save photo
+  captureButton.addEventListener('click', function() {
+    let canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    let ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    let imageDataURL = canvas.toDataURL('image/png');
+
+    // Save to local storage
+    let photos = JSON.parse(localStorage.getItem('photos')) || [];
+    photos.push(imageDataURL);
+    localStorage.setItem('photos', JSON.stringify(photos));
+
+    // Update the gallery
+    updateGallery();
+  });
+
+  function updateGallery() {
+    photosGallery.innerHTML = '';
+    let photos = JSON.parse(localStorage.getItem('photos')) || [];
+    photos.forEach(function(photo) {
+      let img = new Image();
+      img.src = photo;
+      photosGallery.appendChild(img);
+    });
+  }
+
+  // Initial gallery update
+  updateGallery();
+});
+</script>
+</body>
+</html>

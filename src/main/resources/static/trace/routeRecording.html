@@ -184,8 +184,8 @@
 
   </header>
 
-  <main class="flex w-screen justify-center p-5 text-neutral">
-    <div class="xl:w-4/6 w-full flex md:flex-row flex-col p-6 mt-2 ">
+  <main class="flex w-screen justify-center p-1 md:p-5 text-neutral">
+    <div class="xl:w-4/6 w-full flex md:flex-row flex-col p-1 md:p-6 mt-2 ">
 
       <!--과제 1 현재 위치 정보 표시 ㅇ-->
       <!--과제 2 1초 간격으로 찍히는 선 표시 ㅇ-->
@@ -200,7 +200,7 @@
       <!--과제 11. 사진 앞 뒤 돌리기-->
       <!--과제 12. 촬영된 사진 표시-->
       <div class="md:w-4/6 w-full flex-col p-2">
-        <div id="map" class="h-96 w-full bg-primary"></div>
+        <div id="map" class="h-96 w-full shadow-xl"></div>
         <div class="flex justify-center text-error mt-2"> 
           <button onclick="resumeTraceRecoding()" id = "trace_recoding_resume_btn" class="btn btn-ghost text-4xl hidden"> <i class="fa-regular fa-circle-dot"></i> </button>
           <button onclick="pauseTraceRecoding()" id = "trace_recoding_pause_btn" class="btn btn-ghost text-4xl"> <i class="fa-regular fa-circle-pause"></i> </button>
@@ -210,7 +210,9 @@
       </div>
       <!--일시정지, 재생 토글 버튼 만들기
       -->
-
+      <div class="md:w-2/6 w-full flex-col p-2">
+        <video id="video" class="h-96 w-full shadow-xl object-cover" autoplay></video>
+      </div>
 
 
 

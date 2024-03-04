@@ -29,7 +29,18 @@ let currentStayedCityName;
 let currentStayedCityStartTime;
 let currentStayedCityEndTime;
 
+const video = document.getElementById('video');
+// Get access to the camera
+if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+  navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+      video.srcObject = stream;
+      video.play();
+  });
+}else{
+  //사진 촬영이 불가능함을 표시
+}
 
+initMap();
 
 async function initMap() {
   // Request needed libraries.
@@ -128,7 +139,7 @@ function handleLocationError(browserHasGeolocation) {
   );
 }
 
-initMap();
+
 
 function resumeTraceRecoding() {
   puseTime.endTime = Date.now();
@@ -250,9 +261,6 @@ function stopTraceRecoding() {
   console.log(getTotalPuseTime());
   console.log("머문 도시 리스트");
   console.log(stayedCities);
-
-  const date = new Date((recodingEndTime - recodingStartTime) * 1000);
-  alert(date);
 }
 
 function creatNewPathLine(userLocation) {
@@ -364,3 +372,6 @@ function getTotalPuseTime() {
 
   return totalPuseTime;
 }
+
+
+
