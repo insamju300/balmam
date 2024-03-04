@@ -185,7 +185,7 @@
   </header>
 
   <main class="flex w-screen justify-center p-1 md:p-5 text-neutral">
-    <div class="xl:w-4/6 w-full flex md:flex-row flex-col md:p-6 mt-2 ">
+    <div class="md:w-4/6 w-full flex md:flex-row flex-col md:p-6 mt-2 ">
 
       <!--과제 1 현재 위치 정보 표시 ㅇ-->
       <!--과제 2 1초 간격으로 찍히는 선 표시 ㅇ-->
@@ -208,25 +208,24 @@
           
         </div>
       </div>
-      <!--일시정지, 재생 토글 버튼 만들기
-      -->
+
       <div class="md:w-2/6 w-full flex-col p-5">
         <div class="mockup-phone">
           <div class="camera"></div> 
           <div class="display flex-col">
-            <div class="w-full h-80 flex items-center bg-neutral_hard">
+            <div class="w-full flex items-center bg-neutral_hard py-16">
               <video id="camera_view" class="w-full h-auto" autoplay></video>
               <canvas id="canvas" class="hidden"><canvas>
           </div>
-            <div class="h-24 w-full bg-black">
+            <div class="h-24 w-full bg-black bottom-0">
               <div class="text-white text-xl flex justify-center">
                 <button onclick="photoToggle()" id="photo_toggle_button" class="btn btn-ghost hidden hover:text-primary">사진 모드</button>
                 <button onclick="videoToggle()" id="video_toggle_button" class="btn btn-ghost hover:text-primary">동영상 모드</button>
               </div>
               <div class="flex justify-center w-full">
                   <i onclick="takePhoto()" id="take_photo_button" class="fa-solid fa-circle text-white text-4xl cursor-pointer hover:text-primary"></i>
-                  <i id="take_video_button" class="fa-regular fa-circle-dot hidden text-white text-4xl cursor-pointer hover:text-primary"></i>
-                  <i id="stop_video_button" class="fa-regular fa-circle-stop hidden text-white text-4xl cursor-pointer hover:text-primary"></i>
+                  <i onclick="takeVideo()" id="take_video_button" class="fa-regular fa-circle-dot hidden text-white text-4xl cursor-pointer hover:text-primary"></i>
+                  <i onclick="stopVideo()" id="stop_video_button" class="fa-regular fa-circle-stop hidden text-white text-4xl cursor-pointer hover:text-primary"></i>
                   
               </div>
               
@@ -240,6 +239,10 @@
 
     </div>
   </main>
+
+  <div id="recordedVideos" class="mt-4">
+    <h2>Recorded Videos</h2>
+  </div>
 
 </body>
 <script src="/js/header.js"></script>
