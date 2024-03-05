@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>발맘:발자취 등록</title>
+  <title>발맘:발자취 수정</title>
 
   <!-- 테일윈드 불러오기 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" />
@@ -180,100 +180,197 @@
 
   </header>
 
-  <main class="flex w-screen justify-center p-1 md:p-5 text-neutral">
-    <div class="md:w-4/6 w-full flex md:flex-row flex-col md:p-6 mt-2 ">
+  <main class="flex w-screen justify-center p-5">
+    <div class="lg:w-1/2 w-full h-full flex flex-col p-6 mt-2">
+      <form action="#" method="POST" id="trace_modify_form" onsubmit="return false;">
 
-      <!--todo-->
-      <!--과제 1 현재 위치 정보 표시 ㅇ-->
-      <!--과제 2 1초 간격으로 찍히는 선 표시 ㅇ-->
-      <!--과제 3 일시정지 기능 추가 ㅇ-->
-      <!--과제 4. 정지 버튼 눌릴 때 까지의 시간 기록 기능 추가.  ㅇ-->
-      <!--과제 5. 3시간 지나면 자동 정지 기능 추가 *  ㅇ-->
-      <!--과제 6. 3시간 안에 일시정지 시간이 들어가지 않도록 조정. ㅇ-->
-      <!--과제 7. 머물고있는 도시 리스트 저장 ㅇ -->
-      <!--과제 8. 머물고 있는 관광지 리스트 저장 x-->
-      <!--과제 9.  현재 웹캠 화면 표시 ㅇ-->
-      <!--과제 10. 영상 촬영 ㅇ-->
-      <!--과제 11. 사진 앞 뒤 돌리기 x-->
-      <!--과제 12. 촬영된 사진 표시 ㅇ-->
-      <div class="md:w-4/6 w-full flex-col p-2">
-        <div id="map" class="h-96 w-full shadow-xl"></div>
-        <div class="flex justify-center text-error mt-2"> 
-          <button onclick="resumeTraceRecoding()" id = "trace_recoding_resume_btn" class="btn btn-ghost text-4xl hidden"> <i class="fa-regular fa-circle-dot"></i> </button>
-          <button onclick="pauseTraceRecoding()" id = "trace_recoding_pause_btn" class="btn btn-ghost text-4xl"> <i class="fa-regular fa-circle-pause"></i> </button>
-          <button onclick="stopTraceRecodingValidation()" id = "trace_recoding_stop_btn" class="btn btn-ghost text-4xl"> <i class="fa-regular fa-circle-stop"></i> </button>
-          
-        </div>
-      </div>
+        <div class="mt-2 w-full">
+          <div class="flex lg:flex-row flex-col w-full">
+            <label for="form_title_input" class="block text-2xl text-neutral mx-2 w-36 flex items-center">제목</label>
+            <div id="form_title_label"
+              class="input input-bordered flex gap-2 lg:flex-row flex-col p-3 h-auto grow mt-2">
 
-      <div class="md:w-2/6 w-full flex-col p-5">
-        <div class="mockup-phone">
-          <div class="camera"></div> 
-          <div class="display flex-col">
-            <div class="w-full flex items-center bg-neutral_hard py-16">
-              <video id="camera_view" class="w-full h-auto" autoplay></video>
-              <canvas id="canvas" class="hidden"><canvas>
+              <input id="form_title_input" type="text" class="grow text-neutral" placeholder="제목" maxlength="100" />
+
+              <!--enter을 칠때마다 text안의 내용이 div클래스에 추가된다.-->
+            </div>
           </div>
-            <div class="h-24 w-full bg-black bottom-0">
-              <div class="text-white text-xl flex justify-center">
-                <button onclick="photoToggle()" id="photo_toggle_button" class="btn btn-ghost hidden hover:text-primary">사진 모드</button>
-                <button onclick="videoToggle()" id="video_toggle_button" class="btn btn-ghost hover:text-primary">동영상 모드</button>
+          <p class="text-error w-full flex justify-end text-lg" id="form_title_validation_message"></p>
+        </div>
+
+
+        <div class="mt-2 w-full">
+          <div class="flex lg:flex-row flex-col w-full">
+            <label for="form_tag_name_input" class="block text-2xl text-neutral mx-2 w-36 flex items-center">태그</label>
+            <div id="form_tag_name_label"
+              class="input input-bordered flex gap-2 lg:flex-row flex-col p-3 h-auto grow mt-2">
+
+              <div id="tag_name_container" class="flex-nowrap flex gap-3">
               </div>
-              <div class="flex justify-center w-full">
-                  <i onclick="takePhoto()" id="take_photo_button" class="fa-solid fa-circle text-white text-4xl cursor-pointer hover:text-primary"></i>
-                  <i onclick="takeVideo()" id="take_video_button" class="fa-regular fa-circle-dot hidden text-white text-4xl cursor-pointer hover:text-primary"></i>
-                  <i onclick="stopVideo()" id="stop_video_button" class="fa-regular fa-circle-stop hidden text-white text-4xl cursor-pointer hover:text-primary"></i>
-                  
+
+
+              <input id="form_tag_name_input" type="text" class="grow text-neutral" placeholder="태그 입력 후 enter"
+                maxlength="20" />
+
+              <!--enter을 칠때마다 text안의 내용이 div클래스에 추가된다.-->
+            </div>
+          </div>
+          <p class="text-error w-full flex justify-end text-lg" id="form_tag_name_validation_message"></p>
+        </div>
+
+
+        <div class="mt-2 w-full bg-blck">
+          <div class="flex xl:flex-row flex-col w-full">
+            <label for="form_media_content_manager"
+              class="block text-2xl text-neutral mx-2 min-w-36 flex items-center">미디어 관리</label>
+            <div id="form_media_content_manager" class="flex gap-2 flex-wrap p-3 h-auto grow mt-2">
+              <div class="flex gap-2 mt-2 md:mt-10 w-full">
+                <button onclick="deleteSelectedMediaContentItems()" type="button" class="btn bg-base_white text-secondary_hard
+               hover:bg-secondary_hard hover:text-bg_main text-md"> 선택 미디어 삭제</button>
+                <button onclick="clearDeleteTargetMediaContentItems()" type="button" class="btn bg-base_white text-secondary_hard
+               hover:bg-secondary_hard hover:text-bg_main text-md"> 선택 취소 </button>
               </div>
-              
+
+              <div class="avatar media_content_item" data-media-id="1">
+                <div class="w-16 rounded img_container cursor-pointer">
+                  <img src="/images/etc/etc1.webp" />
+                </div>
+              </div>
+
+              <div class="avatar media_content_item" data-media-id="2">
+                <div class="w-16 rounded img_container cursor-pointer">
+                  <img src="/images/etc/etc2.webp" />
+                </div>
+              </div>
+
+              <div class="avatar media_content_item" data-media-id="3">
+                <div class="w-16 rounded img_container cursor-pointer">
+                  <img src="/images/etc/etc3.webp" />
+                </div>
+              </div>
+
+              <div class="avatar media_content_item" data-media-id="4">
+                <div class="w-16 rounded img_container cursor-pointer">
+                  <img src="/images/etc/etc4.webp" />
+                </div>
+              </div>
+
+              <div class="avatar media_content_item" data-media-id="5">
+                <div class="w-16 rounded img_container cursor-pointer">
+                  <img src="/images/etc/etc5.webp" />
+                </div>
+              </div>
+
+              <div class="avatar media_content_item" data-media-id="6">
+                <div class="w-16 rounded img_container cursor-pointer">
+                  <img src="/images/etc/etc6.webp" />
+                </div>
+              </div>
+
+              <div class="avatar media_content_item" data-media-id="7">
+                <div class="w-16 rounded img_container cursor-pointer">
+                  <img src="/images/etc/etc7.webp" />
+                </div>
+              </div>
+              <div class="avatar media_content_item" data-media-id="8">
+                <div class="w-16 rounded img_container cursor-pointer">
+                  <img src="/images/etc/etc8.webp" />
+                </div>
+              </div>
+              <div class="avatar media_content_item" data-media-id="9">
+                <div class="w-16 rounded img_container cursor-pointer">
+                  <video src="/videos/main_background.mp4" class="w-full h-full" autoplay loop muted></video>
+                </div>
+              </div>
+
             </div>
           </div>
         </div>
-        
-      </div>
 
 
 
+        <div class="mt-2 w-full bg-blck">
+          <div class="flex xl:flex-row flex-col w-full">
+            <label for="form_candidate_featured_image_manager"
+              class="block text-2xl text-neutral mx-2 min-w-36 flex items-center">대표 이미지</label>
+            <div id="form_candidate_featured_image_manager" class="flex gap-2 flex-wrap p-3 h-auto grow mt-2">
+
+              <div class="avatar candidate_featured_image indicator" class="cursor-pointer" data-media-id="1">
+
+                <div class="w-16 rounded img_container  cursor-pointer">
+                  <img src="/images/etc/etc1.webp" />
+                </div>
+              </div>
+
+              <div class="avatar candidate_featured_image indicator" class="cursor-pointer" data-media-id="2">
+                <div class="w-16 rounded img_container  cursor-pointer">
+                  <img src="/images/etc/etc2.webp" />
+                </div>
+              </div>
+
+              <div class="avatar candidate_featured_image indicator" class="cursor-pointer" data-media-id="3">
+                <div class="w-16 rounded img_container  cursor-pointer">
+                  <img src="/images/etc/etc3.webp" />
+                </div>
+              </div>
+
+              <div class="avatar candidate_featured_image indicator" class="cursor-pointer" data-media-id="4">
+                <div class="w-16 rounded img_container  cursor-pointer">
+                  <img src="/images/etc/etc4.webp" />
+                </div>
+              </div>
+
+              <div class="avatar candidate_featured_image indicator" class="cursor-pointer" data-media-id="5">
+                <div class="w-16 rounded img_container  cursor-pointer">
+                  <img src="/images/etc/etc5.webp" />
+                </div>
+              </div>
+
+              <div class="avatar candidate_featured_image indicator" class="cursor-pointer" data-media-id="6">
+                <div class="w-16 rounded img_container  cursor-pointer">
+                  <img src="/images/etc/etc6.webp" />
+                </div>
+              </div>
+
+              <div class="avatar candidate_featured_image indicator" class="cursor-pointer" data-media-id="7">
+                <div class="w-16 rounded img_container  cursor-pointer">
+                  <img src="/images/etc/etc7.webp" />
+                </div>
+              </div>
+              <div class="avatar candidate_featured_image indicator" class="cursor-pointer" data-media-id="8">
+                <div class="w-16 rounded img_container  cursor-pointer">
+                  <img src="/images/etc/etc8.webp" />
+                </div>
+              </div>
+              <div class="avatar candidate_featured_image indicator" class="cursor-pointer" data-media-id="9">
+                <div class="w-16 rounded img_container  cursor-pointer">
+                  <img src="/images/etc/etc9.webp" />
+                </div>
+              </div>
+
+              <div class="avatar candidate_featured_image indicator" class="cursor-pointer" data-media-id="-1">
+                <div class="w-16 rounded img_container  cursor-pointer">
+                  <img src="/images/default/defaultFeaturedImage.png" />
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-2 xl:mt-10 w-full bg-blck flex justify-center">
+          <button type="submit" class="btn bg-base_white text-secondary_hard
+          hover:bg-secondary_hard hover:text-bg_main text-2xl">발자취 수정</button>
+        </div>
+
+
+      </form>
     </div>
   </main>
 
-  <dialog id="confirm_for_stop_trace_modal" class="modal text-neutral">
-    <div class="modal-box">
-      <h3 class="font-bold text-lg text-primary">경로 녹화를 종료하시겠습니까?</h3>
-      <p class="py-4">종료 후에는 녹화로 돌아갈 수 없으며, 다음 입력 화면으로 넘어가게 됩니다. <bR>
-      잠시 녹화를 중단하고 싶으시다면 일시정지 버튼을 통해 녹화를 중단하실 수 있습니다.</p>
-
-      <div id="password_restoration_validation_message_container" class="flex items-center justify-between">
-        <p class="block text-2xl text-error">
-        </p>
-      </div>
-
-      <div class="modal-action">
-        <form method="dialog ">
-          <!-- if there is a button in form, it will close the modal -->
-          <button class="btn text-neutral">취소</button>
-        </form>
-        <button onclick="stopTraceRecoding()" class="btn text-neutral">경로 녹화 종료</button>
-      </div>
-    </div>
-  </dialog>
-
-  <div id="recordedVideos" class="mt-4">
-    <h2>Recorded Videos</h2>
-  </div>
-
 </body>
 <script src="/js/header.js"></script>
-
-<script src="/js_keys.js"></script>
-<script id="script" type="text/javascript" charset="utf-8" defer></script>
-<!-- prettier-ignore -->
-<script>
-  (g => { var h, a, k, p = "The Google Maps JavaScript API", c = "google", l = "importLibrary", q = "__ib__", m = document, b = window; b = b[c] || (b[c] = {}); var d = b.maps || (b.maps = {}), r = new Set, e = new URLSearchParams, u = () => h || (h = new Promise(async (f, n) => { await (a = m.createElement("script")); e.set("libraries", [...r] + ""); for (k in g) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]); e.set("callback", c + ".maps." + q); a.src = `https://maps.${c}apis.com/maps/api/js?` + e; d[q] = f; a.onerror = () => h = n(Error(p + " could not load.")); a.nonce = m.querySelector("script[nonce]")?.nonce || ""; m.head.append(a) })); d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n)) })
-    ({ key: getGoogleMapKey(), v: "weekly",region: "KR", language: "ko" });</script>
-
-<!--경로녹화 관련 trace-->
-<script src="/js/trace/routeRecording.js"></script>
-
+<script src="/js/util/tagUtil.js"></script>
+<script src="/js/trace/writeOrModifyTraceDetail.js"></script>
 
 </html>
