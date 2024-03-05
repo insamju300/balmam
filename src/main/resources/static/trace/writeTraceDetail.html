@@ -27,10 +27,6 @@
   <script src="/js/common.js"></script>
 
 
-
-  <!--파비콘. 적용 안되는거같으니 확인 요망-->
-  <link rel="favicon" href="/images/logo/logo.ico">
-
 </head>
 
 <body>
@@ -185,55 +181,118 @@
   </header>
 
   <main class="flex w-screen justify-center p-5">
-    <div class="2xl:w-2/6 lg:w-2/4 w-full h-full flex flex-col p-6 mt-2">
+    <div class="lg:w-1/2 w-full h-full flex flex-col p-6 mt-2">
       <!-- <form action="#" method="POST" id="login_form">
 
       </form> -->
-      <label id="form_tag_label" class="input input-bordered flex items-center gap-2">
-        <div class="badge bg-primary gap-2">
-          x버튼
-          어떨까
+
+
+
+      <div class="mt-2 w-full">
+        <div class="flex lg:flex-row flex-col w-full">
+          <label for="form_title_input" class="block text-2xl text-neutral mx-2 w-36 flex items-center">제목</label>
+          <div id="form_title_label" class="input input-bordered flex gap-2 lg:flex-row flex-col p-3 h-auto grow mt-2">
+
+            <input id="form_title_input" type="text" class="grow text-neutral" placeholder="제목" maxlength="100" />
+
+            <!--enter을 칠때마다 text안의 내용이 div클래스에 추가된다.-->
+          </div>
         </div>
-
-        <input id="form_tag_input" type="text" class="grow" placeholder="추가할 태그를 입력하고 enter를 쳐주세요"/>
-        <!--enter을 칠때마다 text안의 내용이 div클래스에 추가된다.-->
-      </label>
-
-    </div>
-
-      <script>
-        // function addTag(event) {
-        //   if (event.key === "Enter") {
-        //     event.preventDefault();
-        //     const input = document.getElementById("tagInput");
-        //     const newTag = input.value.trim();
-      
-        //     if (newTag) {
-        //       const tagElement = document.createElement("span");
-        //       tagElement.classList.add("tag", "flex", "items-center", "bg-blue-100", "text-blue-800", "m-1", "px-2", "py-1", "rounded");
-        //       tagElement.textContent = newTag;
-      
-        //       const removeBtn = document.createElement("span");
-        //       removeBtn.innerHTML = '&times;';
-        //       removeBtn.classList.add("ml-2", "cursor-pointer", "text-blue-500");
-        //       removeBtn.onclick = function() { this.parentElement.remove(); };
-      
-        //       tagElement.appendChild(removeBtn);
-      
-        //       const container = document.querySelector(".tags-input-container");
-        //       container.insertBefore(tagElement, input);
-        //       input.value = ""; // 입력창 초기화
-        //     }
-        //   }
-        // }
-      </script>
+        <p class="text-error w-full flex justify-end text-lg" id="form_title_validation_message"></p>
+      </div>
 
 
+      <div class="mt-2 w-full">
+        <div class="flex lg:flex-row flex-col w-full">
+          <label for="form_tag_name_input" class="block text-2xl text-neutral mx-2 w-36 flex items-center">태그</label>
+          <div id="form_tag_name_label"
+            class="input input-bordered flex gap-2 lg:flex-row flex-col p-3 h-auto grow mt-2">
+
+            <div id="tag_name_container" class="flex-nowrap flex gap-3">
+            </div>
+
+
+            <input id="form_tag_name_input" type="text" class="grow text-neutral" placeholder="태그 입력 후 enter"
+              maxlength="20" />
+
+            <!--enter을 칠때마다 text안의 내용이 div클래스에 추가된다.-->
+          </div>
+        </div>
+        <p class="text-error w-full flex justify-end text-lg" id="form_tag_name_validation_message"></p>
+      </div>
+
+      <div class="mt-2 w-full bg-blck">
+        <div class="flex xl:flex-row flex-col w-full">
+          <label for="form_media_content_manager" class="block text-2xl text-neutral mx-2 min-w-36 flex items-center">미디어 관리</label>
+          <div id="form_media_content_manager" class="flex gap-2 flex-wrap p-3 h-auto grow mt-2">
+            <div class="flex gap-2 mt-2 md:mt-10 w-full">
+              <button onclick="deleteSelectedMediaContentItems()" type="button" class="btn bg-base_white text-secondary_hard
+               hover:bg-secondary_hard hover:text-bg_main text-md"> 선택 미디어 삭제</button>
+               <button onclick="clearDeleteTargetMediaContentItems()" type="button" class="btn bg-base_white text-secondary_hard
+               hover:bg-secondary_hard hover:text-bg_main text-md"> 선택 취소 </button>
+            </div>
+
+            <div class="avatar media_content_item" class="cursor-pointer" data-media-id="1" >
+              <div class="w-16 rounded img_container">
+                <img src="/images/etc/etc1.webp"/>
+              </div>
+            </div>
+
+            <div class="avatar media_content_item" class="cursor-pointer" data-media-id="2" >
+              <div class="w-16 rounded img_container">
+                <img src="/images/etc/etc2.webp"/>
+              </div>
+            </div>
+
+            <div class="avatar media_content_item" class="cursor-pointer" data-media-id="3" >
+              <div class="w-16 rounded img_container">
+                <img src="/images/etc/etc3.webp"/>
+              </div>
+            </div>
+
+            <div class="avatar media_content_item" class="cursor-pointer" data-media-id="4" >
+              <div class="w-16 rounded img_container">
+                <img src="/images/etc/etc4.webp"/>
+              </div>
+            </div>
+
+            <div class="avatar media_content_item" class="cursor-pointer" data-media-id="5" >
+              <div class="w-16 rounded img_container">
+                <img src="/images/etc/etc5.webp"/>
+              </div>
+            </div>
+
+            <div class="avatar media_content_item" class="cursor-pointer" data-media-id="6" >
+              <div class="w-16 rounded img_container">
+                <img src="/images/etc/etc6.webp"/>
+              </div>
+            </div>
+
+            <div class="avatar media_content_item" class="cursor-pointer" data-media-id="7" >
+              <div class="w-16 rounded img_container">
+                <img src="/images/etc/etc7.webp"/>
+              </div>
+            </div>
+            <div class="avatar media_content_item" class="cursor-pointer" data-media-id="8" >
+              <div class="w-16 rounded img_container">
+                <img src="/images/etc/etc8.webp"/>
+              </div>
+            </div>
+            <div class="avatar media_content_item" class="cursor-pointer" data-media-id="8" >
+              <div class="w-16 rounded img_container object-cover">
+                <video src="/videos/main_background.mp4" class="w-full h-full" autoplay loop muted></video>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+      </div>
     </div>
   </main>
 
 </body>
 <script src="/js/header.js"></script>
 <script src="/js/util/tagUtil.js"></script>
+<script src="/js/trace/writeTraceDetail.js"></script>
 
 </html>

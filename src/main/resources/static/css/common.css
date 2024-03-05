@@ -20,3 +20,32 @@ html > body {
   font-family: inherit;
   color: inherit;
 }
+
+
+
+
+.tooltip {
+  position: relative;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: auto;
+  white-space: nowrap;
+  background-color: #333333;
+  color:#FDF6E3;
+  text-align: center;
+  padding: 1px;
+
+  /* Position the tooltip */
+  position: absolute;
+  left: 0;
+  top: -150%;
+  z-index: 1;
+  font-size: 0.6rem;
+
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}

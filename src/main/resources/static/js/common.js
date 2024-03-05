@@ -24,3 +24,21 @@ tailwind.config = {
     },
   },
 };
+
+
+function generatePastelColorHex() {
+  // 랜덤하게 128에서 255 사이의 숫자를 생성하는 함수
+  function getRandomPastelValue() {
+      return Math.floor(Math.random() * (255 - 128 + 1) + 128);
+  }
+
+  // RGB 값을 생성
+  const r = getRandomPastelValue();
+  const g = getRandomPastelValue();
+  const b = getRandomPastelValue();
+
+  // RGB 값을 HEX 코드로 변환. 각각의 컴포넌트를 16진수로 변환하고, 결과가 한 자리수라면 앞에 '0'을 붙입니다.
+  const hexColor = "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+
+  return hexColor;
+}
