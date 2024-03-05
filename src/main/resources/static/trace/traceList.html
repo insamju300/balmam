@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>발맘:발자취 수정</title>
+  <title>발맘:발자취 등록</title>
 
   <!-- 테일윈드 불러오기 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" />
@@ -180,197 +180,66 @@
 
   </header>
 
-  <main class="flex w-screen justify-center p-5">
-    <div class="lg:w-1/2 w-full h-full flex flex-col p-6 mt-2">
-      <form action="#" method="POST" id="trace_modify_form" onsubmit="traceFormValidationCheck();return false">
-
-        <div class="mt-2 w-full">
-          <div class="flex lg:flex-row flex-col w-full">
-            <label for="form_title_input" class="block text-2xl text-neutral mx-2 w-36 flex items-center">제목</label>
-            <div id="form_title_label"
-              class="input input-bordered flex gap-2 lg:flex-row flex-col p-3 h-auto grow mt-2">
-
-              <input id="form_title_input" type="text" class="grow text-neutral" placeholder="제목" maxlength="100" onblur="titleValidationCheck()"//>
-
-              <!--enter을 칠때마다 text안의 내용이 div클래스에 추가된다.-->
-            </div>
-          </div>
-          <p class="text-error w-full flex justify-end text-lg" id="form_title_validation_message"></p>
-        </div>
+  <main class="flex w-screen justify-center p-1 md:p-5 text-neutral">
+    <div class="md:w-4/6 w-full flex md:flex-row flex-col p-2 md:p-6 mt-2 gap-2">
 
 
-        <div class="mt-2 w-full">
-          <div class="flex lg:flex-row flex-col w-full">
-            <label for="form_tag_name_input" class="block text-2xl text-neutral mx-2 w-36 flex items-center">태그</label>
-            <div id="form_tag_name_label"
-              class="input input-bordered flex gap-2 lg:flex-row flex-col p-3 h-auto grow mt-2">
-
-              <div id="tag_name_container" class="flex-nowrap flex gap-3">
-              </div>
-
-
-              <input id="form_tag_name_input" type="text" class="grow text-neutral" placeholder="태그 입력 후 enter"
-                maxlength="20" />
-
-              <!--enter을 칠때마다 text안의 내용이 div클래스에 추가된다.-->
-            </div>
-          </div>
-          <p class="text-error w-full flex justify-end text-lg" id="form_tag_name_validation_message"></p>
-        </div>
-
-
-        <div class="mt-2 w-full bg-blck">
-          <div class="flex xl:flex-row flex-col w-full">
-            <label for="form_media_content_manager"
-              class="block text-2xl text-neutral mx-2 min-w-36 flex items-center">미디어 관리</label>
-            <div id="form_media_content_manager" class="flex gap-2 flex-wrap p-3 h-auto grow mt-2">
-              <div class="flex gap-2 mt-2 md:mt-10 w-full">
-                <button onclick="deleteSelectedMediaContentItems()" type="button" class="btn bg-base_white text-secondary_hard
-               hover:bg-secondary_hard hover:text-bg_main text-md"> 선택 미디어 삭제</button>
-                <button onclick="clearDeleteTargetMediaContentItems()" type="button" class="btn bg-base_white text-secondary_hard
-               hover:bg-secondary_hard hover:text-bg_main text-md"> 선택 취소 </button>
-              </div>
-
-              <div class="avatar media_content_item" data-media-id="1">
-                <div class="w-16 rounded img_container cursor-pointer">
-                  <img src="/images/etc/etc1.webp" />
-                </div>
-              </div>
-
-              <div class="avatar media_content_item" data-media-id="2">
-                <div class="w-16 rounded img_container cursor-pointer">
-                  <img src="/images/etc/etc2.webp" />
-                </div>
-              </div>
-
-              <div class="avatar media_content_item" data-media-id="3">
-                <div class="w-16 rounded img_container cursor-pointer">
-                  <img src="/images/etc/etc3.webp" />
-                </div>
-              </div>
-
-              <div class="avatar media_content_item" data-media-id="4">
-                <div class="w-16 rounded img_container cursor-pointer">
-                  <img src="/images/etc/etc4.webp" />
-                </div>
-              </div>
-
-              <div class="avatar media_content_item" data-media-id="5">
-                <div class="w-16 rounded img_container cursor-pointer">
-                  <img src="/images/etc/etc5.webp" />
-                </div>
-              </div>
-
-              <div class="avatar media_content_item" data-media-id="6">
-                <div class="w-16 rounded img_container cursor-pointer">
-                  <img src="/images/etc/etc6.webp" />
-                </div>
-              </div>
-
-              <div class="avatar media_content_item" data-media-id="7">
-                <div class="w-16 rounded img_container cursor-pointer">
-                  <img src="/images/etc/etc7.webp" />
-                </div>
-              </div>
-              <div class="avatar media_content_item" data-media-id="8">
-                <div class="w-16 rounded img_container cursor-pointer">
-                  <img src="/images/etc/etc8.webp" />
-                </div>
-              </div>
-              <div class="avatar media_content_item" data-media-id="9">
-                <div class="w-16 rounded img_container cursor-pointer">
-                  <video src="/videos/main_background.mp4" class="w-full h-full" autoplay loop muted></video>
-                </div>
-              </div>
-
-            </div>
+      <div class="card md:w-80 w-full glass">
+        <figure class="p-2"> <img src="/images/etc/etc1.webp" class="masked"></figure>
+        <div class="card-body p-2">
+          <div class="w-full overflow-ellipsis whitespace-nowrap overflow-hidden font-bold text-lg text-center">여행을 떠나보았다.</div>
+          <p>How to park your car at your garage?</p>
+          <div class="card-actions justify-end">
+            <button class="btn btn-primary">Learn now!</button>
           </div>
         </div>
+      </div>
 
-
-
-        <div class="mt-2 w-full bg-blck">
-          <div class="flex xl:flex-row flex-col w-full">
-            <label for="form_candidate_featured_image_manager"
-              class="block text-2xl text-neutral mx-2 min-w-36 flex items-center">대표 이미지</label>
-            <div id="form_candidate_featured_image_manager" class="flex gap-2 flex-wrap p-3 h-auto grow mt-2">
-
-              <div class="avatar candidate_featured_image indicator" class="cursor-pointer" data-media-id="1">
-
-                <div class="w-16 rounded img_container  cursor-pointer">
-                  <img src="/images/etc/etc1.webp" />
-                </div>
-              </div>
-
-              <div class="avatar candidate_featured_image indicator" class="cursor-pointer" data-media-id="2">
-                <div class="w-16 rounded img_container  cursor-pointer">
-                  <img src="/images/etc/etc2.webp" />
-                </div>
-              </div>
-
-              <div class="avatar candidate_featured_image indicator" class="cursor-pointer" data-media-id="3">
-                <div class="w-16 rounded img_container  cursor-pointer">
-                  <img src="/images/etc/etc3.webp" />
-                </div>
-              </div>
-
-              <div class="avatar candidate_featured_image indicator" class="cursor-pointer" data-media-id="4">
-                <div class="w-16 rounded img_container  cursor-pointer">
-                  <img src="/images/etc/etc4.webp" />
-                </div>
-              </div>
-
-              <div class="avatar candidate_featured_image indicator" class="cursor-pointer" data-media-id="5">
-                <div class="w-16 rounded img_container  cursor-pointer">
-                  <img src="/images/etc/etc5.webp" />
-                </div>
-              </div>
-
-              <div class="avatar candidate_featured_image indicator" class="cursor-pointer" data-media-id="6">
-                <div class="w-16 rounded img_container  cursor-pointer">
-                  <img src="/images/etc/etc6.webp" />
-                </div>
-              </div>
-
-              <div class="avatar candidate_featured_image indicator" class="cursor-pointer" data-media-id="7">
-                <div class="w-16 rounded img_container  cursor-pointer">
-                  <img src="/images/etc/etc7.webp" />
-                </div>
-              </div>
-              <div class="avatar candidate_featured_image indicator" class="cursor-pointer" data-media-id="8">
-                <div class="w-16 rounded img_container  cursor-pointer">
-                  <img src="/images/etc/etc8.webp" />
-                </div>
-              </div>
-              <div class="avatar candidate_featured_image indicator" class="cursor-pointer" data-media-id="9">
-                <div class="w-16 rounded img_container  cursor-pointer">
-                  <img src="/images/etc/etc9.webp" />
-                </div>
-              </div>
-
-              <div class="avatar candidate_featured_image indicator" class="cursor-pointer" data-media-id="-1">
-                <div class="w-16 rounded img_container  cursor-pointer">
-                  <img src="/images/default/defaultFeaturedImage.png" />
-                </div>
-              </div>
-
-            </div>
+      <div class="card md:w-80 w-full glass">
+        <figure class="p-2"> <img src="/images/etc/etc2.webp" class="masked"></figure>
+        <div class="card-body p-2">
+          <div class="w-full overflow-ellipsis whitespace-nowrap overflow-hidden font-bold text-lg text-center">여행을 떠나보았다.</div>
+          <p>How to park your car at your garage?</p>
+          <div class="card-actions justify-end">
+            <button class="btn btn-primary">Learn now!</button>
           </div>
         </div>
+      </div>
 
-        <div class="mt-2 xl:mt-10 w-full bg-blck flex justify-center">
-          <button type="submit" class="btn bg-base_white text-secondary_hard
-          hover:bg-secondary_hard hover:text-bg_main text-2xl">발자취 수정</button>
+      <div class="card md:w-80 w-full glass">
+        <figure class="p-2"> <img src="/images/etc/etc3.webp" class="masked"></figure>
+        <div class="card-body p-2">
+          <div class="w-full overflow-ellipsis whitespace-nowrap overflow-hidden font-bold text-lg text-center">여행을 떠나보았다.</div>
+          <p>How to park your car at your garage?</p>
+          <div class="card-actions justify-end">
+            <button class="btn btn-primary">Learn now!</button>
+          </div>
         </div>
+      </div>
 
 
-      </form>
+<!-- 
+      <div class="w-80"> 
+        <img src="/images/etc/etc1.webp" alt="이게맞나" class="masked w-full h-full"> 
+      </div>
+
+      <div class="w-80"> 
+        <img src="/images/etc/etc2.webp" alt="이게맞나" class="masked w-full h-full"> 
+      </div>
+
+      <div class="w-80"> 
+        <img src="/images/etc/etc3.webp" alt="이게맞나" class="masked w-full h-full"> 
+      </div>
+
+      <div class="w-80">
+        <img src="/images/etc/etc4.webp" alt="이게맞나" class="masked w-full h-full"> 
+      </div> -->
     </div>
+
+    
   </main>
 
 </body>
 <script src="/js/header.js"></script>
-<script src="/js/util/tagUtil.js"></script>
-<script src="/js/trace/writeOrModifyTraceDetail.js"></script>
 
 </html>

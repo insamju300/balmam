@@ -76,3 +76,29 @@ function selectTempFeaturedImage(){
 
   firstCandidateFeaturedImage.append(indicatorItem);
 }
+
+function titleValidationCheck() {
+  let title = $("#form_title_input").val().trim(); 
+  if (title.length === 0) {
+    $("#form_title_validation_message").text("제목은 필수 입력입니다.");
+    return false;
+  }
+
+  if (title.length > 100) {
+    $("#form_title_validation_message").text("제목은 앞뒤 여백 제외 0에서 100자까지 입력 할 수 있습니다.");
+    return false;
+  }
+
+  $("#form_title_validation_message").text("");
+  return true;
+}
+
+function traceFormValidationCheck(){
+  if(!titleValidationCheck()){
+    $("#form_title_input").focus();
+    return;
+  }
+  
+  //todo ajax post 전송 처리. 또는 form 정리해서 form으로 전송. 
+  alert("정상 처리됨.")
+}
