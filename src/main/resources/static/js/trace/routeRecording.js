@@ -19,7 +19,8 @@ let timestampInSeconds = 1000;
 
 let recodingStartTime;
 let recodingEndTime;
-let recodingLimitTime = 3 * timestampInHours;
+let recodingLimitTime = 3 * timestampInHours; //3시간
+let recodingMinTime = 1 * timestampInMinutes; //todo 개발 후 3분 최저 경로녹화 시간으로 바꿀것
 
 let puseTime = null;
 let puseTimes = [];
@@ -38,7 +39,7 @@ const canvas = document.getElementById("canvas");
 const context = canvas.getContext("2d"); // 다양한 그리기 메서드와 속성에 접근할 수 있게 해줌
 
 let mediaCount = 0;
-const maxMediaCount = 50; //todo 개발 후 50으로 바꿀 것.
+const maxMediaCount = 50; 
 let isExceededMaxMediaCount = false;
 let isVideoRecording = false;
 
@@ -47,6 +48,10 @@ let geoMarkers = new Map();
 let tmpId = 0; //임시 테스트용 시퀀스.
 
 let recordTimeoutId;
+
+const maxRecordSize = 5 * 1024 * 1024; // 5MB = 5 * 1024 * 1024 bytes\ 영상 녹화 최대 사이즈
+const videoRecordingLimitTime=10000; //영상 녹화 최대 길이 (10초);
+
 
 //동영상 촬영중엔 모드 변경 불가.
 
@@ -239,6 +244,7 @@ function stopTraceRecoding() {
     stopVideo();
   }
 
+  document.getElementById("confirm_for_stop_trace_modal").close();
 
   if (puseTime && !puseTime.endTime) {
     puseTime.endTime = Date.now();
@@ -277,7 +283,7 @@ function stopTraceRecoding() {
   console.log("전체 레코딩 시간");
   console.log(hours + ":" + minutes + ":" + seconds);
   console.log("녹화된 경로");
-  console.log(pathCoordinatesGroups);
+  console.log(pathCoordinatesGroups); //todo 길이가 0일경우 어떻게 할지 생각할 것.
   console.log("일시정지 시간");
   console.log(puseTimes);
   console.log("전체 일시정지 시간");
@@ -286,6 +292,40 @@ function stopTraceRecoding() {
   console.log(stayedCities);
   console.log("지오 미디어 리스트");
   console.log(geoMedias);
+
+  //녹화정보 json형식으로 다운로드. 프론트단 작업을 위한 부분이며 추후 삭제할 것. start
+  const dataToDownload = {
+    totalRecordingTime: recodingEndTime - recodingStartTime,
+    pathCoordinatesGroups: pathCoordinatesGroups, // Assuming this is already an array or object
+    pauseTimes: puseTimes,
+    totalPauseTime: getTotalPuseTime(), // Make sure this function returns the total pause time
+    stayedCities: Object.fromEntries(stayedCities),
+    geoMedias:  Object.fromEntries(geoMedias) // Assuming this is already an array or object
+  };
+
+  // Convert the data to a JSON string
+  const jsonString = JSON.stringify(dataToDownload, null, 2);
+
+  // Create a Blob from the JSON string
+  const blob = new Blob([jsonString], {type: "application/json"});
+
+  // Generate a URL for the Blob
+  const url = URL.createObjectURL(blob);
+
+  // Create a temporary anchor element
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "traceData.json"; // File name for the downloaded data
+
+  // Append the anchor to the document, trigger the download, and remove the anchor
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+
+  // Optional: Revoke the blob URL to free up resources
+  URL.revokeObjectURL(url);
+  //녹화정보 json형식으로 다운로드. 프론트단 작업을 위한 부분이며 추후 삭제할 것. end
+
 }
 
 function creatNewPathLine(userLocation) {
@@ -428,13 +468,13 @@ async function takePhoto() {
   // console.log("canvasOffset : " + canvas.offsetWidth + "," +  canvas.offsetHeight)
   // console.log("cameraViewOffset : " +cameraView.offsetWidth + "," +  cameraView.offsetHeight)
 
-  canvas.width = cameraView.offsetWidth;
-  canvas.height = cameraView.offsetHeight;
+  canvas.width = cameraView.offsetWidth * 2;
+  canvas.height = cameraView.offsetHeight * 2;
 
   context.drawImage(cameraView, 0, 0, canvas.width, canvas.height);
 
   //사진 저장
-  const imageDataUrl = canvas.toDataURL("image/png");
+  const imageDataUrl = canvas.toDataURL("image/png", 1.0);
   // localStorage.setItem('capturedImage', imageDataUrl);
 
   // Display the captured image
@@ -509,7 +549,7 @@ function takeVideo() {
   
 
   if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-    let maxRecordSize = 5 * 1024 * 1024; // 5MB = 5 * 1024 * 1024 bytes
+    
     isVideoRecording = true;
 
     navigator.mediaDevices
@@ -547,7 +587,7 @@ function takeVideo() {
             commonsAlert("녹화 가능한 최대 시간을 초과하여 녹화를 중지합니다."); //todo: 최대 녹화시간 명기
             stopVideo();
           }
-        }, 10000); // 10초 = 10000ms
+        }, videoRecordingLimitTime); // 10초 = 10000ms
 
         // UI 변경
         $("#take_video_button").hide();
@@ -590,7 +630,7 @@ async function stopVideo() {
     video.src = videoURL;
     video.load(); // 비디오를 로드합니다.
     video.addEventListener("loadeddata", function () {
-      video.currentTime = 0; // 비디오의 마지막 프레임에 접근하기 위해 시간을 설정합니다.
+      video.currentTime = 0; // 비디오의 첫 프레임에 접근하기 위해 시간을 설정합니다.
       video.addEventListener("seeked", function () {
         // 비디오의 첫 프레임을 캔버스에 그립니다.
         let canvas = document.createElement("canvas");
@@ -600,7 +640,7 @@ async function stopVideo() {
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height); // 비디오의 현재 프레임을 캔버스에 그립니다.
     
         // 캔버스의 내용을 기반으로 이미지를 생성하고, 이를 페이지에 표시합니다.
-        let thumbnailURL = canvas.toDataURL("image/jpeg"); // 캔버스를 이미지 데이터 URL로 변환합니다.
+        let thumbnailURL = canvas.toDataURL("image/png"); // 캔버스를 이미지 데이터 URL로 변환합니다.
         let img = document.createElement("img"); // 이미지 엘리먼트를 생성합니다.
         img.src = thumbnailURL; // 생성된 이미지 데이터 URL을 이미지 소스로 설정합니다.
         // document.getElementById('recordedVideos').appendChild(img); // 생성된 이미지를 동영상 목록 컨테이너에 추가합니다.
@@ -680,7 +720,7 @@ function createThumbnail(video) {
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height); // 비디오의 현재 프레임을 캔버스에 그립니다.
 
     // 캔버스의 내용을 기반으로 이미지를 생성하고, 이를 페이지에 표시합니다.
-    let thumbnailURL = canvas.toDataURL("image/jpeg"); // 캔버스를 이미지 데이터 URL로 변환합니다.
+    let thumbnailURL = canvas.toDataURL("image/png"); // 캔버스를 이미지 데이터 URL로 변환합니다.
     let img = document.createElement("img"); // 이미지 엘리먼트를 생성합니다.
     img.src = thumbnailURL; // 생성된 이미지 데이터 URL을 이미지 소스로 설정합니다.
     console.log(img);
@@ -716,7 +756,7 @@ function createSlideImageForMediaMarker(geoMediaList, mediaMarker){
                const videoElement = document.createElement("video");
                videoElement.src = geoMedia.url;
                videoElement.controls = true;
-               videoElement.classList.add("w-full");
+               videoElement.classList.add("w-full", "h-auto");
                carouselItem.appendChild(videoElement);
                if(geoMediaListWithoutThumbnail.length > 1){
                 const carouselBtns = document.createElement("div");
@@ -745,9 +785,10 @@ function createSlideImageForMediaMarker(geoMediaList, mediaMarker){
                 carouselBtns.appendChild(afterBtn);
 
                 carouselItem.appendChild(carouselBtns)
-                carousel.appendChild(carouselItem);
+                
 
                }
+               carousel.appendChild(carouselItem);
 
 
               }else if(geoMedia.mediaType === 'photo'){
@@ -759,7 +800,7 @@ function createSlideImageForMediaMarker(geoMediaList, mediaMarker){
 
                 const img = document.createElement("img");
                 img.src = geoMedia.url;
-                img.classList.add("w-full");
+                img.classList.add("w-full", "h-auto");
                 carouselItem.appendChild(img);
 
                 if(geoMediaListWithoutThumbnail.length > 1){
@@ -789,9 +830,10 @@ function createSlideImageForMediaMarker(geoMediaList, mediaMarker){
                   carouselBtns.appendChild(afterBtn);
   
                   carouselItem.appendChild(carouselBtns)
-                  carousel.appendChild(carouselItem);
+                  
   
                  }
+                 carousel.appendChild(carouselItem);
 
               }
         });
@@ -802,4 +844,17 @@ function createSlideImageForMediaMarker(geoMediaList, mediaMarker){
     
           commonsAlert(carousel.outerHTML);
         });
+}
+
+function stopTraceRecodingValidation(){
+  if(Date.now() - recodingStartTime - getTotalPuseTime() < recodingMinTime){
+    commonsAlert(
+      `일시정지를 제외하고 최소(${Math.floor(
+        recodingMinTime / timestampInMinutes
+      )}분)까지 녹화해 주세요.`
+    );
+    return false;
+  }
+
+  document.getElementById("confirm_for_stop_trace_modal").showModal();
 }

@@ -18,23 +18,19 @@
   <!-- 제이쿼리 불러오기 -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
+  <!--지도 그리기 불러오기-->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+
   <!--공통 및 헤드 css, js-->
   <link rel="stylesheet" href="/css/common.css">
-  <link rel="stylesheet" href="/css/member.css">
+  <link rel="stylesheet" href="/css/trace.css">
   <script src="/js/common.js"></script>
-  <script src="/js/header.js"></script>
 
-  <script src="/js/member/member.js"></script>
+
 
   <!--파비콘. 적용 안되는거같으니 확인 요망-->
   <link rel="favicon" href="/images/logo/logo.ico">
 
-  <style>
-    /* html {
-      background: url(/images/background/member_bg.png) no-repeat center center fixed;
-      background-size: cover;
-    } */
-  </style>
 </head>
 
 <body>
@@ -86,7 +82,8 @@
             <span class="badge badge-xs badge-error indicator-item"></span>
           </div>
         </button>
-        <button class="btn btn-ghost btn-circle text-primary hover:text-primary_hard h-16 w-16 text-4xl" onclick="showFullScreenMenu()">
+        <button class="btn btn-ghost btn-circle text-primary hover:text-primary_hard h-16 w-16 text-4xl"
+          onclick="showFullScreenMenu()">
           <i class="fa-solid fa-bars"></i>
         </button>
       </div>
@@ -187,91 +184,56 @@
 
   </header>
 
-  <!--과제 1 header 사이즈 높이 가져와서 연동해야된다. -->
-  <!--과제 2 거기서 알맞는 본문 레이아웃 잡아야된다. 잡아야할 레이아웃은 높이와  마진이다. -->
-  <main class="flex w-screen justify-center p-5 text-neutral">
-    <div class="xl:w-4/6 w-full flex md:flex-row flex-col p-6 mt-2">
-      <div class="md:w-2/6 w-full flex-col p-2">
-        <div class="avatar flex justify-center">
-          <div class="w-52 rounded-full">
-            <img id="form_avatar_img" src="/images/avatar/boy.webp" />
-          </div>
-        </div>
-        <p class="text-center text-2xl font-bold mt-2">태정태세여행가세</p>
-        <p class="text-lg mt-2">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas efficitur id leo et pellentesque. Etiam
-          consequat luctus mi vitae tempor. Aenean tincidunt semper massa. Morbi placerat lorem quis eleifend viverra.
-          Aenean erat velit, efficitur non porta sed, ullamcorper vel nisi. Nunc imperdiet felis sed tristique
-          venenatis. Cras ornare ligula eleifend elit tincidunt, a interdum turpis pulvinar. Nullam vel condimentum
-          tortor. Suspendisse potenti. Etiam pellentesque pulvinar commodo. Donec laoreet tincidunt metus, maximus
-          rhoncus erat gravida ac. Quisque dictum leo sed suscipit malesuada. Nam a est at orci interdum tempor a quis
-          quam. Cras tempus, enim a eleifend sagittis, neque ante maximus.
-        </p>
-        <div class="flex justify-center mt-2">
-          <button type="button" onclick="location.href='/member/modify.html'" class="btn bg-base_white text-secondary_hard
-            hover:bg-secondary_hard hover:text-bg_main text-2xl mr-5">수정</button>
-          <button type="button" onclick="confirm_for_withdrawa_modal.showModal();" class="btn bg-base_white text-secondary_hard
-            hover:bg-secondary_hard hover:text-bg_main text-2xl">삭제</button>
+  <main class="flex w-screen justify-center p-5">
+    <div class="2xl:w-2/6 lg:w-2/4 w-full h-full flex flex-col p-6 mt-2">
+      <!-- <form action="#" method="POST" id="login_form">
 
+      </form> -->
+      <label id="form_tag_label" class="input input-bordered flex items-center gap-2">
+        <div class="badge bg-primary gap-2">
+          x버튼
+          어떨까
         </div>
 
-        <dialog id="confirm_for_withdrawa_modal" class="modal text-neutral">
-          <div class="modal-box">
-            <h3 class="font-bold text-lg text-primary">정말로 탈퇴하시겠습니까?</h3>
-            <p class="py-4">탈퇴 후에는 해당 계정으로 발맘의 서비스를 이용할 수 없습니다. <br> 그래도 탈퇴를 희망하신다면 비밀번호를 입력해 주세요.</p>
-            <div class="input input-bordered flex items-center gap-2 text-neutral text-xl grow">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor"
-                class="w-4 h-4 opacity-70">
-                <path fill-rule="evenodd"
-                  d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z"
-                  clip-rule="evenodd" />
-              </svg>
-              <input id="confirm_for_withdrawa_modal_password_input" type="password" name="password" class="grow"
-                placeholder="*****" maxlength="12" autocomplete="off" />
-            </div>
+        <input id="form_tag_input" type="text" class="grow" placeholder="추가할 태그를 입력하고 enter를 쳐주세요"/>
+        <!--enter을 칠때마다 text안의 내용이 div클래스에 추가된다.-->
+      </label>
 
-            <div id="password_restoration_validation_message_container" class="flex items-center justify-between">
-              <p class="block text-2xl text-error">
-              </p>
-            </div>
+    </div>
 
-            <div class="modal-action">
-              <form method="dialog ">
-                <!-- if there is a button in form, it will close the modal -->
-                <button class="btn text-neutral">취소</button>
-              </form>
-              <button onclick="doWithdrawa()" class="btn text-neutral">탈퇴하겠습니다.</button>
-            </div>
-          </div>
-        </dialog>
+      <script>
+        // function addTag(event) {
+        //   if (event.key === "Enter") {
+        //     event.preventDefault();
+        //     const input = document.getElementById("tagInput");
+        //     const newTag = input.value.trim();
+      
+        //     if (newTag) {
+        //       const tagElement = document.createElement("span");
+        //       tagElement.classList.add("tag", "flex", "items-center", "bg-blue-100", "text-blue-800", "m-1", "px-2", "py-1", "rounded");
+        //       tagElement.textContent = newTag;
+      
+        //       const removeBtn = document.createElement("span");
+        //       removeBtn.innerHTML = '&times;';
+        //       removeBtn.classList.add("ml-2", "cursor-pointer", "text-blue-500");
+        //       removeBtn.onclick = function() { this.parentElement.remove(); };
+      
+        //       tagElement.appendChild(removeBtn);
+      
+        //       const container = document.querySelector(".tags-input-container");
+        //       container.insertBefore(tagElement, input);
+        //       input.value = ""; // 입력창 초기화
+        //     }
+        //   }
+        // }
+      </script>
 
-
-      </div>
-
-
-
-      <div class=" md:w-4/6 flex flex-wrap w-full content-start  pt-7">
-        <div class="lg:w-1/2 w-full  h-28 box-border mt-10">
-          <h1 class="text-center text-2xl font-bold">방문한 도시</h1>
-          <p class="text-center text-lg mt-2">총 30개의 도시를 방문하였습니다.</p>
-        </div>
-        <div class="lg:w-1/2 w-full h-28 box-border mt-10">
-          <h1 class="text-center text-2xl font-bold">등록한 발자취 수</h1>
-          <p class="text-center text-lg mt-2">총 50개의 발자취를 작성하였습니다.</p>
-        </div>
-        <div class="lg:w-1/2 w-full h-28 box-border mt-10">
-          <h1 class="text-center text-2xl font-bold">등록한 여행기 수</h1>
-          <p class="text-center text-lg mt-2">총 10개의 여행기를 등록하였습니다.</p>
-        </div>
-        <div class="lg:w-1/2 w-full h-28 box-border mt-10">
-          <h1 class="text-center text-2xl font-bold">구독자 수</h1>
-          <p class="text-center text-lg mt-2">총 30명이 태정태세여행가세님을 구독중입니다.</p>
-        </div>
-      </div>
 
     </div>
   </main>
-</body>
 
+</body>
+<script src="/js/header.js"></script>
+<script src="/js/util/tagUtil.js"></script>
 
 </html>
