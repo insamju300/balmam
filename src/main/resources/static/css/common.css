@@ -12,8 +12,8 @@
 
 html > body {
   font-family: "Roboto", "Cafe24Oneprettynight", "sans-serif";
-
   color: #BBB4AB;
+  overflow-x: hidden;
 }
 
 * {
@@ -50,3 +50,5 @@ html > body {
 .tooltip:hover .tooltiptext {
   visibility: visible;
 }
+
+
