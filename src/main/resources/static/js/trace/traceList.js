@@ -55,7 +55,7 @@ function createTraceCard() {
   const image = $("<div>")
     .addClass("w-full flex justify-center")
     .html(
-      '<figure class="w-10/12"><img src="/images/etc/etc2.webp" class="masked"></figure>'
+      '<figure class="w-9/12"><img src="/images/etc/etc2.webp" class="masked"></figure>'
     );
 
   // 카드 본문
