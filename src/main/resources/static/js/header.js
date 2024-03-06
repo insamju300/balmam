@@ -1,5 +1,7 @@
 function showFullScreenMenu() {
-  $("#full_size_slide_menu").addClass("top-0").removeClass("-top-full -translate-y-80");
+  $("#full_size_slide_menu").addClass("top-0");
+  $("#full_size_slide_menu").removeClass("-top-full");
+  $("#full_size_slide_menu").removeClass("-translate-y-80");
 
   anime({
     targets: "path",
@@ -9,14 +11,17 @@ function showFullScreenMenu() {
     delay: function (el, i) {
       return i * 100;
     },
-    direction: "normal",
+    direction: "nomal",
     loop: false,
   });
 }
 
 function hideFullScreenMenu(e) {
-  if ($(e.target).prop("tagName") === "DIV") {
-    $("#full_size_slide_menu").addClass("-top-full -translate-y-80").removeClass("top-0");
+  if (e.target.tagName === "DIV") {
+    $("#full_size_slide_menu").addClass("-top-full");
+    $("#full_size_slide_menu").addClass("-translate-y-80");
+
+    $("#full_size_slide_menu").removeClass("top-0");
   }
 }
 
@@ -30,7 +35,7 @@ function drowPath(ele) {
     delay: function (el, i) {
       return i * 200;
     },
-    direction: "normal",
+    direction: "nomal",
     loop: false,
   });
 }
@@ -38,15 +43,16 @@ function drowPath(ele) {
 function commonsAlert(message = "", title = "") {
   $("#commons_alert_modal p").html(message);
   $("#commons_alert_modal h3").html(title);
-  $("#commons_alert_modal").showModal();
+  document.getElementById("commons_alert_modal").showModal();
 }
 
-$(window).on("resize", function() {
-  let headerClientHeight = $("#navbar").outerHeight();
+window.addEventListener("resize", function() {
+  let headerClientHeight = document.getElementById("navbar").offsetHeight;
   $("#ghost_header").height(headerClientHeight);
-});
+})
 
-$(window).on('load', function () {
-  let headerClientHeight = $("#navbar").outerHeight();
+$(window).on('load',function () {
+  let headerClientHeight = document.getElementById("navbar").offsetHeight;
   $("#ghost_header").height(headerClientHeight);
+ 
 });
