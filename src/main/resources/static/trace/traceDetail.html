@@ -193,11 +193,12 @@
         <ul>
 
           <li class="flex md:flex-row flex-col">
-            <div class="w-8 flex justify-center cursor-pointer" onclick="showMideaFiles(this); return false">
-                <i class="fa-solid fa-heart"></i>
+            <div class="w-8 flex justify-center cursor-pointer hover:brightness-125 hover:shadow-outline duration-100"
+              onclick="showMideaFiles(this); return false">
+              <img src="/images/icon/camera.png" class="transition duration-300 ease-in-out">
             </div>
           </li>
-          
+
           <li class="flex md:flex-row flex-col">
             <div class="w-8 text-center">
               <i class="fa-solid fa-eye"></i>
@@ -207,30 +208,151 @@
 
           <!--좋아요 버튼을 누르면 자식인 fa-solid를 조정하자.-->
           <li class="flex md:flex-row flex-col">
-            <div class="w-8 text-center hover:text-primary cursor-pointer" onclick="likeButtonToggleEvent(this); return false" data-reltype="trace" data-relId="12" data-state="0">
-                <i class="fa-solid fa-heart"></i>
+            <div class="w-8 text-center hover:text-primary cursor-pointer"
+              onclick="likeButtonToggleEvent(this); return false" data-reltype="trace" data-relId="12" data-state="0">
+              <i class="fa-solid fa-heart"></i>
             </div>
             <p>200</p>
           </li>
 
           <li class="flex md:flex-row flex-col">
-            <div class="w-8 text-center hover:text-secondary cursor-pointer" onclick="bookmarkButtonToggleEvent(this); return false" data-reltype="trace" data-relId="12" data-state="0">
-                <i class="fa-solid fa-bookmark"></i>
+            <div class="w-8 text-center hover:text-secondary cursor-pointer"
+              onclick="bookmarkButtonToggleEvent(this); return false" data-reltype="trace" data-relId="12"
+              data-state="0">
+              <i class="fa-solid fa-bookmark"></i>
             </div>
             <p>200</p>
           </li>
 
-          <li class="flex md:flex-row flex-col">
-            <div class="w-8 text-center hover:text-accent cursor-pointer" data-reltype="trace" data-relId="12" data-isFirst="0">
-                <i class="fa-solid fa-comment"></i>
-            </div>
-            <p>200</p>
-          </li>
-        </ul>
+          <li class="flex">
+            <div class="drawer drawer-end">
+              <input id="my-drawer" type="checkbox" class="drawer-toggle" />
+
+              <div class="drawer-content">
+                <!-- Page content here -->
+                <label for="my-drawer" class="drawer-button flex md:flex-row flex-col">
+                  <div class="w-8 text-center hover:text-accent cursor-pointer " data-reltype="trace" data-relId="12"
+                    data-isFirst="0">
+                    <i class="fa-solid fa-comment"></i>
+                  </div>
+                  <p>200</p>
+
+                </label>
+              </div>
+              <div class="drawer-side z-50">
+                <label for="my-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
+                <div class="p-5 md:w-96 w-full min-h-full glass flex flex-col">
+                  <!-- Top Icon -->
+                  <div onclick="$('#my-drawer').click()"
+                    class="text-neutral flex justify-end cursor-pointer text-3xl hover:brightness-125 mb-4">
+                    <i class="fa-solid fa-circle-xmark"></i>
+                  </div>
+
+                  <!-- Contents Area -->
+                  <div id="contents" class="flex-grow overflow-auto justify-start">
+                    <!-- Sidebar content here (dynamic content) -->
+                    <!-- Avatar -->
+                    <img class="w-10 h-10 rounded-full mr-4" src="https://source.unsplash.com/random/50x50?face"
+                      alt="Avatar">
+                    <!-- Comment Content -->
+                    <div>
+                      <div class="text-sm font-semibold">User Name</div>
+                      <p class="text-gray-700">This is a sample comment.</p>
+                      <div class="text-gray-500 text-xs">3 hours ago</div>
+                    </div>
+
+                    <!-- Replies -->
+                    <div class="flex ml-14">
+                      <img class="w-8 h-8 rounded-full mr-3" src="https://source.unsplash.com/random/40x40?face"
+                        alt="Avatar">
+                      <div>
+                        <div class="text-sm font-semibold">Replying User</div>
+                        <p class="text-gray-700">This is a reply to the above comment.</p>
+                        <div class="text-gray-500 text-xs">1 hour ago</div>
+                      </div>
+                    </div>
+
+
+                  </div>
+
+                  <!-- Fixed Input Area at Bottom -->
+                  <div id="content_input"
+                    class="w-full h-20 mt-4 fixed bottom-0 left-0 right-0 md:relative md:bottom-auto md:left-auto md:right-auto gap-1">
+                    <div class="flex flex-row">
+                      <div class="avatar user_avatar">
+                        <div class="w-9 rounded-full">
+                          <img src="/images/avatar/boy.webp" />
+                        </div>
+                      </div>
+                      <textarea
+                        class="w-full px-3 py-2 bg-transparent border-0 border-b-2 border-secondary_hard  focus:border-secondary focus:outline-none transition duration-300 placeholder-white items-center"
+                        rows="1" placeholder="댓글 추가..."></textarea>
+                      <button class="btn btn-xs flex w-20 justify-center border-0 bg-base_white text-secondary_hard
+                        hover:bg-secondary_hard hover:text-bg_main text-md mt-2">댓글</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div> <!--drawer end-->
+
       </div>
+
+
+      </li>
+      </ul>
+    </div>
 
     </div>
   </main>
+
+
+
+
+
+
+
+
+  <div class="max-w-2xl mx-auto py-6">
+    <!-- 댓글 작성 -->
+    <div class="w-full comment_input_container">
+      <div class="avatar user_avatar">
+        <div class="w-9 rounded-full">
+          <img src="/images/avatar/boy.webp" />
+        </div>
+      </div>
+      <textarea
+        class="w-full px-3 py-2 bg-transparent border-0 border-b-2 border-secondary focus:border-b-2 focus:border-secondary_hard focus:outline-none transition duration-300"
+        rows="1" placeholder="댓글 추가..."></textarea>
+      <button onclick="loginValidationCheck(this); return false;" class="btn btn-xs flex w-20 justify-center border-0 bg-base_white text-secondary_hard
+          hover:bg-secondary_hard hover:text-bg_main text-md mt-2">취소</button>
+      <button onclick="loginValidationCheck(this); return false;" class="btn btn-xs flex w-20 justify-center border-0 bg-base_white text-secondary_hard
+          hover:bg-secondary_hard hover:text-bg_main text-md mt-2">댓글</button>
+    </div>
+  </div>
+
+  <!-- Comments List -->
+  <div class="space-y-4">
+    <div class="flex">
+      <!-- Avatar -->
+      <img class="w-10 h-10 rounded-full mr-4" src="https://source.unsplash.com/random/50x50?face" alt="Avatar">
+      <!-- Comment Content -->
+      <div>
+        <div class="text-sm font-semibold">User Name</div>
+        <p class="text-gray-700">This is a sample comment.</p>
+        <div class="text-gray-500 text-xs">3 hours ago</div>
+      </div>
+    </div>
+    <!-- Replies -->
+    <div class="flex ml-14">
+      <img class="w-8 h-8 rounded-full mr-3" src="https://source.unsplash.com/random/40x40?face" alt="Avatar">
+      <div>
+        <div class="text-sm font-semibold">Replying User</div>
+        <p class="text-gray-700">This is a reply to the above comment.</p>
+        <div class="text-gray-500 text-xs">1 hour ago</div>
+      </div>
+    </div>
+  </div>
+  </div>
 
 
 
