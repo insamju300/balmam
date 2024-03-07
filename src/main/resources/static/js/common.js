@@ -42,3 +42,85 @@ function generatePastelColorHex() {
 
   return hexColor;
 }
+
+
+//좋아요 버튼 이벤트
+function likeButtonToggleEvent(ele) {
+  // Get data attributes
+  var relType = $(ele).data('reltype');
+  var relId = $(ele).data('relid');
+  var state = $(ele).data('state');
+  
+  // Log data to console
+  console.log("relType:", relType);
+  console.log("relId:", relId);
+  console.log("state:", state);
+  
+  // Get the sibling p element
+  var siblingP = $(ele).next('p');
+  
+  // Check the state
+  if (state === 0) {
+      // Toggle classes based on state 0
+      var faSolid = $(ele).find('i.fa-solid');
+      faSolid.addClass('text-primary');
+      faSolid.removeClass('text-neutral');
+
+      
+      // Update data-state attribute
+      $(ele).data('state', 1);
+  } else if (state === 1) {
+      // Toggle classes based on state 1
+      var faSolid = $(ele).find('i.fa-solid');
+      faSolid.addClass('text-neutral');
+      faSolid.removeClass('text-primary');
+      
+      // Update data-state attribute
+      $(ele).data('state', 0);
+  }
+  
+  // Update sibling p element with random number between 1 and 100
+  var randomNumber = Math.floor(Math.random() * 100) + 1;
+  siblingP.text(randomNumber);
+}
+
+//북마크 버튼 이벤트
+function bookmarkButtonToggleEvent(ele) {
+  // Get data attributes
+  var relType = $(ele).data('reltype');
+  var relId = $(ele).data('relid');
+  var state = $(ele).data('state');
+  
+  // Log data to console
+  console.log("relType:", relType);
+  console.log("relId:", relId);
+  console.log("state:", state);
+  
+  // Get the sibling p element
+  var siblingP = $(ele).next('p');
+  
+  // Check the state
+  if (state === 0) {
+      // Toggle classes based on state 0
+      var faSolid = $(ele).find('i.fa-solid');
+      faSolid.addClass('text-secondary');
+      faSolid.removeClass('text-neutral');
+
+      
+      // Update data-state attribute
+      $(ele).data('state', 1);
+  } else if (state === 1) {
+      // Toggle classes based on state 1
+      var faSolid = $(ele).find('i.fa-solid');
+      faSolid.addClass('text-neutral');
+      faSolid.removeClass('text-secondary');
+      
+      // Update data-state attribute
+      $(ele).data('state', 0);
+  }
+  
+  // Update sibling p element with random number between 1 and 100
+  var randomNumber = Math.floor(Math.random() * 100) + 1;
+  siblingP.text(randomNumber);
+}
+
