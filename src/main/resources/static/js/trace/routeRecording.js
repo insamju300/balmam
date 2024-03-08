@@ -244,7 +244,7 @@ function stopTraceRecoding() {
     stopVideo();
   }
 
-  document.getElementById("confirm_for_stop_trace_modal").close();
+  document.getElementById("#confirm_for_stop_trace_modal").close();
 
   if (puseTime && !puseTime.endTime) {
     puseTime.endTime = Date.now();

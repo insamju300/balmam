@@ -1,0 +1,33 @@
+<div class="reply_item py-5" data-id="4233">
+    <div class="flex flex-row items-stretch">
+        <div class="author_avatar_container"><img class="w-10 h-10 rounded-full mx-4 author_avatar"
+                src="https://source.unsplash.com/random/50x50?face" alt="Avatar"></div>
+        <div class="w-full">
+            <div class="flex w-full">
+                <div class="flex justify-start flex-row grow gap-1">
+                    <div class="text-sm font-semibold text-primary parent_reply_author"></div>
+                    <div class="text-sm font-semibold">User nickName</div>
+                    <div class="text-gray-500 text-xs">3 hours ago</div>
+                </div>
+                <div class="dropdown dropdown-hover">
+                    <div tabindex="0" role="button" class="w-5 flex justify-center"><i
+                            class="fa-solid fa-ellipsis-vertical"></i></div>
+                    <ul tabindex="0"
+                        class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-20 -translate-x-3/4">
+                        <li class="hover:bg-black hover:text-white reply_modify_button"><a>수정</a></li>
+                        <li class="hover:bg-black hover:text-white reply_delete_button"><a>삭제</a></li>
+                    </ul>
+                </div>
+            </div>
+            <p class="text-gray-700 mb-2 reply_body">코멘트 내용 <br> 엄청 많은 코멘트내용<br><br><br>코멘트</p>
+        </div>
+    </div>
+    <div class="flex flex-row gap-2 items-center">
+        <div class="w-8 text-center hover:text-primary cursor-pointer"
+            onclick="likeButtonToggleEvent(this); return false" data-reltype="reply" data-relid="4233" data-state="0"><i
+                class="fa-solid fa-heart"></i>
+            <p>2천만</p>
+        </div><button
+            class="btn btn-xs border-0 bg-base_white text-secondary_hard hover:bg-secondary_hard hover:text-bg_main text-md mt-2 reply_input_open_btn">답글</button>
+    </div>
+</div>
