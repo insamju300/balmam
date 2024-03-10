@@ -181,7 +181,7 @@
   </header>
 
   <main class="flex w-screen justify-center p-1 md:p-5 text-neutral">
-    <div class="md:w-4/6 w-full flex md:flex-row flex-col md:p-6 mt-2 ">
+    <div class="md:w-4/6 w-full flex flex-col md:p-6 mt-2 ">
       <!--todo-->
       <!--1. 지도 그리기-->
       <!--2. 경로 그리기-->
@@ -189,7 +189,95 @@
       <!--4. 통합 가능한가 검토-->
       <!--5. 내 위치 표시-->
       <div class="w-full flex flex-row">
-        <div id="map" class="h-96 w-full shadow-xl"></div>
+        <div class="flex grow flex-col">
+          <div id="map" class="h-96 w-full shadow-xl"></div>
+          <div class="w-full h-96 md:flex-row flex-col flex gap-1 mt-2 md:mt-10">
+            <div class="w-1/2 flex flex-col">
+              <h1 class="text-3xl font-bold">그리스 여행기 </h1>
+              <p>2024-02-25 02:54 ~ 2024-02-25 04:54 </p>
+              <p>(1시간중 실제 녹화 50분)</p>
+              <div class="flex gap-2 flex-col xl:flex-row">
+                <div class="flex flex-row items-center gap-2">
+                  <div class="avatar">
+                    <div class="w-9 rounded-full">
+                      <img src="/images/avatar/boy.webp" />
+                    </div>
+                  </div>
+                  <a href="#">가장긴이름가장긴이름</a>
+                </div>
+
+
+                <button type="button" onclick="subscriptButtonToggleEvent(this);" class="btn bg-base_white btn-xs text-secondary_hard
+              hover:bg-secondary_hard hover:text-bg_main text-md mr-5 subscript_btn w-24" data-member-id="1"
+                  data-state="0">구독</button>
+
+              </div>
+
+
+              <div id="tag_name_container" class="flex-nowrap flex gap-2 mt-2">
+                <div class="tooltip tag_name_badge_container">
+                  <div
+                    class="tag_name_badge text-sm text-neutral rounded-full px-2 bg-primary w-16 overflow-ellipsis whitespace-nowrap overflow-hidden"
+                    style="background-color: rgb(237, 206, 205);">테스트</div>
+                  <span class="tooltiptext">테스트</span>
+                </div>
+
+                <div class="tooltip tag_name_badge_container">
+                  <div
+                    class="tag_name_badge text-sm text-neutral rounded-full px-2 bg-primary w-16 overflow-ellipsis whitespace-nowrap overflow-hidden"
+                    style="background-color: rgb(237, 206, 205);">긴 글씨를 쓰면 어떻게</div>
+                  <span class="tooltiptext">긴 글씨를 쓰면 어떻게</span>
+                </div>
+
+                <div class="tooltip tag_name_badge_container">
+                  <div
+                    class="tag_name_badge text-sm text-neutral rounded-full px-2 bg-primary w-16 overflow-ellipsis whitespace-nowrap overflow-hidden"
+                    style="background-color: rgb(237, 206, 205);">오늘 날씨가 유독 덥다</div>
+                  <span class="tooltiptext">오늘 날씨가 유독 덥다</span>
+                </div>
+
+              </div>
+
+
+
+              <div id="stayed_city_container" class="flex-nowrap flex gap-2 mt-2">
+                <div class="tooltip stayed_city_badge_container">
+                  <div
+                    class="stayed_city_badge text-sm text-neutral rounded-full px-2 bg-primary w-16 overflow-ellipsis whitespace-nowrap overflow-hidden"
+                    style="background-color: rgb(181, 148, 140);">도쿄</div>
+                  <span class="tooltiptext">도쿄</span>
+                </div>
+
+                <div class="tooltip stayed_city_badge_container">
+                  <div
+                    class="stayed_city_badge text-sm text-neutral rounded-full px-2 bg-primary w-16 overflow-ellipsis whitespace-nowrap overflow-hidden"
+                    style="background-color: rgb(181, 148, 140);">교토</div>
+                  <span class="tooltiptext">교토</span>
+                </div>
+
+              </div>
+
+
+            </div>
+
+            <div class="w-1/2 flex flex-col">
+              <span>1년전</span>
+              <span>1시간 전 수정</span>
+              <div class="flex gap-1 mt-2">
+                <button type="button" onclick="location.href='/trace/modifyTraceDetail.html'" class="btn btn-xs bg-base_white text-secondary_hard
+                  hover:bg-secondary_hard hover:text-bg_main text-md mr-5">수정</button>
+                <button type="button" onclick="confirm_for_delete_trace_modal.showModal();" class="btn btn-xs bg-base_white text-secondary_hard
+                  hover:bg-secondary_hard hover:text-bg_main text-md">삭제</button>
+      
+              </div>
+
+
+            </div>
+
+
+          </div>
+
+        </div>
         <ul>
 
           <li class="flex md:flex-row flex-col">
@@ -241,7 +329,7 @@
                 </label>
               </div>
               <div class="drawer-side z-50  w-screen">
-                <div class="h-full flex flex-col  w-full md:w-96">
+                <div class="h-full flex flex-col  w-full md:w-96 z-50">
                   <label for="my-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
                   <div class="p-5 md:w-96 w-full min-h-full glass flex flex-col">
                     <!-- Top Icon -->
@@ -251,9 +339,9 @@
                     </div>
 
                     <!-- Contents Area depth 0 -->
-                    <div class="reply_container flex-grow overflow-auto justify-start md:pb-0 pb-20" data-reltype="trace"
-                      data-relId="5" data-depth="0">
-<!--
+                    <div class="reply_container flex-grow overflow-auto justify-start md:pb-0 pb-20"
+                      data-reltype="trace" data-relId="5" data-depth="0">
+                      <!--
                       <div class="reply_item py-5" data-id="1">
 
                         <div class="flex flex-row items-stretch ">
@@ -446,8 +534,7 @@
                     </div>
 
                     <!-- Fixed Input Area at Bottom -->
-                    <div
-                      class="reply_input_container w-full h-20 relative bottom-auto left-auto right-auto gap-1 z-10"
+                    <div class="reply_input_container w-full h-20 relative bottom-auto left-auto right-auto gap-1 z-10"
                       data-reltype="trace" data-relId="5" data-depth="0">
                       <div class="flex flex-row">
                         <div class="avatar user_avatar">
@@ -458,7 +545,8 @@
                         <textarea
                           class="w-full px-3 py-2 bg-transparent border-0 border-b-2 border-secondary_hard  focus:border-secondary focus:outline-none transition duration-300 placeholder-white items-center"
                           rows="1" placeholder="댓글 추가..."></textarea>
-                        <button class="btn btn-xs flex justify-center border-0 bg-base_white text-secondary_hard
+                        <button
+                          class="btn btn-xs flex justify-center border-0 bg-base_white text-secondary_hard
                         hover:bg-secondary_hard hover:text-bg_main text-md mt-2 transmission_reply_write_button">댓글</button>
                       </div>
                     </div>
@@ -480,11 +568,25 @@
                 </div>
               </div>
             </dialog>
+
+          </li>
+        </ul>
       </div>
 
-      </li>
-      </ul>
-    </div>
+
+      <dialog id="confirm_for_delete_trace_modal" class="modal text-neutral">
+        <div class="modal-box">
+          <h3 class="font-bold text-lg text-primary">정말로 발자취를 삭제하시겠습니까??</h3>
+          <p class="py-4">정말로 삭제를 원하시면 삭제 버튼을 눌러주세요.</p>
+          <div class="modal-action">
+            <form method="dialog ">
+              <!-- if there is a button in form, it will close the modal -->
+              <button class="btn text-neutral" onclick="document.getElementById('confirm_for_delete_trace_modal').close()">취소</button>
+            </form>
+            <button onclick="doDeleteTrace()" class="btn text-neutral">삭제</button>
+          </div>
+        </div>
+      </dialog>
 
     </div>
   </main>

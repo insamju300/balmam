@@ -165,6 +165,12 @@ $(document).ready(function () {
       }
     });
 
+    $('.drawer-side').on('click', function(e) {
+        if ($(e.target).is('.drawer-side')) {
+          $('#my-drawer').click();
+        }
+      });
+
   });
 
   

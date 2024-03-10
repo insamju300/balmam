@@ -366,7 +366,7 @@ function successWatch(position) {
   lastUpdateTime = now;
 
   const userLocation = getUserLocation(position);
-  //로직 바꿀것.
+
   geocoder.geocode({ location: userLocation }, (results, status) => {
     if (status === google.maps.GeocoderStatus.OK) {
       if (results[0]) {
@@ -734,6 +734,7 @@ function mediaCountCheck(){
   if(mediaCount>=maxMediaCount){
     isExceededMaxMediaCount = true;
   }
+  
 }
 
 function createSlideImageForMediaMarker(geoMediaList, mediaMarker){
