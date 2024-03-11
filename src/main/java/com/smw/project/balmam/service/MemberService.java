@@ -6,6 +6,7 @@ import java.security.NoSuchAlgorithmException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.smw.project.balmam.dto.MemberInputDto;
 import com.smw.project.balmam.entity.MemberEntity;
 import com.smw.project.balmam.repository.MemberRepository;
 
@@ -61,6 +62,16 @@ public class MemberService {
 	public void updateWithdrawn(String email) {
 		// TODO Auto-generated method stub
 		memberRepository.updateWithdrawn(email);
+	}
+
+	public MemberEntity findMemberById(Long id) {
+		// TODO Auto-generated method stub
+		return memberRepository.findMemberById(id);
+	}
+
+	public void updateMember(MemberInputDto memberInputDto) {
+		// TODO Auto-generated method stub
+		 memberRepository.updateMember(memberInputDto);
 	}
 
 

@@ -18,6 +18,7 @@ public class EmailAuthenticationsEntity {
     private LocalDateTime createdAt;
     private LocalDateTime expiresAt;
     private boolean verified;
+    private String type;
     
 	public EmailAuthenticationsEntity(Long memberId, String token, LocalDateTime expiresAt) {
 		this.memberId = memberId;

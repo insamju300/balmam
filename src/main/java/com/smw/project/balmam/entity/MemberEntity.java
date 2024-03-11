@@ -2,7 +2,7 @@ package com.smw.project.balmam.entity;
 
 import java.time.LocalDateTime;
 
-import com.smw.project.balmam.dto.MemberJoinDto;
+import com.smw.project.balmam.dto.MemberInputDto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -22,13 +22,16 @@ public class MemberEntity {
     private boolean isWithdrawn;
     private LocalDateTime withdrawalDate;
     private boolean emailVerified;
+    
+    private String extra__profileImageName;
 
     
-    public MemberEntity(MemberJoinDto memberJoinDto) {
-		this.email =  memberJoinDto.getEmail();
-		this.password =  memberJoinDto.getPassword();
-		this.nickname =  memberJoinDto.getNickname();
-		this.introduction =  memberJoinDto.getIntroduction();
-		this.profileImageId =  memberJoinDto.getProfileImageId();
+    public MemberEntity(MemberInputDto memberInputDto) {
+    	this.id = memberInputDto.getId();
+		this.email =  memberInputDto.getEmail();
+		this.password =  memberInputDto.getPassword();
+		this.nickname =  memberInputDto.getNickname();
+		this.introduction =  memberInputDto.getIntroduction();
+		this.profileImageId =  memberInputDto.getProfileImageId();
 	}
 }

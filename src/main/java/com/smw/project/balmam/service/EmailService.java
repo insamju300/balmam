@@ -49,8 +49,9 @@ public class EmailService {
     public void sendEmailVerification(String email, Long memberId) {
         String token = UUID.randomUUID().toString();
         LocalDateTime expiresAt = LocalDateTime.now().plusHours(24); // 24시간 후 만료
+        String type= "emailVerification";
 
-        EmailAuthenticationsEntity emailAuthEntity = new EmailAuthenticationsEntity(memberId, token, expiresAt);
+        EmailAuthenticationsEntity emailAuthEntity = new EmailAuthenticationsEntity(memberId, token, expiresAt, type);
         
         emailAuthenticationRepository.insert(emailAuthEntity);
         

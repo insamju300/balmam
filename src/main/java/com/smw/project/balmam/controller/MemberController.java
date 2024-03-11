@@ -5,17 +5,18 @@ import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.smw.project.balmam.dto.LoginInfoDTO;
-import com.smw.project.balmam.dto.MemberJoinDto;
+import com.smw.project.balmam.dto.MemberInputDto;
+import com.smw.project.balmam.dto.MemberOutputDto;
 import com.smw.project.balmam.dto.MessageResponse;
 import com.smw.project.balmam.dto.UserDto;
 import com.smw.project.balmam.entity.EmailAuthenticationsEntity;
-import com.smw.project.balmam.entity.MediaFileEntity;
 import com.smw.project.balmam.entity.MemberEntity;
 import com.smw.project.balmam.service.EmailService;
 import com.smw.project.balmam.service.FileService;
@@ -47,12 +48,12 @@ public class MemberController {
 	
 	
 	@PostMapping("/member/join")
-	public String doJoin(MemberJoinDto memberJoinDto, RedirectAttributes redirectAttributes) {
-		MemberEntity memberEntity = new MemberEntity(memberJoinDto);
+	public String doJoin(MemberInputDto memberInputDto, RedirectAttributes redirectAttributes) {
+		MemberEntity memberEntity = new MemberEntity(memberInputDto);
 		memberService.insertMember(memberEntity);		
 		emailService.sendEmailVerification(memberEntity.getEmail(), memberEntity.getId());
 		//todo 로그인시 미인증 계정이면 인증 재전송 필요
-		MessageResponse message = new MessageResponse("INFO", String.format("비밀번호 변경을 위한 링크를 메일(%s)로 전송하였습니다.\n전송된 링크에서 비밀번호를 변경해 주세요.", memberJoinDto.getEmail()), "메일을 전송하였습니다.");
+		MessageResponse message = new MessageResponse("INFO", String.format("비밀번호 변경을 위한 링크를 메일(%s)로 전송하였습니다.\n전송된 링크에서 비밀번호를 변경해 주세요.", memberInputDto.getEmail()), "메일을 전송하였습니다.");
 		redirectAttributes.addFlashAttribute("message", message);
 		return "redirect:/member/join";
 	}
@@ -138,13 +139,8 @@ public class MemberController {
 			redirectAttributes.addFlashAttribute("message", message);
 			return "redirect:/member/login";
 		}
-		String profileImageUrl = null;
-		
-		if(findMember.getProfileImageId()!=null) {
-			MediaFileEntity mediaFileEntity= fileService.findFileById(findMember.getProfileImageId());
-			profileImageUrl = path + "/" + mediaFileEntity.getName();
-		}
-		UserDto userDto = new UserDto(findMember.getId(), findMember.getEmail(), findMember.getNickname(), profileImageUrl);
+
+		UserDto userDto = new UserDto(findMember, path);
 		session.setAttribute("userDto", userDto);
 		session.setAttribute("userId", findMember.getId());
 		String previouseUrl = loginInfo.getPreviousUrl();
@@ -186,6 +182,28 @@ public class MemberController {
 		redirectAttributes.addFlashAttribute("message", message);
 		return "redirect:/";
 	}
+	
+	@GetMapping("/member/modify")
+	public String showModify(Model model, Long id) {
+		
+		
+		MemberEntity findMember = memberService.findMemberById(id);
+		MemberOutputDto member = new MemberOutputDto(findMember, path);
+		model.addAttribute("member", member);
+		
+		return  "modify";
+	}
+	
+	@PostMapping("/member/modify")
+	public String doModify(MemberInputDto memberInputDto) {
+		MemberEntity memberEntity = new MemberEntity(memberInputDto);
+		memberService.updateMember(memberInputDto);
+
+		return "redirect:/";
+	}
+	
+	
+	
 	
 	//@GetMapping("/member/modify")
 	
