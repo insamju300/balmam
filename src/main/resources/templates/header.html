@@ -1,4 +1,18 @@
 <header>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        
+        // Thymeleaf를 통해 서버로부터 받은 메시지가 있는지 확인
+        var message = /*[[${message}]]*/ null;
+        if (message != null) {
+            // 메시지가 있으면 commonsAlert 호출
+            window.onload = function() {
+                commonsAlert(message.messageContent, message.messageTitle);
+            };
+        }
+        /*]]>*/
+    </script>
+
     <div id="navbar" class="navbar top-0 fixed z-40 p-5  glass md:flex-row flex-col">
       <div class="navbar-start flex md:justify-start justify-center m-2 ">
         <a th:href="@{/}" href="/main.html"><img th:src="@{/images/logo/logoWithText.png}"  src="/images/logo/logoWithText.png" class="h-16 z-50"></a>
@@ -136,6 +150,7 @@
       <div class="modal-box">
         <h3 class="font-bold text-lg text-primary"></h3>
         <div class="message_box flex justify-center text-neutral"></div>
+        <p></p>
       </div>
       <form method="dialog" class="modal-backdrop">
         <button>close</button>

@@ -30,10 +30,10 @@ public class FileController {
 	private FileService fileService;
 
 	@Value("${file.upload.realPath}")
-	private String uploadRealPath;
+	private String realPath;
 	
 	@Value("${file.upload.path}")
-	private String uploadPath;
+	private String path;
 	
 	private static final List<String> imageExtensionList = Arrays.asList("jpg", "jpeg", "png", "gif", "webp");
 
@@ -42,7 +42,7 @@ public class FileController {
 		
 		try {
 			String name = constructFilename(file.getOriginalFilename());
-			Path savePath = Paths.get(uploadRealPath).resolve(name);
+			Path savePath = Paths.get(realPath).resolve(name);
 			Files.copy(file.getInputStream(), savePath);
 			long size = file.getSize();
 			String type = null;
@@ -54,13 +54,14 @@ public class FileController {
 			if(imageExtensionList.contains(extention)) {
 				type="image";
 			}
+			
 //			if (lastIndex != -1 && lastIndex < name.length() - 1) {
 //				extention = name.substring(lastIndex + 1).toLowerCase();
 //			}
 			
-			MediaFileEntity mediaFileEntity = new MediaFileEntity(name, uploadPath, uploadRealPath, size, type);
+			MediaFileEntity mediaFileEntity = new MediaFileEntity(name, size, type);
 			fileService.insertMediaFile(mediaFileEntity);
-			MediaFileDto mediaFileDto = new MediaFileDto(mediaFileEntity);
+			MediaFileDto mediaFileDto = new MediaFileDto(mediaFileEntity, path);
 			
 			ResultData<MediaFileDto> resultDaata = ResultData.ofData("S-1", "파일 등록이 완료되었습니다.", "미디어 파일", mediaFileDto);
 

@@ -1,62 +1,199 @@
 package com.smw.project.balmam.controller;
 
+import java.time.LocalDateTime;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.smw.project.balmam.dto.LoginInfoDTO;
+import com.smw.project.balmam.dto.MemberJoinDto;
+import com.smw.project.balmam.dto.MessageResponse;
+import com.smw.project.balmam.dto.UserDto;
+import com.smw.project.balmam.entity.EmailAuthenticationsEntity;
+import com.smw.project.balmam.entity.MediaFileEntity;
+import com.smw.project.balmam.entity.MemberEntity;
+import com.smw.project.balmam.service.EmailService;
+import com.smw.project.balmam.service.FileService;
+import com.smw.project.balmam.service.MemberService;
+import com.smw.project.balmam.utill.Ut;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class MemberController {
+	
+	@Autowired
+	private MemberService memberService;
+	
+	@Autowired
+	private EmailService emailService;
+	
+	@Autowired
+	private FileService fileService;
 	
 	@GetMapping("/member/join")
 	public String showJoin(HttpServletRequest req) {
 		return "/member/join";
 	}
-//  @PostMapping("/join")
-//  public String registerUser(@Valid UsersJoinDto usersJoinDto, BindingResult result, RedirectAttributes redirectAttributes) {
-//      if (result.hasErrors()) {
-//          // If validation fails, stay on the join form page
-//          return "joinForm"; // Name of your join form view
-//      }
-//
-//      // Your registration logic here...
-//
-//      redirectAttributes.addFlashAttribute("successMessage", "Registration successful!");
-//      return "redirect:/joinSuccess"; // Redirect on successful registration
-//  }
-//	<!DOCTYPE html>
-//	<html xmlns:th="http://www.thymeleaf.org">
-//	<head>
-//	    <meta charset="UTF-8">
-//	    <title>Join Membership</title>
-//	</head>
-//	<body>
-//	<h1>Join</h1>
-//	<form th:action="@{/join}" th:object="${usersJoinDto}" method="post">
-//	    <!-- Email Field -->
-//	    <div>
-//	        <label for="email">Email:</label>
-//	        <input id="email" type="email" th:field="*{email}">
-//	        <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
-//	    </div>
-//
-//	    <!-- Password Field -->
-//	    <div>
-//	        <label for="password">Password:</label>
-//	        <input id="password" type="password" th:field="*{password}">
-//	        <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
-//	    </div>
-//
-//	    <!-- Other fields... -->
-//
-//	    <button type="submit">Submit</button>
-//	</form>
-//	</body>
-//	</html>
 	
-	//@GetMapping("/memberEmailDuplicate")
-	//@RequestBody
+	@Value("${file.upload.path}")
+	private String path;
 	
+	
+	@PostMapping("/member/join")
+	public String doJoin(MemberJoinDto memberJoinDto, RedirectAttributes redirectAttributes) {
+		MemberEntity memberEntity = new MemberEntity(memberJoinDto);
+		memberService.insertMember(memberEntity);		
+		emailService.sendEmailVerification(memberEntity.getEmail(), memberEntity.getId());
+		//todo 로그인시 미인증 계정이면 인증 재전송 필요
+		MessageResponse message = new MessageResponse("INFO", String.format("비밀번호 변경을 위한 링크를 메일(%s)로 전송하였습니다.\n전송된 링크에서 비밀번호를 변경해 주세요.", memberJoinDto.getEmail()), "메일을 전송하였습니다.");
+		redirectAttributes.addFlashAttribute("message", message);
+		return "redirect:/member/join";
+	}
+	
+	
+	@GetMapping("/member/isExistsNickname")
+	@ResponseBody
+	public boolean isExistsNickname(String nickname) {
+		return memberService.isExistsNicname(nickname);
+	}
+
+	@GetMapping("/member/isExistsEmail")
+	@ResponseBody
+	public boolean isExistsEmail(String email) {
+		return memberService.isExistsEmail(email);
+	}
+	
+	@GetMapping("/member/emailVerification")
+	public String emailVerification(String token,RedirectAttributes redirectAttributes ) {
+		EmailAuthenticationsEntity emailAuthenticationsEntity = emailService.findEmailAuthenticationsFromToken(token);
+		if(emailAuthenticationsEntity==null) {
+			MessageResponse message = new MessageResponse("INFO", "해당하는 리소스가 존재하지 않습니다.", "");
+			redirectAttributes.addFlashAttribute("message", message);
+			return "redirect:/";
+		}
+		
+		if(emailAuthenticationsEntity.getExpiresAt().compareTo(LocalDateTime.now()) < 0) {
+			MessageResponse message = new MessageResponse("INFO", "이미 만료된 토큰 입니다.", "");
+			redirectAttributes.addFlashAttribute("message", message);
+			return "redirect:/";
+		}
+		
+		emailService.updateVerifiedValue("token");
+		
+		
+		MessageResponse message = new MessageResponse("INFO", "메일 인증이 완료되었습니다. \n멋진 여행이 여러분을 기다리길", "환영합니다.");
+		redirectAttributes.addFlashAttribute("message", message);
+		return "redirect:/member/login";
+	}
+	
+	@GetMapping("/member/login")
+	public String showLogin() {
+
+		return "/member/login";
+	}
+	
+	@PostMapping("/member/login")
+	public String doLogin(String email, String password, HttpSession session, LoginInfoDTO loginInfo, RedirectAttributes redirectAttributes ) {
+		if(Ut.isNullOrEmpty(email)) {
+			MessageResponse message = new MessageResponse("EXCEPTION", "email이 입력되지 않았습니다.", "잘못된 요청");
+			redirectAttributes.addFlashAttribute("message", message);
+			return "redirect:/member/login";
+		}
+		
+		if(Ut.isNullOrEmpty(password)) {
+			MessageResponse message = new MessageResponse("EXCEPTION", "비밀번호가 입력되지 않았습니다.", "잘못된 요청");
+			redirectAttributes.addFlashAttribute("message", message);
+			return "redirect:/member/login";
+		}
+		
+		MemberEntity findMember = memberService.findMemberByEmail(email);
+		
+		if (findMember == null) {
+			MessageResponse message = new MessageResponse("EXCEPTION", String.format("%s는 존재하지 않는 email입니다.", email), "잘못된 요청");
+			redirectAttributes.addFlashAttribute("message", message);
+			return "redirect:/member/login";
+		}
+		
+		if (findMember.isWithdrawn()) {
+			MessageResponse message = new MessageResponse("EXCEPTION", "이미 탈퇴한 유저 입니다.", "잘못된 요청");
+			redirectAttributes.addFlashAttribute("message", message);
+			return "redirect:/";
+		}
+		
+		if(!memberService.checkPassword(password, findMember)) {
+			MessageResponse message = new MessageResponse("EXCEPTION", "비밀번호가 일치하지 않습니다.", "잘못된 요청");
+			redirectAttributes.addFlashAttribute("message", message);
+			return "redirect:/member/login";
+		}
+		
+		if(!findMember.isEmailVerified()) {
+			MessageResponse message = new MessageResponse("EXCEPTION", "이메일이 인증되지 않은 고객님입니다.", "잘못된 요청");
+			redirectAttributes.addFlashAttribute("message", message);
+			return "redirect:/member/login";
+		}
+		String profileImageUrl = null;
+		
+		if(findMember.getProfileImageId()!=null) {
+			MediaFileEntity mediaFileEntity= fileService.findFileById(findMember.getProfileImageId());
+			profileImageUrl = path + "/" + mediaFileEntity.getName();
+		}
+		UserDto userDto = new UserDto(findMember.getId(), findMember.getEmail(), findMember.getNickname(), profileImageUrl);
+		session.setAttribute("userDto", userDto);
+		session.setAttribute("userId", findMember.getId());
+		String previouseUrl = loginInfo.getPreviousUrl();
+		if(previouseUrl == null) {
+			previouseUrl="/";
+		}
+		return "redirect:"+previouseUrl;
+	}
+	
+	@GetMapping("/member/logout")
+	public String doLogout(HttpSession session, LoginInfoDTO loginInfo, RedirectAttributes redirectAttributes ) {
+		session.removeAttribute("userDto");
+		session.removeAttribute("userId");
+		String previouseUrl = loginInfo.getPreviousUrl();
+		if(previouseUrl == null) {
+			previouseUrl="/";
+		}
+		return "redirect:"+previouseUrl;
+	}
+	
+	@PostMapping("/member/withdrawn")
+	public String doWithdrawn(String password, LoginInfoDTO loginInfo, RedirectAttributes redirectAttributes ) {
+		String email = loginInfo.getUserDto().getEmail();
+		MemberEntity findMember = memberService.findMemberByEmail(email);
+		
+		if(!memberService.checkPassword(password, findMember)) {
+			MessageResponse message = new MessageResponse("EXCEPTION", "비밀번호가 일치하지 않습니다.", "잘못된 요청");
+			redirectAttributes.addFlashAttribute("message", message);
+			String previouseUrl = loginInfo.getPreviousUrl();
+			if(previouseUrl == null) {
+				previouseUrl="/";
+			}
+			return "redirect:"+previouseUrl;
+		}
+		
+
+		memberService.updateWithdrawn(email);
+		MessageResponse message = new MessageResponse("INFO", "회원탈퇴가 완료되었습니다.", "안녕히가세요");
+		redirectAttributes.addFlashAttribute("message", message);
+		return "redirect:/";
+	}
+	
+	//@GetMapping("/member/modify")
+	
+	
+	
+	
+	
+	//todo email nickname 중복 검증
 	
 	
 //    @GetMapping("/join")

@@ -3,7 +3,25 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://127.0.0.1:3306/Balmam?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Seoul&useOldAliasMetadataBehavior=true&zeroDateTimeNehavior=convertToNull
     username: root
-    password: 
+    password:     
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+#시작 메뉴에서 마우스 오른쪽 버튼으로 시스템을 클릭합니다.
+#시스템 정보 → 고급 시스템 설정 → 환경 변수 순으로 이동합니다.
+#새로 만들기를 클릭하여 새 환경 변수를 추가합니다.
+#변수 이름(MAIL_USERNAME, MAIL_PASSWORD 등)과 값을 입력합니다.
+#확인을 클릭하여 변경사항을 저장합니다.
+
 mybatis:
   type-aliases-package: com.smw.project.balmam.entity
   
@@ -11,5 +29,5 @@ mybatis:
 ##이미지 및 동영상 파일 upload directory 지정
 file:
   upload:
-    realPath: "C:/balmam/file-upload/"
+    realPath: "C:/files/balmam/upload/"
     path: "/files"

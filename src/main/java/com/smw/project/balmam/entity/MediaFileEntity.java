@@ -10,15 +10,12 @@ public class MediaFileEntity {
     private LocalDateTime regDate;
     private LocalDateTime updateDate;
     private String name;
-    private String path;
-    private String realPath;
     private Long size;
     private String type;
-	public MediaFileEntity(String name, String path, String realPath, Long size, String type) {
+    
+	public MediaFileEntity(String name, Long size, String type) {
 		super();
 		this.name = name;
-		this.path = path;
-		this.realPath = realPath;
 		this.size = size;
 		this.type = type;
 	}

@@ -1,45 +1,75 @@
-//package com.smw.project.balmam.service;
-//
-//import java.util.UUID;
-//
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.stereotype.Service;
-//
-//@Service
-//public class EmailService {
-//
-//    @Autowired
-//    private JavaMailSender mailSender;
-//    @Autowired
-//    private EmailAuthenticationRepository emailAuthRepo;
-//
-//    // 이메일 인증 토큰 생성 및 전송
-//    public void sendVerificationEmail(User user) {
-//        String token = UUID.randomUUID().toString();
-//        EmailAuthentication emailAuth = new EmailAuthentication();
-//        emailAuth.setUserId(user.getId());
-//        emailAuth.setToken(token);
-//        emailAuth.setCreatedAt(new Date());
-//        emailAuth.setExpiresAt(new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000)); // 24시간 후 만료
-//        emailAuth.setVerified(false);
-//        emailAuthRepo.save(emailAuth);
-//
-//        SimpleMailMessage message = new SimpleMailMessage();
-//        message.setTo(user.getEmail());
-//        message.setSubject("이메일 인증");
-//        message.setText("이메일 인증을 완료하려면 다음 링크를 클릭하세요: " + 
-//                        "http://localhost:8080/verify?token=" + token);
-//        mailSender.send(message);
-//    }
-//
-//    // 이메일 인증 토큰 검증
-//    public boolean verifyEmail(String token) {
-//        EmailAuthentication emailAuth = emailAuthRepo.findByToken(token);
-//        if (emailAuth != null && !emailAuth.isVerified() && emailAuth.getExpiresAt().after(new Date())) {
-//            emailAuth.setVerified(true);
-//            emailAuthRepo.save(emailAuth);
-//            return true;
-//        }
-//        return false;
-//    }
-//}
+package com.smw.project.balmam.service;
+
+
+
+
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.stereotype.Service;
+
+import com.smw.project.balmam.entity.EmailAuthenticationsEntity;
+import com.smw.project.balmam.repository.EmailAuthentication;
+
+import jakarta.servlet.http.HttpServletRequest;
+
+@Service
+public class EmailService {
+	
+
+	@Autowired
+	private HttpServletRequest request;
+	@Autowired
+    private JavaMailSender mailSender;
+	@Autowired
+	private EmailAuthentication emailAuthenticationRepository; 
+	
+    
+    // Spring mail username을 불러오는 코드 추가
+    @Value("${spring.mail.username}")
+    private String fromEmail;
+
+
+    public void sendSimpleMessage(String to, String subject, String text) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        
+        // Properties에서 설정한 email을 setFrom으로 사용
+        message.setFrom(fromEmail);
+        message.setTo(to);
+        message.setSubject(subject);
+        message.setText(text);
+        
+        mailSender.send(message);
+    }
+    
+    public void sendEmailVerification(String email, Long memberId) {
+        String token = UUID.randomUUID().toString();
+        LocalDateTime expiresAt = LocalDateTime.now().plusHours(24); // 24시간 후 만료
+
+        EmailAuthenticationsEntity emailAuthEntity = new EmailAuthenticationsEntity(memberId, token, expiresAt);
+        
+        emailAuthenticationRepository.insert(emailAuthEntity);
+        
+        String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+
+        String verificationLink = baseUrl + "/member/emailVerification?token=" + token;
+        sendSimpleMessage(email, "발맘: 이메일 인증", "다음 링크를 클릭하여 이메일을 인증해주세요: " + verificationLink);
+    }
+
+	public EmailAuthenticationsEntity findEmailAuthenticationsFromToken(String token) {
+		// TODO Auto-generated method stub
+		
+		return emailAuthenticationRepository.findEmailAuthenticationsFromToken(token);
+	}
+
+	public void updateVerifiedValue(String token) {
+		emailAuthenticationRepository.updateVerifiedValue(token);
+		
+	}
+    
+    
+}

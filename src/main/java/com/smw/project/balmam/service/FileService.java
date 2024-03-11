@@ -1,7 +1,5 @@
 package com.smw.project.balmam.service;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +15,12 @@ public class FileService {
 	
 	public void insertMediaFile(MediaFileEntity mediaFileEntity) {
 		fileRepository.insertMediaFile(mediaFileEntity);
+	}
+
+
+	public MediaFileEntity findFileById(Long id) {
+		return fileRepository.findFileById(id);
+		
 	}
 
 

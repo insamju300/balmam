@@ -3,6 +3,7 @@ package com.smw.project.balmam.repository;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
+import org.apache.ibatis.annotations.Select;
 
 import com.smw.project.balmam.entity.MediaFileEntity;
 
@@ -10,14 +11,14 @@ import com.smw.project.balmam.entity.MediaFileEntity;
 public interface FileRepository {
 	@Insert("""
 			INSERT INTO
-			mediaFile SET
-			regDate = NOW(),
-			updateDate = NOW(),
+			mediaFiles SET
 			`name` = #{name},
-			path = #{path},
 			size = #{size}, 
 			`type` = #{type}
 			""")
 	@Options(useGeneratedKeys=true, keyProperty="id")
 	public void insertMediaFile(MediaFileEntity entity);
+
+	@Select("SELECT * FROM mediaFiles WHERE id=#{id}")
+	public MediaFileEntity findFileById(Long id);
 }
