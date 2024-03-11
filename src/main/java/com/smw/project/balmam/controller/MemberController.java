@@ -12,7 +12,47 @@ public class MemberController {
 	public String showJoin(HttpServletRequest req) {
 		return "/member/join";
 	}
-	
+//  @PostMapping("/join")
+//  public String registerUser(@Valid UsersJoinDto usersJoinDto, BindingResult result, RedirectAttributes redirectAttributes) {
+//      if (result.hasErrors()) {
+//          // If validation fails, stay on the join form page
+//          return "joinForm"; // Name of your join form view
+//      }
+//
+//      // Your registration logic here...
+//
+//      redirectAttributes.addFlashAttribute("successMessage", "Registration successful!");
+//      return "redirect:/joinSuccess"; // Redirect on successful registration
+//  }
+//	<!DOCTYPE html>
+//	<html xmlns:th="http://www.thymeleaf.org">
+//	<head>
+//	    <meta charset="UTF-8">
+//	    <title>Join Membership</title>
+//	</head>
+//	<body>
+//	<h1>Join</h1>
+//	<form th:action="@{/join}" th:object="${usersJoinDto}" method="post">
+//	    <!-- Email Field -->
+//	    <div>
+//	        <label for="email">Email:</label>
+//	        <input id="email" type="email" th:field="*{email}">
+//	        <p th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
+//	    </div>
+//
+//	    <!-- Password Field -->
+//	    <div>
+//	        <label for="password">Password:</label>
+//	        <input id="password" type="password" th:field="*{password}">
+//	        <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
+//	    </div>
+//
+//	    <!-- Other fields... -->
+//
+//	    <button type="submit">Submit</button>
+//	</form>
+//	</body>
+//	</html>
 	
 	//@GetMapping("/memberEmailDuplicate")
 	//@RequestBody
