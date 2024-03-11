@@ -458,16 +458,6 @@ async function takePhoto() {
     existingMarker = null;
   }
 
-  // 사진 찍어서 마크찍기
-  // console.log(cameraView.offsetWidth + ", " + cameraView.offsetHeight);
-
-  // let videoWidth = cameraView.videoWidth;
-  // let videoHeight = cameraView.videoHeight;
-  // console.log("canvas : " + canvas.width + "," +  canvas.height)
-  // console.log("cameraView : " +cameraView.width + "," +  cameraView.height)
-  // console.log("canvasOffset : " + canvas.offsetWidth + "," +  canvas.offsetHeight)
-  // console.log("cameraViewOffset : " +cameraView.offsetWidth + "," +  cameraView.offsetHeight)
-
   canvas.width = cameraView.offsetWidth * 2;
   canvas.height = cameraView.offsetHeight * 2;
 
@@ -506,16 +496,6 @@ async function takePhoto() {
 
   geoMarkers.set(tmpPosition, mediaMarker);
   
-  
-
-  // const alertImg = document.createElement("img");
-  // alertImg.src = imageDataUrl;
-
-  // mediaMarker.addListener("click", ({ domEvent, latLng }) => {
-  //   const { target } = domEvent;
-
-  //   commonsAlert(alertImg.outerHTML);
-  // });
 
   createSlideImageForMediaMarker(geoMedias.get(tmpPosition), mediaMarker);
   mediaCount++;
@@ -674,18 +654,6 @@ async function stopVideo() {
         }
 
         geoMarkers.set(tmpPosition, mediaMarker);
-    
-        // 녹화된 비디오를 페이지에 추가하기 위한 비디오 엘리먼트를 생성하고 설정합니다.
-        //const videosContainer = document.getElementById("recordedVideos");
-        // const videoElement = document.createElement("video");
-        // videoElement.src = videoURL; // 생성된 URL을 비디오 요소의 소스로 설정합니다.
-        // videoElement.controls = true; // 비디오 컨트롤을 활성화합니다.
-    
-        // mediaMarker.addListener("click", ({ domEvent, latLng }) => {
-        //   const { target } = domEvent;
-    
-        //   commonsAlert(videoElement.outerHTML);
-        // });
 
         createSlideImageForMediaMarker(geoMedias.get(tmpPosition), mediaMarker);
 

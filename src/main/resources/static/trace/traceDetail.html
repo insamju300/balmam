@@ -282,6 +282,15 @@
         <ul>
 
           <li class="flex">
+            <div class="w-8 flex justify-center cursor-pointer hover:brightness-125 hover:shadow-outline duration-100"
+              onclick="showUserCurrentLocation()">
+              <img src="/images/character/balmami.png" class="transition duration-300 ease-in-out">
+            </div>
+          </li>
+
+
+
+          <li class="flex">
             <div class="w-8  text-primary hover:text-primary_hard cursor-pointer text-xl justify-center flex mt-2"
               onclick="tracePlay()">
               <i class="fa-solid fa-circle-play"></i>
@@ -290,7 +299,7 @@
 
           <li class="flex">
             <div class="w-8 flex justify-center cursor-pointer hover:brightness-125 hover:shadow-outline duration-100"
-              onclick="return false">
+              onclick="showAllMideasCarouselsModal()">
               <img src="/images/icon/camera.png" class="transition duration-300 ease-in-out">
             </div>
           </li>
@@ -599,9 +608,90 @@
 
     </div>
 
+    
 
     
-  </main>
+
+    <!--전체 이미지 모달-->
+    <dialog id="all_mideas_carousels_modal" class="modal">
+      <div class="modal-box">
+        <h3 class="font-bold text-lg">미디어 목록</h3>
+
+        <div class="w-full flex gap-4 flex-wrap justify-center mb-5 image-viewer">
+          <img src="/images/etc/etc1.webp" />
+
+        </div>
+
+        <div class="w-full flex gap-4 flex-wrap justify-center">
+          
+
+          <div class="avatar cursor-pointer ring ring-primary" >
+            <div class="w-24">
+              <img src="/images/etc/etc1.webp" />
+            </div>
+          </div>
+          <div class="avatar">
+            <div class="w-24">
+              <img src="/images/etc/etc2.webp" />
+            </div>
+          </div>
+          <div class="avatar">
+            <div class="w-24">
+              <img src="/images/etc/etc3.webp" />
+            </div>
+          </div>
+          <div class="avatar">
+            <div class="w-24">
+              <img src="/images/etc/etc4.webp" />
+            </div>
+          </div>
+          <div class="avatar">
+            <div class="w-24">
+              <img src="/images/etc/etc5.webp" />
+            </div>
+          </div>
+          <div class="avatar">
+            <div class="w-24">
+              <img src="/images/etc/etc6.webp" />
+            </div>
+          </div>
+          <div class="avatar">
+            <div class="w-24">
+              <img src="/images/etc/etc7.webp" />
+            </div>
+          </div>
+          <div class="avatar">
+            <div class="w-24">
+              <img src="/images/etc/etc8.webp" />
+            </div>
+          </div>
+          <div class="avatar">
+            <div class="w-24">
+              <img src="/images/etc/etc9.webp" />
+            </div>
+          </div>
+          <div class="avatar">
+            <div class="w-24">
+              <img src="/images/etc/etc10.webp" />
+            </div>
+          </div>
+
+
+          
+
+        </div>
+        <div class="modal-action">
+          <form method="dialog">
+            <!-- if there is a button in form, it will close the modal -->
+            <button class="btn">Close</button>
+          </form>
+        </div>
+      </div>
+      <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+      </form>
+    </dialog>
+
 
 
 

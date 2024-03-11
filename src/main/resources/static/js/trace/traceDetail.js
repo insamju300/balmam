@@ -4,37 +4,33 @@ let pathLine;
 let pathLines = [];
 let pathCoordinatesGroups;
 let geoMedias;
-let geoMediaMarkers=[];
+let geoMediaMarkers = [];
+let intervalId;
 
 initMap();
 
-async function tracePlay(){
+async function tracePlay() {
   //마커는 투명도만 조정하면 된다.
   //path는 다시 그려야된다.
   pathLines.forEach((pathLine) => {
-      pathLine.setMap(null);
-      pathLine = null;
-    }
-  );
-  pathLine=[];
+    pathLine.setMap(null);
+    pathLine = null;
+  });
+  pathLine = [];
 
-  geoMediaMarkers.forEach((mediaMarker)=> {
+  geoMediaMarkers.forEach((mediaMarker) => {
     deleteAnimationToMarker(mediaMarker);
-    mediaMarker.content.classList.add('opacity-0');
+    mediaMarker.content.classList.add("opacity-0");
   });
 
+  await animatePaths();
+  await adjustMapZoom();
+  //await createMarkers();
+  geoMediaMarkers.forEach((mediaMarker) => {
+    applyAnimationToMarker(mediaMarker);
 
-  
-    await animatePaths();
-    await adjustMapZoom();
-    //await createMarkers();
-    geoMediaMarkers.forEach((mediaMarker)=> {
-      applyAnimationToMarker(mediaMarker)
-      
-      //setTimeout(() => applyAnimationToMarker(mediaMarker), 50);
-    });
-
-  
+    //setTimeout(() => applyAnimationToMarker(mediaMarker), 50);
+  });
 }
 
 async function initMap() {
@@ -59,7 +55,6 @@ async function initMap() {
 }
 
 async function animatePaths() {
-
   for (const path of pathCoordinatesGroups) {
     pathLine = new google.maps.Polyline({
       path: [],
@@ -83,7 +78,7 @@ function adjustMapZoom() {
       });
     });
     map.fitBounds(bounds);
-    google.maps.event.addListenerOnce(map, 'bounds_changed', () => {
+    google.maps.event.addListenerOnce(map, "bounds_changed", () => {
       resolve(); // bounds 변경이 완료되면 Promise를 해결합니다.
     });
   });
@@ -225,7 +220,8 @@ async function createMarkers() {
     // AdvancedMarkerElement로 마커를 생성합니다.
     let mediaMarker = new AdvancedMarkerElement({
       map, // 지도 객체
-      position: { // 마커의 위치
+      position: {
+        // 마커의 위치
         lat: lat,
         lng: lng,
       },
@@ -237,133 +233,223 @@ async function createMarkers() {
 
     applyAnimationToMarker(mediaMarker);
 
-
-    createSlideImageForMediaMarker(medias,mediaMarker);
+    createSlideImageForMediaMarker(medias, mediaMarker);
 
     geoMediaMarkers.push(mediaMarker);
   });
-
 }
 
 function applyAnimationToMarker(mediaMarker) {
   // 'animated-marker' 클래스를 마커의 content에 추가합니다.
   // 이 클래스는 CSS에서 미리 정의된 애니메이션 효과를 적용합니다.
-  mediaMarker.content.classList.add('animated-marker');
+  mediaMarker.content.classList.add("animated-marker");
 }
 
 function deleteAnimationToMarker(mediaMarker) {
   // 'animated-marker' 클래스를 마커의 content에 추가합니다.
   // 이 클래스는 CSS에서 미리 정의된 애니메이션 효과를 적용합니다.
-  mediaMarker.content.classList.remove('animated-marker');
+  mediaMarker.content.classList.remove("animated-marker");
 }
 
-
-
-function createSlideImageForMediaMarker(geoMediaList, mediaMarker){
-  let slideIdCount=1;
-  let carousel=document.createElement('div');
+function createSlideImageForMediaMarker(geoMediaList, mediaMarker) {
+  let slideIdCount = 1;
+  let carousel = document.createElement("div");
 
   carousel.classList.add("carousel", "w-full");
 
-  const geoMediaListWithoutThumbnail = geoMediaList.filter((geoMedia) => geoMedia.mediaType != "thumbnail");
+  const geoMediaListWithoutThumbnail = geoMediaList.filter(
+    (geoMedia) => geoMedia.mediaType != "thumbnail"
+  );
 
-  
-  geoMediaListWithoutThumbnail.forEach( function(geoMedia){
-        if(geoMedia.mediaType==='video'){
-        const carouselItem = document.createElement("div");
-        carouselItem.classList.add("carousel-item", "relative", "w-full");
-        carouselItem.id="slide"+(slideIdCount++);
-        
+  geoMediaListWithoutThumbnail.forEach(function (geoMedia) {
+    if (geoMedia.mediaType === "video") {
+      const carouselItem = document.createElement("div");
+      carouselItem.classList.add("carousel-item", "relative", "w-full");
+      carouselItem.id = "slide" + slideIdCount++;
 
-         const videoElement = document.createElement("video");
-         videoElement.src = geoMedia.url;
-         videoElement.controls = true;
-         videoElement.classList.add("w-full", "h-auto");
-         carouselItem.appendChild(videoElement);
-         if(geoMediaListWithoutThumbnail.length > 1){
-          const carouselBtns = document.createElement("div");
-          carouselBtns.classList.add("absolute" ,"flex", "justify-between" , "transform", "-translate-y-1/2", "left-5", "right-5" ,"top-1/2");
-          let beforSlideId = slideIdCount-2;
-          if(beforSlideId<1){
-            beforSlideId = geoMediaListWithoutThumbnail.length;
-          }
-          let afterSlideId = slideIdCount;
-          if(afterSlideId>geoMediaListWithoutThumbnail.length){
-            afterSlideId = 1;
-          }
-
-          let beforBtn = document.createElement("a");
-          beforBtn.href="#slide"+beforSlideId;
-          beforBtn.classList.add("btn", "btn-circle");
-          beforBtn.innerText = "❮";
-
-
-          let afterBtn = document.createElement("a");
-          afterBtn.href="#slide"+afterSlideId;
-          afterBtn.classList.add("btn", "btn-circle");
-          afterBtn.innerHTML="❯";
-
-          carouselBtns.appendChild(beforBtn);
-          carouselBtns.appendChild(afterBtn);
-
-          carouselItem.appendChild(carouselBtns)
-          
-
-         }
-         carousel.appendChild(carouselItem);
-
-
-        }else if(geoMedia.mediaType === 'photo'){
-          
-
-          const carouselItem = document.createElement("div");
-          carouselItem.classList.add("carousel-item", "relative", "w-full");
-          carouselItem.id="slide"+(slideIdCount++);
-
-          const img = document.createElement("img");
-          img.src = geoMedia.url;
-          img.classList.add("w-full", "h-auto");
-          carouselItem.appendChild(img);
-
-          if(geoMediaListWithoutThumbnail.length > 1){
-            const carouselBtns = document.createElement("div");
-            carouselBtns.classList.add("absolute" ,"flex", "justify-between" , "transform", "-translate-y-1/2", "left-5", "right-5" ,"top-1/2");
-            let beforSlideId = slideIdCount-2;
-            if(beforSlideId<1){
-              beforSlideId = geoMediaListWithoutThumbnail.length;
-            }
-            let afterSlideId = slideIdCount;
-            if(afterSlideId>geoMediaListWithoutThumbnail.length){
-              afterSlideId = 1;
-            }
-
-            let beforBtn = document.createElement("a");
-            beforBtn.href="#slide"+beforSlideId;
-            beforBtn.classList.add("btn", "btn-circle");
-            beforBtn.innerText = "❮";
-
-
-            let afterBtn = document.createElement("a");
-            afterBtn.href="#slide"+afterSlideId;
-            afterBtn.classList.add("btn", "btn-circle");
-            afterBtn.innerHTML="❯";
-
-            carouselBtns.appendChild(beforBtn);
-            carouselBtns.appendChild(afterBtn);
-
-            carouselItem.appendChild(carouselBtns)
-            
-
-           }
-           carousel.appendChild(carouselItem);
-
+      const videoElement = document.createElement("video");
+      videoElement.src = geoMedia.url;
+      videoElement.controls = true;
+      videoElement.classList.add("w-full", "h-auto");
+      carouselItem.appendChild(videoElement);
+      if (geoMediaListWithoutThumbnail.length > 1) {
+        const carouselBtns = document.createElement("div");
+        carouselBtns.classList.add(
+          "absolute",
+          "flex",
+          "justify-between",
+          "transform",
+          "-translate-y-1/2",
+          "left-5",
+          "right-5",
+          "top-1/2"
+        );
+        let beforSlideId = slideIdCount - 2;
+        if (beforSlideId < 1) {
+          beforSlideId = geoMediaListWithoutThumbnail.length;
         }
-  });
+        let afterSlideId = slideIdCount;
+        if (afterSlideId > geoMediaListWithoutThumbnail.length) {
+          afterSlideId = 1;
+        }
 
+        let beforBtn = document.createElement("a");
+        beforBtn.href = "#slide" + beforSlideId;
+        beforBtn.classList.add("btn", "btn-circle");
+        beforBtn.innerText = "❮";
+
+        let afterBtn = document.createElement("a");
+        afterBtn.href = "#slide" + afterSlideId;
+        afterBtn.classList.add("btn", "btn-circle");
+        afterBtn.innerHTML = "❯";
+
+        carouselBtns.appendChild(beforBtn);
+        carouselBtns.appendChild(afterBtn);
+
+        carouselItem.appendChild(carouselBtns);
+      }
+      carousel.appendChild(carouselItem);
+    } else if (geoMedia.mediaType === "photo") {
+      const carouselItem = document.createElement("div");
+      carouselItem.classList.add("carousel-item", "relative", "w-full");
+      carouselItem.id = "slide" + slideIdCount++;
+
+      const img = document.createElement("img");
+      img.src = geoMedia.url;
+      img.classList.add("w-full", "h-auto");
+      carouselItem.appendChild(img);
+
+      if (geoMediaListWithoutThumbnail.length > 1) {
+        const carouselBtns = document.createElement("div");
+        carouselBtns.classList.add(
+          "absolute",
+          "flex",
+          "justify-between",
+          "transform",
+          "-translate-y-1/2",
+          "left-5",
+          "right-5",
+          "top-1/2"
+        );
+        let beforSlideId = slideIdCount - 2;
+        if (beforSlideId < 1) {
+          beforSlideId = geoMediaListWithoutThumbnail.length;
+        }
+        let afterSlideId = slideIdCount;
+        if (afterSlideId > geoMediaListWithoutThumbnail.length) {
+          afterSlideId = 1;
+        }
+
+        let beforBtn = document.createElement("a");
+        beforBtn.href = "#slide" + beforSlideId;
+        beforBtn.classList.add("btn", "btn-circle");
+        beforBtn.innerText = "❮";
+
+        let afterBtn = document.createElement("a");
+        afterBtn.href = "#slide" + afterSlideId;
+        afterBtn.classList.add("btn", "btn-circle");
+        afterBtn.innerHTML = "❯";
+
+        carouselBtns.appendChild(beforBtn);
+        carouselBtns.appendChild(afterBtn);
+
+        carouselItem.appendChild(carouselBtns);
+      }
+      carousel.appendChild(carouselItem);
+    }
+  });
 
   mediaMarker.addListener("click", ({ domEvent, latLng }) => {
     const { target } = domEvent;
 
     commonsAlert(carousel.outerHTML);
   });
+}
+
+$(document).ready(function () {
+  // Edit button click event
+  // Edit button click event - use event delegation
+  $("main").on("click", "#all_mideas_carousels_modal .avatar", function () {
+    $("#all_mideas_carousels_modal .avatar").removeClass("ring ring-primary");
+    $(this).addClass("ring ring-primary");
+
+    // Replace the src attribute of img within .image-viewer with the src of the clicked img
+    var clickedImgSrc = $(this).find("img").attr("src");
+
+    $("#all_mideas_carousels_modal .image-viewer img").attr(
+      "src",
+      clickedImgSrc
+    );
+  });
+});
+
+function showAllMideasCarouselsModal() {
+  var modal = document.querySelector("#all_mideas_carousels_modal");
+
+  modal.showModal();
+
+  // Scroll to the top - 수정된 부분
+  document.querySelector(
+    "#all_mideas_carousels_modal .modal-box"
+  ).scrollTop = 0;
+}
+
+
+
+async function showUserCurrentLocation() {
+  const { AdvancedMarkerElement} = await google.maps.importLibrary(
+    "marker"
+  );
+
+  const balmami = document.createElement("img");
+  balmami.src = "/images/character/balmami.png";
+  balmami.classList.add("h-10");
+  balmami.classList.add("drop-shadow-lg");
+
+  navigator.geolocation.getCurrentPosition(
+
+    function (position) {
+      const userLocation = getUserLocation(position);
+
+      if(!marker){
+      marker = new AdvancedMarkerElement({
+        map,
+        position: userLocation,
+        content: balmami,
+      });
+    }else{
+      marker.position = userLocation;
+    }
+
+      map.setCenter(userLocation);
+    }
+  );
+
+  intervalId = setInterval(() => {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const userLocation = getUserLocation(position);
+        // 위치 정보가 성공적으로 가져와졌을 때의 처리
+        // //사용자의 현재 위치로 마커 업데이트
+        marker.position = userLocation;
+      },
+      (error) => {
+        // 위치 정보를 가져오는데 실패했을 때의 처리
+        console.error("Error Getting Location: ", error);
+      }
+    );
+  }, 1000); 
+
+
+  
+}
+
+function getUserLocation(position) {
+  const userLocation = {
+    lat: position.coords.latitude,
+    lng: position.coords.longitude,
+    time: Date.now(),
+  };
+
+  return userLocation;
 }

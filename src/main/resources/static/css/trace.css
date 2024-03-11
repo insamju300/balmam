@@ -42,7 +42,3 @@
 .animated-marker {
   animation: drop 0.5s linear forwards;
 }
-
-.opa-0{
-  opacity: 0;
-}
