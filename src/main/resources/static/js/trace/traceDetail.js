@@ -4,8 +4,38 @@ let pathLine;
 let pathLines = [];
 let pathCoordinatesGroups;
 let geoMedias;
+let geoMediaMarkers=[];
 
 initMap();
+
+async function tracePlay(){
+  //마커는 투명도만 조정하면 된다.
+  //path는 다시 그려야된다.
+  pathLines.forEach((pathLine) => {
+      pathLine.setMap(null);
+      pathLine = null;
+    }
+  );
+  pathLine=[];
+
+  geoMediaMarkers.forEach((mediaMarker)=> {
+    deleteAnimationToMarker(mediaMarker);
+    mediaMarker.content.classList.add('opacity-0');
+  });
+
+
+  
+    await animatePaths();
+    await adjustMapZoom();
+    //await createMarkers();
+    geoMediaMarkers.forEach((mediaMarker)=> {
+      applyAnimationToMarker(mediaMarker)
+      
+      //setTimeout(() => applyAnimationToMarker(mediaMarker), 50);
+    });
+
+  
+}
 
 async function initMap() {
   const { Map } = await google.maps.importLibrary("maps");
@@ -23,12 +53,13 @@ async function initMap() {
 
   google.maps.event.addListenerOnce(map, "idle", async () => {
     await animatePaths();
-    adjustMapZoom();
+    await adjustMapZoom();
     await createMarkers();
   });
 }
 
 async function animatePaths() {
+
   for (const path of pathCoordinatesGroups) {
     pathLine = new google.maps.Polyline({
       path: [],
@@ -44,13 +75,18 @@ async function animatePaths() {
 
 //경로 재생 후 폴리라인의 모든 점을 포함하도록 경계를 확장
 function adjustMapZoom() {
-  const bounds = new google.maps.LatLngBounds();
-  pathLines.forEach((polyline) => {
-    polyline.getPath().forEach((point) => {
-      bounds.extend(point);
+  return new Promise((resolve) => {
+    const bounds = new google.maps.LatLngBounds();
+    pathLines.forEach((polyline) => {
+      polyline.getPath().forEach((point) => {
+        bounds.extend(point);
+      });
+    });
+    map.fitBounds(bounds);
+    google.maps.event.addListenerOnce(map, 'bounds_changed', () => {
+      resolve(); // bounds 변경이 완료되면 Promise를 해결합니다.
     });
   });
-  map.fitBounds(bounds);
 }
 
 // function animatePaths() {
@@ -142,180 +178,188 @@ function animatePath(path) {
 //   }
 // });
 //마커 생성
+// Google Maps 라이브러리에서 필요한 마커 관련 요소를 비동기적으로 불러옵니다.
 async function createMarkers() {
+  // Google Maps 마커 라이브러리에서 필요한 요소들을 가져옵니다.
   const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary(
     "marker"
   );
 
+  // geoMedias 객체의 키(위치 정보)를 순회합니다.
   Object.keys(geoMedias).forEach((location) => {
+    // 위치 정보 문자열을 객체로 파싱합니다.
     const { lat, lng } = JSON.parse(location);
+    // 현재 위치에 해당하는 미디어 목록을 가져옵니다.
     const medias = geoMedias[location];
 
+    // 이미지 요소를 생성합니다.
     let img = document.createElement("img");
+    // 이미지의 소스를 담을 변수를 null로 초기화합니다.
     let src = null;
+    // src가 null인지 확인하는 로그를 출력합니다.
     console.log(src === null);
 
+    // 현재 위치의 미디어 목록을 순회합니다.
     medias.forEach((media) => {
+      // 미디어 타입이 비디오가 아니고, src가 아직 null일 때
       if (media.mediaType != "video" && src === null) {
+        // src에 미디어 URL을 할당합니다.
         src = media.url;
       }
     });
 
+    // 이미지의 소스를 설정합니다.
     img.src = src;
 
+    // 이미지의 스타일을 설정합니다.
     img.style.width = "100%";
     img.style.height = "100%";
 
+    // PinElement를 생성합니다.
     const pin = new PinElement({
-      glyph: img,
-      background: "#E07A5F",
-      borderColor: "#B3614C",
+      glyph: img, // 이미지를 글리프로 사용합니다.
+      background: "#E07A5F", // 배경색을 설정합니다.
+      borderColor: "#B3614C", // 테두리 색을 설정합니다.
     });
 
+    // AdvancedMarkerElement로 마커를 생성합니다.
     let mediaMarker = new AdvancedMarkerElement({
-      map,
-      position: {
+      map, // 지도 객체
+      position: { // 마커의 위치
         lat: lat,
         lng: lng,
       },
-      content: pin.element,
+      content: pin.element, // 마커의 내용
     });
 
+    // 마커의 내용(DOM 요소)을 가져옵니다.
+    const content = mediaMarker.content;
 
-    // const element = mediaMarker.content;
-    // console.log(element)
-    // element.style.opacity = '0';
-    // element.addEventListener('animationend', (event) => {
-    //   element.classList.remove('drop');
-    //   element.style.opacity = '1';
-    // });
-    //intersectionObserver.observe(element);
+    applyAnimationToMarker(mediaMarker);
 
 
+    createSlideImageForMediaMarker(medias,mediaMarker);
 
-    // medias.forEach(media => {
-    //   const marker = new Marker({
-    //     position: { lat, lng },
-    //     map: map,
-    //   });
-
-    //   const infoWindow = new InfoWindow({
-    //     content: generateContentForMedia(media),
-    //   });
-
-    //   marker.addListener('click', () => {
-    //     infoWindow.open(map, marker);
-    //   });
+    geoMediaMarkers.push(mediaMarker);
   });
+
 }
 
-function createSlideImageForMediaMarker(geoMediaList, mediaMarker) {
-  let slideIdCount = 1;
-  let carousel = document.createElement("div");
+function applyAnimationToMarker(mediaMarker) {
+  // 'animated-marker' 클래스를 마커의 content에 추가합니다.
+  // 이 클래스는 CSS에서 미리 정의된 애니메이션 효과를 적용합니다.
+  mediaMarker.content.classList.add('animated-marker');
+}
+
+function deleteAnimationToMarker(mediaMarker) {
+  // 'animated-marker' 클래스를 마커의 content에 추가합니다.
+  // 이 클래스는 CSS에서 미리 정의된 애니메이션 효과를 적용합니다.
+  mediaMarker.content.classList.remove('animated-marker');
+}
+
+
+
+function createSlideImageForMediaMarker(geoMediaList, mediaMarker){
+  let slideIdCount=1;
+  let carousel=document.createElement('div');
 
   carousel.classList.add("carousel", "w-full");
 
-  const geoMediaListWithoutThumbnail = geoMediaList.filter(
-    (geoMedia) => geoMedia.mediaType != "thumbnail"
-  );
+  const geoMediaListWithoutThumbnail = geoMediaList.filter((geoMedia) => geoMedia.mediaType != "thumbnail");
 
-  geoMediaListWithoutThumbnail.forEach(function (geoMedia) {
-    if (geoMedia.mediaType === "video") {
-      const carouselItem = document.createElement("div");
-      carouselItem.classList.add("carousel-item", "relative", "w-full");
-      carouselItem.id = "slide" + slideIdCount++;
+  
+  geoMediaListWithoutThumbnail.forEach( function(geoMedia){
+        if(geoMedia.mediaType==='video'){
+        const carouselItem = document.createElement("div");
+        carouselItem.classList.add("carousel-item", "relative", "w-full");
+        carouselItem.id="slide"+(slideIdCount++);
+        
 
-      const videoElement = document.createElement("video");
-      videoElement.src = geoMedia.url;
-      videoElement.controls = true;
-      videoElement.classList.add("w-full", "h-auto");
-      carouselItem.appendChild(videoElement);
-      if (geoMediaListWithoutThumbnail.length > 1) {
-        const carouselBtns = document.createElement("div");
-        carouselBtns.classList.add(
-          "absolute",
-          "flex",
-          "justify-between",
-          "transform",
-          "-translate-y-1/2",
-          "left-5",
-          "right-5",
-          "top-1/2"
-        );
-        let beforSlideId = slideIdCount - 2;
-        if (beforSlideId < 1) {
-          beforSlideId = geoMediaListWithoutThumbnail.length;
+         const videoElement = document.createElement("video");
+         videoElement.src = geoMedia.url;
+         videoElement.controls = true;
+         videoElement.classList.add("w-full", "h-auto");
+         carouselItem.appendChild(videoElement);
+         if(geoMediaListWithoutThumbnail.length > 1){
+          const carouselBtns = document.createElement("div");
+          carouselBtns.classList.add("absolute" ,"flex", "justify-between" , "transform", "-translate-y-1/2", "left-5", "right-5" ,"top-1/2");
+          let beforSlideId = slideIdCount-2;
+          if(beforSlideId<1){
+            beforSlideId = geoMediaListWithoutThumbnail.length;
+          }
+          let afterSlideId = slideIdCount;
+          if(afterSlideId>geoMediaListWithoutThumbnail.length){
+            afterSlideId = 1;
+          }
+
+          let beforBtn = document.createElement("a");
+          beforBtn.href="#slide"+beforSlideId;
+          beforBtn.classList.add("btn", "btn-circle");
+          beforBtn.innerText = "❮";
+
+
+          let afterBtn = document.createElement("a");
+          afterBtn.href="#slide"+afterSlideId;
+          afterBtn.classList.add("btn", "btn-circle");
+          afterBtn.innerHTML="❯";
+
+          carouselBtns.appendChild(beforBtn);
+          carouselBtns.appendChild(afterBtn);
+
+          carouselItem.appendChild(carouselBtns)
+          
+
+         }
+         carousel.appendChild(carouselItem);
+
+
+        }else if(geoMedia.mediaType === 'photo'){
+          
+
+          const carouselItem = document.createElement("div");
+          carouselItem.classList.add("carousel-item", "relative", "w-full");
+          carouselItem.id="slide"+(slideIdCount++);
+
+          const img = document.createElement("img");
+          img.src = geoMedia.url;
+          img.classList.add("w-full", "h-auto");
+          carouselItem.appendChild(img);
+
+          if(geoMediaListWithoutThumbnail.length > 1){
+            const carouselBtns = document.createElement("div");
+            carouselBtns.classList.add("absolute" ,"flex", "justify-between" , "transform", "-translate-y-1/2", "left-5", "right-5" ,"top-1/2");
+            let beforSlideId = slideIdCount-2;
+            if(beforSlideId<1){
+              beforSlideId = geoMediaListWithoutThumbnail.length;
+            }
+            let afterSlideId = slideIdCount;
+            if(afterSlideId>geoMediaListWithoutThumbnail.length){
+              afterSlideId = 1;
+            }
+
+            let beforBtn = document.createElement("a");
+            beforBtn.href="#slide"+beforSlideId;
+            beforBtn.classList.add("btn", "btn-circle");
+            beforBtn.innerText = "❮";
+
+
+            let afterBtn = document.createElement("a");
+            afterBtn.href="#slide"+afterSlideId;
+            afterBtn.classList.add("btn", "btn-circle");
+            afterBtn.innerHTML="❯";
+
+            carouselBtns.appendChild(beforBtn);
+            carouselBtns.appendChild(afterBtn);
+
+            carouselItem.appendChild(carouselBtns)
+            
+
+           }
+           carousel.appendChild(carouselItem);
+
         }
-        let afterSlideId = slideIdCount;
-        if (afterSlideId > geoMediaListWithoutThumbnail.length) {
-          afterSlideId = 1;
-        }
-
-        let beforBtn = document.createElement("a");
-        beforBtn.href = "#slide" + beforSlideId;
-        beforBtn.classList.add("btn", "btn-circle");
-        beforBtn.innerText = "❮";
-
-        let afterBtn = document.createElement("a");
-        afterBtn.href = "#slide" + afterSlideId;
-        afterBtn.classList.add("btn", "btn-circle");
-        afterBtn.innerHTML = "❯";
-
-        carouselBtns.appendChild(beforBtn);
-        carouselBtns.appendChild(afterBtn);
-
-        carouselItem.appendChild(carouselBtns);
-      }
-      carousel.appendChild(carouselItem);
-    } else if (geoMedia.mediaType === "photo") {
-      const carouselItem = document.createElement("div");
-      carouselItem.classList.add("carousel-item", "relative", "w-full");
-      carouselItem.id = "slide" + slideIdCount++;
-
-      const img = document.createElement("img");
-      img.src = geoMedia.url;
-      img.classList.add("w-full", "h-auto");
-      carouselItem.appendChild(img);
-
-      if (geoMediaListWithoutThumbnail.length > 1) {
-        const carouselBtns = document.createElement("div");
-        carouselBtns.classList.add(
-          "absolute",
-          "flex",
-          "justify-between",
-          "transform",
-          "-translate-y-1/2",
-          "left-5",
-          "right-5",
-          "top-1/2"
-        );
-        let beforSlideId = slideIdCount - 2;
-        if (beforSlideId < 1) {
-          beforSlideId = geoMediaListWithoutThumbnail.length;
-        }
-        let afterSlideId = slideIdCount;
-        if (afterSlideId > geoMediaListWithoutThumbnail.length) {
-          afterSlideId = 1;
-        }
-
-        let beforBtn = document.createElement("a");
-        beforBtn.href = "#slide" + beforSlideId;
-        beforBtn.classList.add("btn", "btn-circle");
-        beforBtn.innerText = "❮";
-
-        let afterBtn = document.createElement("a");
-        afterBtn.href = "#slide" + afterSlideId;
-        afterBtn.classList.add("btn", "btn-circle");
-        afterBtn.innerHTML = "❯";
-
-        carouselBtns.appendChild(beforBtn);
-        carouselBtns.appendChild(afterBtn);
-
-        carouselItem.appendChild(carouselBtns);
-      }
-      carousel.appendChild(carouselItem);
-    }
   });
+
 
   mediaMarker.addListener("click", ({ domEvent, latLng }) => {
     const { target } = domEvent;

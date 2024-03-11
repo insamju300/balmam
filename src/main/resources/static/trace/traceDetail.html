@@ -191,7 +191,8 @@
       <div class="w-full flex flex-row">
         <div class="flex grow flex-col">
           <div id="map" class="h-96 w-full shadow-xl"></div>
-          <div class="w-full h-96 md:flex-row flex-col flex gap-1 mt-2 md:mt-10">
+
+          <div class="w-full h-96 md:flex-row flex-col flex gap-1 mt-2">
             <div class="w-1/2 flex flex-col">
               <h1 class="text-3xl font-bold">그리스 여행기 </h1>
               <p>2024-02-25 02:54 ~ 2024-02-25 04:54 </p>
@@ -260,7 +261,7 @@
 
             </div>
 
-            <div class="w-1/2 flex flex-col">
+            <div class="w-1/2 flex flex-col md:items-end">
               <span>1년전</span>
               <span>1시간 전 수정</span>
               <div class="flex gap-1 mt-2">
@@ -268,7 +269,7 @@
                   hover:bg-secondary_hard hover:text-bg_main text-md mr-5">수정</button>
                 <button type="button" onclick="confirm_for_delete_trace_modal.showModal();" class="btn btn-xs bg-base_white text-secondary_hard
                   hover:bg-secondary_hard hover:text-bg_main text-md">삭제</button>
-      
+
               </div>
 
 
@@ -280,7 +281,14 @@
         </div>
         <ul>
 
-          <li class="flex md:flex-row flex-col">
+          <li class="flex">
+            <div class="w-8  text-primary hover:text-primary_hard cursor-pointer text-xl justify-center flex mt-2"
+              onclick="tracePlay()">
+              <i class="fa-solid fa-circle-play"></i>
+            </div>
+          </li>
+
+          <li class="flex">
             <div class="w-8 flex justify-center cursor-pointer hover:brightness-125 hover:shadow-outline duration-100"
               onclick="return false">
               <img src="/images/icon/camera.png" class="transition duration-300 ease-in-out">
@@ -581,7 +589,8 @@
           <div class="modal-action">
             <form method="dialog ">
               <!-- if there is a button in form, it will close the modal -->
-              <button class="btn text-neutral" onclick="document.getElementById('confirm_for_delete_trace_modal').close()">취소</button>
+              <button class="btn text-neutral"
+                onclick="document.getElementById('confirm_for_delete_trace_modal').close()">취소</button>
             </form>
             <button onclick="doDeleteTrace()" class="btn text-neutral">삭제</button>
           </div>
@@ -589,6 +598,9 @@
       </dialog>
 
     </div>
+
+
+    
   </main>
 
 

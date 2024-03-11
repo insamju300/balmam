@@ -271,8 +271,15 @@
       {
         "time": 1709600941633,
         "mediaId": 2,
-        "mediaType": "thombnail",
+        "mediaType": "thumbnail",
         "url": "/images/etc/etc2.webp",
+        "parentMedia": 1
+      },
+      {
+        "time": 1709600941633,
+        "mediaId": 2,
+        "mediaType": "photo",
+        "url": "/images/etc/etc3.webp",
         "parentMedia": 1
       }
     ]
