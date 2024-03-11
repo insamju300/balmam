@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="utf-8">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>발맘</title>
+
+  <!-- 테일윈드 불러오기 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- daisy ui 불러오기 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/daisyui/4.6.1/full.css" />
+  <!-- 폰트어썸 불러오기 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+  <!-- anime js 불러보기-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
+  <!-- 제이쿼리 불러오기 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+  <!--공통 및 헤드 css, js-->
+  <link rel="stylesheet" th:href="@{/css/common.css}">
+  <script th:src="@{/js/common.js}"></script>
+  <script th:src="@{/js/header.js}"></script>
+</head>
+
+<body>
+  <header th:insert="/header :: header"></header>
+  <header id="ghost_header" class="w-screen">
+  </header>
+  <main>
+    <video muted autoplay loop class="fixed w-screen h-screen object-cover top-0 left-0 ">
+       <source th:src="@{/videos/main_background.mp4}" type="video/mp4">
+    </video>
+  </main>
+</body>
+
+</html>

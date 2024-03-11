@@ -1,3 +1,41 @@
 DROP DATABASE IF EXISTS `Balmam`;
 CREATE DATABASE `Balmam`;
 USE `Balmam`;
+
+CREATE TABLE mediaFiles (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    regDate DATETIME,
+    updateDate DATETIME,
+    `name` VARCHAR(255),
+    `path` VARCHAR(255),
+    `realPath` VARCHAR(255),
+    size BIGINT,
+    `type` VARCHAR(50)
+);
+
+CREATE TABLE Users (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    nickname VARCHAR(100) NOT NULL,
+    introduction TEXT,
+    profileImageId BIGINT,
+    profileImageUrl VARCHAR(255),
+    isWithdrawn BOOLEAN DEFAULT FALSE,
+    withdrawalDate DATETIME,
+    emailVerified BOOLEAN DEFAULT FALSE,
+    regDate DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updateDate DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (profileImageId) REFERENCES ProfileImages(id) -- Assuming there's a ProfileImages table
+);
+
+
+CREATE TABLE EmailAuthentications (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    userId BIGINT NOT NULL,
+    token VARCHAR(255) NOT NULL,
+    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    expiresAt DATETIME NOT NULL,
+    verified BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (userId) REFERENCES Users(id)
+);

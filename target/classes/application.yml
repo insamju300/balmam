@@ -6,3 +6,10 @@ spring:
     password: 
 mybatis:
   type-aliases-package: com.smw.project.balmam.entity
+  
+
+##이미지 및 동영상 파일 upload directory 지정
+file:
+  upload:
+    realPath: "C:/balmam/file-upload/"
+    path: "/files"
