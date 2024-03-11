@@ -2,6 +2,8 @@ package com.smw.project.balmam.entity;
 
 import java.time.LocalDateTime;
 
+import com.smw.project.balmam.Enum.EvmailAuthenticationType;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,12 +20,21 @@ public class EmailAuthenticationsEntity {
     private LocalDateTime createdAt;
     private LocalDateTime expiresAt;
     private boolean verified;
-    private String type;
+    EvmailAuthenticationType type;
     
 	public EmailAuthenticationsEntity(Long memberId, String token, LocalDateTime expiresAt) {
 		this.memberId = memberId;
 		this.token = token;
 		this.expiresAt = expiresAt;
+	}
+
+	public EmailAuthenticationsEntity(Long memberId, String token, LocalDateTime expiresAt,
+			EvmailAuthenticationType type) {
+		// TODO Auto-generated constructor stub
+		this.memberId = memberId;
+		this.token = token;
+		this.expiresAt = expiresAt;
+		this.type = type;
 	}
     
     

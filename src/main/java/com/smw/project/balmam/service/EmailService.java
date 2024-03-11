@@ -12,6 +12,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import com.smw.project.balmam.Enum.EvmailAuthenticationType;
 import com.smw.project.balmam.entity.EmailAuthenticationsEntity;
 import com.smw.project.balmam.repository.EmailAuthentication;
 
@@ -51,7 +52,7 @@ public class EmailService {
         LocalDateTime expiresAt = LocalDateTime.now().plusHours(24); // 24시간 후 만료
         String type= "emailVerification";
 
-        EmailAuthenticationsEntity emailAuthEntity = new EmailAuthenticationsEntity(memberId, token, expiresAt, type);
+        EmailAuthenticationsEntity emailAuthEntity = new EmailAuthenticationsEntity(memberId, token, expiresAt, EvmailAuthenticationType.emailVerification);
         
         emailAuthenticationRepository.insert(emailAuthEntity);
         

@@ -42,5 +42,6 @@ CREATE TABLE EmailAuthentications (
     token VARCHAR(255) NOT NULL,
     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
     expiresAt DATETIME NOT NULL,
-    verified BOOLEAN DEFAULT FALSE
+    verified BOOLEAN DEFAULT FALSE,
+    type VARCHAR(50)
 );
