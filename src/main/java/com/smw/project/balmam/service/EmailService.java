@@ -12,7 +12,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
-import com.smw.project.balmam.Enum.EvmailAuthenticationType;
+import com.smw.project.balmam.Enum.EmailAuthenticationType;
 import com.smw.project.balmam.entity.EmailAuthenticationsEntity;
 import com.smw.project.balmam.repository.EmailAuthentication;
 
@@ -52,7 +52,7 @@ public class EmailService {
         LocalDateTime expiresAt = LocalDateTime.now().plusHours(24); // 24시간 후 만료
         String type= "emailVerification";
 
-        EmailAuthenticationsEntity emailAuthEntity = new EmailAuthenticationsEntity(memberId, token, expiresAt, EvmailAuthenticationType.emailVerification);
+        EmailAuthenticationsEntity emailAuthEntity = new EmailAuthenticationsEntity(memberId, token, expiresAt, EmailAuthenticationType.emailVerification);
         
         emailAuthenticationRepository.insert(emailAuthEntity);
         
@@ -62,15 +62,31 @@ public class EmailService {
         sendSimpleMessage(email, "발맘: 이메일 인증", "다음 링크를 클릭하여 이메일을 인증해주세요: " + verificationLink);
     }
 
-	public EmailAuthenticationsEntity findEmailAuthenticationsFromToken(String token) {
-		// TODO Auto-generated method stub
+
+	public void updateVerifiedValue(String token, EmailAuthenticationType type) {
+		emailAuthenticationRepository.updateVerifiedValue(token, type);
 		
-		return emailAuthenticationRepository.findEmailAuthenticationsFromToken(token);
 	}
 
-	public void updateVerifiedValue(String token) {
-		emailAuthenticationRepository.updateVerifiedValue(token);
+	public void sendPasswordRestorationForm(String email, Long memberId) {
+        String token = UUID.randomUUID().toString();
+        LocalDateTime expiresAt = LocalDateTime.now().plusHours(24); // 24시간 후 만료
+
+        EmailAuthenticationsEntity emailAuthEntity = new EmailAuthenticationsEntity(memberId, token, expiresAt, EmailAuthenticationType.passwordRestoration);
+        
+        emailAuthenticationRepository.insert(emailAuthEntity);
+        
+        String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+
+        String verificationLink = baseUrl + "/member/passwordRestoration?token=" + token;
+        sendSimpleMessage(email, "발맘: 비밀번호 변경", "다음 링크를 클릭하여 비밀번호를 변경해 주세요 " + verificationLink);
 		
+	}
+
+	public EmailAuthenticationsEntity findEmailAuthenticationsFromToken(String token,
+			EmailAuthenticationType type) {
+		// TODO Auto-generated method stub
+		return emailAuthenticationRepository.findEmailAuthenticationsFromToken(token, type);
 	}
     
     

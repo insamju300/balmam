@@ -37,6 +37,7 @@ public class SettingLoginInfoInterceptor implements HandlerInterceptor {
         return true;
     }
     
+    
     private String determinePreviousUrl(HttpServletRequest request) throws URISyntaxException {
         String refererHeader = request.getHeader("Referer");
         if (refererHeader != null && !refererHeader.isEmpty()) {

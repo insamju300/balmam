@@ -69,9 +69,9 @@ public class MemberService {
 		return memberRepository.findMemberById(id);
 	}
 
-	public void updateMember(MemberInputDto memberInputDto) {
+	public void updateMember(MemberEntity memberEntity) {
 		// TODO Auto-generated method stub
-		 memberRepository.updateMember(memberInputDto);
+		 memberRepository.updateMember(memberEntity);
 	}
 
 

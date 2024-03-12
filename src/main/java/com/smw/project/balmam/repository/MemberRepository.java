@@ -36,16 +36,24 @@ public interface MemberRepository {
     		<script>
     		
     		UPDATE Member Set 
-    		<if test="email != null">
+    		<if test="email isNotNull">
     		    email = #{email},
+    		</if>
+    		<if test="password isNotNull ">
     		    password = #{password},
+    		</if>
+    		<if test="nickname isNotNull ">
     		    nickname = #{nickname},
+    		</if>
+    		<if test="introduction isNotNull ">
     		    introduction = #{introduction},
+    		</if>
+    		<if test="profileImageId isNotNull ">
     		    profileImageId = #{profileImageId},
     		</if>
     		where id=#{id}
     		</script>
     		""")
-	void updateMember(MemberInputDto memberInputDto);
+	void updateMember(MemberEntity memberEntity);
 	
 }

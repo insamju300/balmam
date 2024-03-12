@@ -31,17 +31,17 @@
         </label>
       </div>
       <div class="navbar-end md:justify-end justify-center m-2 ">
-        <button onclick="location.href='/member/login.html'"
+        <button th:if="${!loginInfo.islogined}" onclick="location.href='/member/login'" 
           class="btn btn-ghost btn-circle h-16 w-16 text-4xl text-primary hover:text-primary_hard">
           <i class="fa-solid fa-user"></i>
         </button>
 
 
-        <div class="dropdown dropdown-hover">
+        <div th:if="${loginInfo.islogined}" class="dropdown dropdown-hover">
           <div tabindex="0" role="button" class="btn m-1 bg-transparent border-0 hover:bg-transparent">
             <div class="avatar">
               <div class="w-12 rounded-full">
-                <img src="/images/avatar/boy.webp" />
+                <img  th:src="${loginInfo.userDto.profileImageUrl}   src="/images/avatar/boy.webp" />
               </div>
             </div>
           </div>
@@ -53,7 +53,7 @@
             <li><a class="hover:bg-primary hover:text-neutral">로그아웃</a></li>
           </ul>
         </div>
-        <button class="btn btn-ghost btn-circle text-primary hover:text-primary_hard h-16 w-16 text-4xl">
+        <button th:if="${loginInfo.islogined}" class="btn btn-ghost btn-circle text-primary hover:text-primary_hard h-16 w-16 text-4xl">
           <div class="indicator">
             <i class="fa-regular fa-bell"></i>
             <span class="badge badge-xs badge-error indicator-item"></span>

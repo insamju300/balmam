@@ -2,6 +2,7 @@ package com.smw.project.balmam.entity;
 
 import java.time.LocalDateTime;
 
+import com.smw.project.balmam.Enum.RoleType;
 import com.smw.project.balmam.dto.MemberInputDto;
 
 import lombok.Getter;
@@ -22,6 +23,7 @@ public class MemberEntity {
     private boolean isWithdrawn;
     private LocalDateTime withdrawalDate;
     private boolean emailVerified;
+    private RoleType roleType;
     
     private String extra__profileImageName;
 

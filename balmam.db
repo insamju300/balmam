@@ -29,7 +29,8 @@ CREATE TABLE `Member` (
     profileImageId BIGINT,
     isWithdrawn BOOLEAN DEFAULT FALSE,
     withdrawalDate DATETIME,
-    emailVerified BOOLEAN DEFAULT FALSE
+    emailVerified BOOLEAN DEFAULT FALSE,
+    roleType VARCHAR(50) DEFAULT 'user'
 );
 
 
@@ -40,7 +41,7 @@ CREATE TABLE EmailAuthentications (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     memberId BIGINT NOT NULL,
     token VARCHAR(255) NOT NULL,
-    createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+    regDate DATETIME DEFAULT CURRENT_TIMESTAMP,
     expiresAt DATETIME NOT NULL,
     verified BOOLEAN DEFAULT FALSE,
     type VARCHAR(50)
