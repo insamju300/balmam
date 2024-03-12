@@ -6,12 +6,12 @@ import lombok.Setter;
 @Getter
 @Setter
 public class LoginInfoDTO {
-    private boolean isLogined = false;
+    private boolean logined = false;
     private UserDto userDto = null;
     private String previousUrl = "";
 
-    public LoginInfoDTO(boolean isLogined, UserDto userDto, String previousUrl) {
-        this.isLogined = isLogined;
+    public LoginInfoDTO(boolean logined, UserDto userDto, String previousUrl) {
+        this.logined = logined;
         this.userDto = userDto;
         this.previousUrl = previousUrl;
     }

@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -140,7 +139,7 @@ public class MemberController {
 			return "redirect:/";
 		}
 		
-		emailService.updateVerifiedValue("token", EmailAuthenticationType.emailVerification);
+		emailService.updateVerifiedValue(token, EmailAuthenticationType.emailVerification);
 		
 		
 		MessageResponse message = new MessageResponse("INFO", "메일 인증이 완료되었습니다. \n멋진 여행이 여러분을 기다리길", "환영합니다.");
@@ -157,7 +156,8 @@ public class MemberController {
 	
 	//로그인 처리
 	@PostMapping("/member/login")
-	public String doLogin(String email, String password, HttpSession session, LoginInfoDTO loginInfo, RedirectAttributes redirectAttributes ) {
+	public String doLogin(String email, String password, HttpSession session, HttpServletRequest request, RedirectAttributes redirectAttributes ) {
+		LoginInfoDTO loginInfo = (LoginInfoDTO)request.getAttribute("loginInfo");
 		if(Ut.isNullOrEmpty(email)) {
 			MessageResponse message = new MessageResponse("EXCEPTION", "email이 입력되지 않았습니다.", "잘못된 요청");
 			redirectAttributes.addFlashAttribute("message", message);

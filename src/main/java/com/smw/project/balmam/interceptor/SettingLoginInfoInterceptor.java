@@ -20,7 +20,7 @@ public class SettingLoginInfoInterceptor implements HandlerInterceptor {
         HttpSession session = request.getSession();
 
         // 로그인 여부 확인
-        boolean isLogined = session.getAttribute("userId") != null;
+        boolean isLogined = session.getAttribute("userDto") != null;
         
 
         // 로그인된 경우, UserDto 가져오기

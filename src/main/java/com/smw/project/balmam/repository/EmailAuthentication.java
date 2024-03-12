@@ -16,17 +16,17 @@ public interface EmailAuthentication {
 	@Options(useGeneratedKeys = true, keyProperty = "id")
 	void insert(EmailAuthenticationsEntity emailAuthEntity);
 
-	@Select("SELECT * FROM emailAuthentications WHERE TOKEN = ${token} AND TYPE = ${type}")
+	@Select("SELECT * FROM emailAuthentications WHERE TOKEN = #{token} AND `TYPE` = #{type}")
 	EmailAuthenticationsEntity findEmailAuthenticationsFromToken(String token, EmailAuthenticationType type);
 
 	@Update("""
 			<script>
 			UPDATE EmailAuthentications AS ea
-			<if test='type.equals("emailVerification")'>
+			<if test="type.toString() == 'emailVerification'">
 			  INNER JOIN Member AS m ON ea.memberId = m.id
 			</if>
 			SET ea.verified = TRUE
-			<if test='type.equals("emailVerification")'>
+			<if test="type.toString() == 'emailVerification'">
 			  , m.emailVerified = TRUE
 			</if>
 			WHERE ea.token = #{token}

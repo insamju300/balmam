@@ -6,10 +6,12 @@ import com.smw.project.balmam.Enum.RoleType;
 import com.smw.project.balmam.dto.MemberInputDto;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class MemberEntity {
 
 	private Long id;

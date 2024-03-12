@@ -23,7 +23,7 @@ public interface MemberRepository {
 	@Select("SELECT COUNT(*) > 0 FROM Member WHERE email = #{email}")
 	boolean isExistsEmail(String email);
 
-	@Select("SELECT m.*, f.name as extra__profileImageName FROM Member m left outer join mediaFiles f on m.profileImageId=f.id WHERE m.emial = #{email}")
+	@Select("SELECT m.*, f.name as extra__profileImageName FROM Member m left outer join mediaFiles f on m.profileImageId=f.id WHERE m.email = #{email}")
 	MemberEntity findMemberByEmail(String email);
 	
 	@Select("SELECT m.*, f.name as extra__profileImageName FROM Member m left outer join mediaFiles f on m.profileImageId=f.id WHERE m.id = #{id}")

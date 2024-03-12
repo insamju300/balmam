@@ -80,6 +80,7 @@ public class EmailService {
 
         String verificationLink = baseUrl + "/member/passwordRestoration?token=" + token;
         sendSimpleMessage(email, "발맘: 비밀번호 변경", "다음 링크를 클릭하여 비밀번호를 변경해 주세요 " + verificationLink);
+        
 		
 	}
 
