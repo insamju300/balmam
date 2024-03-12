@@ -47,10 +47,10 @@
           </div>
           <ul tabindex="0"
             class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52 text-2xl -translate-x-1/4">
-            <li><a class="hover:bg-primary hover:text-neutral" href="/member/detail.html">내 정보 보기</a></li>
+            <li><a class="hover:bg-primary hover:text-neutral" th:href="@{'/member/detail?id=' + ${loginInfo.userId}}">내 정보 보기</a></li>
             <li><a class="hover:bg-primary hover:text-neutral">구독</a></li>
             <li><a class="hover:bg-primary hover:text-neutral">책갈피</a></li>
-            <li><a class="hover:bg-primary hover:text-neutral">로그아웃</a></li>
+            <li><a href="/member/logout" class="hover:bg-primary hover:text-neutral">로그아웃</a></li>
           </ul>
         </div>
         <button th:if="${loginInfo.logined}" class="btn btn-ghost btn-circle text-primary hover:text-primary_hard h-16 w-16 text-4xl">

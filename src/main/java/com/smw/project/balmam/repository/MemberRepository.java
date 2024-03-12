@@ -35,22 +35,24 @@ public interface MemberRepository {
     @Update("""
     		<script>
     		
-    		UPDATE Member Set 
-    		<if test="email isNotNull">
-    		    email = #{email},
-    		</if>
-    		<if test="password isNotNull ">
-    		    password = #{password},
-    		</if>
-    		<if test="nickname isNotNull ">
-    		    nickname = #{nickname},
-    		</if>
-    		<if test="introduction isNotNull ">
-    		    introduction = #{introduction},
-    		</if>
-    		<if test="profileImageId isNotNull ">
-    		    profileImageId = #{profileImageId},
-    		</if>
+    		UPDATE Member
+		        <set>
+		            <if test="email != null">
+		                email = #{email},
+		            </if>
+		            <if test="password != null">
+		                password = SHA2(#{password}, 256),
+		            </if>
+		            <if test="nickname != null">
+		                nickname = #{nickname},
+		            </if>
+		            <if test="introduction != null">
+		                introduction = #{introduction},
+		            </if>
+		            <if test="profileImageId != null">
+		                profileImageId = #{profileImageId},
+		            </if>
+		        </set>
     		where id=#{id}
     		</script>
     		""")

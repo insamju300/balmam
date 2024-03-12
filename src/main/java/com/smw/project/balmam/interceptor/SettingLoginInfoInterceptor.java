@@ -21,10 +21,16 @@ public class SettingLoginInfoInterceptor implements HandlerInterceptor {
 
         // 로그인 여부 확인
         boolean isLogined = session.getAttribute("userDto") != null;
+
         
 
         // 로그인된 경우, UserDto 가져오기
         UserDto userDto = (UserDto)session.getAttribute("userDto");
+        
+        Long userId = null;
+        if(isLogined) {
+        	userId = userDto.getId();
+        }
 
         // 이전 URL 가져오기
         // 이 부분은 프로젝트의 URL 구조와 어플리케이션 로직에 따라 다르게 구현될 수 있습니다.
@@ -32,7 +38,7 @@ public class SettingLoginInfoInterceptor implements HandlerInterceptor {
         String previousUrl = determinePreviousUrl(request);
 
         // LoginInfoDTO 설정 및 request에 추가
-        LoginInfoDTO loginInfo = new LoginInfoDTO(isLogined, userDto, previousUrl);
+        LoginInfoDTO loginInfo = new LoginInfoDTO(isLogined, userId, userDto, previousUrl);
         request.setAttribute("loginInfo", loginInfo);
         return true;
     }

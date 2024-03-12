@@ -241,18 +241,23 @@ function doPasswordRestoration() {
 }
 
 function sendMailForPasswordRestoration(email) {
-	//작성자 mail이나 id를 넘겨줄것.
-	showEmailAlertForPasswordRestoration(email);
+	alert(email);
+    $.ajax({
+        url: '/member/sendPasswordRestorationForm?email=' + encodeURIComponent(email),
+        type: 'GET',
+        success: function(response) {
+            // Code to be executed when the request is successful
+            commonsAlert(response.message); // Assuming commonsAlert is a custom function for displaying alerts
+        },
+        error: function(xhr, status, error) {
+            // Code to be executed when request fails
+            console.error('Failed to send password recovery email:', error);
+            // Provide feedback to the user, including displaying a failure message
+        }
+    });
 }
 
-function showEmailAlertForPasswordRestoration(email) {
-	commonsAlert(
-		"비밀번호 변경을 위한 링크를 메일(" +
-		email +
-		")로 전송하였습니다. <br> 전송된 링크에서 비밀번호를 변경해 주세요.",
-		"메일을 전송하였습니다."
-	);
-}
+
 
 function joinFormValidationCheck(ele) {
 	let isValidationOk = emailValidationCheck();

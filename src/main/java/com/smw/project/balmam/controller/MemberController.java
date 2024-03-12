@@ -62,13 +62,18 @@ public class MemberController {
 	}
 	
 	//이메일 변경 메일 전송
-	@PostMapping("/member/sendPasswordRestorationForm")
+	@GetMapping("/member/sendPasswordRestorationForm")
 	@ResponseBody
-	public ResultData<String> sendPasswordRestorationForm(HttpServletRequest request, RedirectAttributes redirectAttributes) {
-		LoginInfoDTO loginInfo = (LoginInfoDTO)request.getAttribute("loginInfo");
-		emailService.sendPasswordRestorationForm(loginInfo.getUserDto().getEmail(), loginInfo.getUserDto().getId());
+	public ResultData<String> sendPasswordRestorationForm(String email, RedirectAttributes redirectAttributes) {
+		System.err.println(email);
+		MemberEntity findMember = memberService.findMemberByEmail(email);
+		if(findMember == null) {
+			ResultData<String> resultData = ResultData.ofMessage("F-1",  String.format("가입되지 않은 email입니다."));	
+			return resultData;
+		}
+		emailService.sendPasswordRestorationForm(email, findMember.getId());
 		
-		ResultData<String> resultData = ResultData.ofMessage("S-1",  String.format("비밀번호 변경을 위한 링크를 메일(%s)로 전송하였습니다.\n전송된 링크에서 비밀번호를 변경해 주세요."));
+		ResultData<String> resultData = ResultData.ofMessage("S-1",  String.format("비밀번호 변경을 위한 링크를 메일(%s)로 전송하였습니다.\n전송된 링크에서 비밀번호를 변경해 주세요.", email));
 		return resultData;
 	}
 	
@@ -96,6 +101,7 @@ public class MemberController {
 		
 		emailService.updateVerifiedValue(token, EmailAuthenticationType.passwordRestoration);
 		
+		System.err.println(emailAuthenticationsEntity.getMemberId());
 		model.addAttribute("id", emailAuthenticationsEntity.getMemberId());
 		return "/member/passwordRestoration";
 	}
@@ -198,7 +204,6 @@ public class MemberController {
 
 		UserDto userDto = new UserDto(findMember, path);
 		session.setAttribute("userDto", userDto);
-		session.setAttribute("userId", findMember.getId());
 		String previouseUrl = loginInfo.getPreviousUrl();
 		if(previouseUrl == null) {
 			previouseUrl="/";
@@ -208,19 +213,19 @@ public class MemberController {
 	
 	//로그아웃 처리
 	@GetMapping("/member/logout")
-	public String doLogout(HttpSession session, LoginInfoDTO loginInfo, RedirectAttributes redirectAttributes ) {
+	public String doLogout(HttpSession session, RedirectAttributes redirectAttributes ) {
 		session.removeAttribute("userDto");
-		session.removeAttribute("userId");
-		String previouseUrl = loginInfo.getPreviousUrl();
-		if(previouseUrl == null) {
-			previouseUrl="/";
-		}
-		return "redirect:"+previouseUrl;
+//		String previouseUrl = loginInfo.getPreviousUrl();
+//		if(previouseUrl == null) {
+//			previouseUrl="/";
+//		}
+		return "redirect:/";
 	}
 	
 	//탈퇴 처리
 	@PostMapping("/member/withdrawn")
-	public String doWithdrawn(String password, LoginInfoDTO loginInfo, RedirectAttributes redirectAttributes ) {
+	public String doWithdrawn(String password, HttpServletRequest request, RedirectAttributes redirectAttributes ) {
+		LoginInfoDTO loginInfo = (LoginInfoDTO)request.getAttribute("loginInfo");
 		String email = loginInfo.getUserDto().getEmail();
 		MemberEntity findMember = memberService.findMemberByEmail(email);
 		
@@ -240,6 +245,18 @@ public class MemberController {
 		redirectAttributes.addFlashAttribute("message", message);
 		return "redirect:/";
 	}
+	
+	
+	@GetMapping("/member/detail")
+	public String showDetail(Model model, Long id) {
+		
+		
+		MemberEntity findMember = memberService.findMemberById(id);
+		MemberOutputDto member = new MemberOutputDto(findMember, path);
+		model.addAttribute("member", member);
+		
+		return  "/member/detail";
+	}	
 	
 	//수정 폼
 	@GetMapping("/member/modify")

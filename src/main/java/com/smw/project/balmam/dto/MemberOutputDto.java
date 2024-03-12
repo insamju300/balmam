@@ -18,6 +18,7 @@ public class MemberOutputDto {
 			this.profileImageUrl = path+"/"+findMember.getExtra__profileImageName();
 			this.profileImageId = findMember.getProfileImageId();
 			this.isWithdrawn = findMember.isWithdrawn();
+			this.introduction = findMember.getIntroduction();
 		}
 		private Long id;
 	    private String email;
