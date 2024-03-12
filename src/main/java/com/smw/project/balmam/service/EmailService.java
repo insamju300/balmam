@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.smw.project.balmam.Enum.EmailAuthenticationType;
@@ -47,6 +48,7 @@ public class EmailService {
         mailSender.send(message);
     }
     
+    @Async
     public void sendEmailVerification(String email, Long memberId) {
         String token = UUID.randomUUID().toString();
         LocalDateTime expiresAt = LocalDateTime.now().plusHours(24); // 24시간 후 만료
@@ -68,6 +70,7 @@ public class EmailService {
 		
 	}
 
+	@Async
 	public void sendPasswordRestorationForm(String email, Long memberId) {
         String token = UUID.randomUUID().toString();
         LocalDateTime expiresAt = LocalDateTime.now().plusHours(24); // 24시간 후 만료

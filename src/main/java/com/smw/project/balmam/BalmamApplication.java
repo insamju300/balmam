@@ -1,10 +1,10 @@
 package com.smw.project.balmam;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.io.IOException;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -12,8 +12,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Component;
 
+@EnableAsync
 @SpringBootApplication
 public class BalmamApplication {
 
