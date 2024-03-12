@@ -59,9 +59,9 @@ public class MemberService {
 		return memberRepository.findMemberByEmail(email);
 	}
 
-	public void updateWithdrawn(String email) {
+	public void updateWithdrawn(Long id) {
 		// TODO Auto-generated method stub
-		memberRepository.updateWithdrawn(email);
+		memberRepository.updateWithdrawn(id);
 	}
 
 	public MemberEntity findMemberById(Long id) {

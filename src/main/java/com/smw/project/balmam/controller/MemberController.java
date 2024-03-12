@@ -226,8 +226,9 @@ public class MemberController {
 	@PostMapping("/member/withdrawn")
 	public String doWithdrawn(String password, HttpServletRequest request, RedirectAttributes redirectAttributes ) {
 		LoginInfoDTO loginInfo = (LoginInfoDTO)request.getAttribute("loginInfo");
-		String email = loginInfo.getUserDto().getEmail();
-		MemberEntity findMember = memberService.findMemberByEmail(email);
+		Long id = loginInfo.getUserId();
+		System.err.println(id);
+		MemberEntity findMember = memberService.findMemberById(id);
 		
 		if(!memberService.checkPassword(password, findMember)) {
 			MessageResponse message = new MessageResponse("EXCEPTION", "비밀번호가 일치하지 않습니다.", "잘못된 요청");
@@ -240,10 +241,10 @@ public class MemberController {
 		}
 		
 
-		memberService.updateWithdrawn(email);
+		memberService.updateWithdrawn(id);
 		MessageResponse message = new MessageResponse("INFO", "회원탈퇴가 완료되었습니다.", "안녕히가세요");
 		redirectAttributes.addFlashAttribute("message", message);
-		return "redirect:/";
+		return "redirect:/member/logout";
 	}
 	
 	
@@ -267,16 +268,16 @@ public class MemberController {
 		MemberOutputDto member = new MemberOutputDto(findMember, path);
 		model.addAttribute("member", member);
 		
-		return  "modify";
+		return  "/member/modify";
 	}
 	
-	//수정 처리
 	@PostMapping("/member/modify")
 	public String doModify(MemberInputDto memberInputDto) {
-		MemberEntity memberEntity = new MemberEntity(memberInputDto);
-		memberService.updateMember(memberEntity);
+	    MemberEntity memberEntity = new MemberEntity(memberInputDto);
+	    memberService.updateMember(memberEntity);
 
-		return "redirect:/";
+	    // 수정 후 member 상세보기로 리다이렉트, id 값을 쿼리 파라미터로 추가
+	    return "redirect:/member/detail?id=" + memberInputDto.getId();
 	}
 	
 

@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>발맘</title>
+  <title>발맘: 유저 상세보기</title>
 
   <!-- 테일윈드 불러오기 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" />
@@ -25,9 +25,6 @@
   <script src="/js/header.js"></script>
 
   <script src="/js/member/member.js"></script>
-
-  <!--파비콘. 적용 안되는거같으니 확인 요망-->
-  <link rel="favicon" href="/images/logo/logo.ico">
 
   <style>
     /* html {
@@ -65,13 +62,15 @@
         </p>
         <div class="flex justify-center mt-2" th:if="${loginInfo.userId == member.id}">
           <button type="button" onclick="location.href='/member/modify.html'" class="btn  btn-md bg-base_white text-secondary_hard
-            hover:bg-secondary_hard hover:text-bg_main text-xl mr-5">수정</button>
+            hover:bg-secondary_hard hover:text-bg_main text-xl mr-5" th:onclick="'location.href=\'/member/modify?id=' + ${member.id} + '\''">수정</button>
+            
           <button type="button" onclick="confirm_for_withdrawa_modal.showModal();" class="btn btn-md bg-base_white text-secondary_hard
             hover:bg-secondary_hard hover:text-bg_main text-2xl">탈퇴</button>
         </div>
 
         <dialog id="confirm_for_withdrawa_modal" class="modal text-neutral">
           <div class="modal-box">
+          <form action="/member/withdrawn" method="post">
             <h3 class="font-bold text-lg text-primary">정말로 탈퇴하시겠습니까?</h3>
             <p class="py-4">탈퇴 후에는 해당 계정으로 발맘의 서비스를 이용할 수 없습니다. <br> 그래도 탈퇴를 희망하신다면 비밀번호를 입력해 주세요.</p>
             <div class="input input-bordered flex items-center gap-2 text-neutral text-xl grow">
@@ -93,9 +92,10 @@
             <div class="modal-action">
               <!-- <form method="dialog "> -->
                 <!-- if there is a button in form, it will close the modal -->
-                <button onclick="document.getElementById('confirm_for_withdrawa_modal').close()" class="btn text-neutral">취소</button>
+                <button type="button" onclick="document.getElementById('confirm_for_withdrawa_modal').close()" class="btn text-neutral">취소</button>
               <!-- </form> -->
-              <button onclick="doWithdrawn()" class="btn text-neutral">탈퇴하겠습니다.</button>
+              <button type="submit" class="btn text-neutral">탈퇴하겠습니다.</button>
+              </form>
             </div>
           </div>
         </dialog>

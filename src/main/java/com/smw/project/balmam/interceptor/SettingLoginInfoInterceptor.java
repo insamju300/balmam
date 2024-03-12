@@ -49,9 +49,18 @@ public class SettingLoginInfoInterceptor implements HandlerInterceptor {
         if (refererHeader != null && !refererHeader.isEmpty()) {
             URI refererUri = new URI(refererHeader);
             URI requestUri = new URI(request.getRequestURL().toString());
+
             if (refererUri.getHost().equals(requestUri.getHost())) {
-               return refererUri.getPath();
-               
+                // 쿼리 스트링 추출
+                String query = refererUri.getQuery();
+                String path = refererUri.getPath();
+                
+                // 쿼리 스트링이 있는 경우, 경로에 추가
+                if (query != null && !query.isEmpty()) {
+                    return path + "?" + query;
+                } else {
+                    return path;
+                }
             }
         }
         return null; // 다른 화면에서 넘어오지 않았다면 null 반환

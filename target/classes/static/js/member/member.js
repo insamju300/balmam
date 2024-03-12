@@ -1,5 +1,6 @@
 function changeProfileAvatar(ele) {
 	let img_src_data = ele.getAttribute("data-profile-img-src");
+	let img_src_id = ele.getAttribute("data-profile-img-id");
 
 	const default_img_path = "/images/avatar/";
 	const default_img_extention = ".webp";
@@ -9,6 +10,7 @@ function changeProfileAvatar(ele) {
 		$(".hidden-upload").click();
 		return;
 	}
+	$("#form_profile_image_id").val(img_src_id);
 	$("#form_avatar_img").attr("src", image_path);
 }
 

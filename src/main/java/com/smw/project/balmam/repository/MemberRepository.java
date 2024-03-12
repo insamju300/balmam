@@ -29,9 +29,6 @@ public interface MemberRepository {
 	@Select("SELECT m.*, f.name as extra__profileImageName FROM Member m left outer join mediaFiles f on m.profileImageId=f.id WHERE m.id = #{id}")
 	MemberEntity findMemberById(Long id);
 
-    @Update("UPDATE Member Set isWithdrawn=TRUE, withdrawalDate=Now()")
-	void updateWithdrawn(String email);
-
     @Update("""
     		<script>
     		
@@ -57,5 +54,8 @@ public interface MemberRepository {
     		</script>
     		""")
 	void updateMember(MemberEntity memberEntity);
+
+    @Update("UPDATE Member Set isWithdrawn=TRUE, withdrawalDate=Now() Where id=#{id}")
+	void updateWithdrawn(Long id);
 	
 }
