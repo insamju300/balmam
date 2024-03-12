@@ -25,12 +25,8 @@
 
   <script src="/js/member/member.js"></script>
 
-  <style>
-    /* html {
-      background: url(/images/background/member_bg.png) no-repeat center center fixed;
-      background-size: cover;
-    } */
-  </style>
+  
+
 </head>
 
 <body>
@@ -124,7 +120,8 @@
         <div class="flex md:flex-row flex-col mt-2 md:mt-10">
           <label class="block text-2xl text-neutral mx-2 w-36">비밀번호</label>
           <!--임시로 넘겨준 email 나중에 변경 필요.-->
-          <button type="button" onclick="sendMailForPasswordRestoration('travelboy@travle.co.kr')" class="btn btn-md bg-base_white text-secondary_hard
+          
+          <button type="button" th:email="${member.email}" onclick="sendMailForPasswordRestoration(this.getAttribute('email'))" class="btn btn-md bg-base_white text-secondary_hard
       hover:bg-secondary_hard hover:text-bg_main text-md">비밀번호 변경 링크 전송</button>
 
         </div>
@@ -136,8 +133,8 @@
               <path
                 d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" />
             </svg>
-            <input onBlur="nicknameValidationCheck()" id="form_nickname_input" type="text" class="grow" name="nickname"
-              placeholder="닉네임" maxlength="10" autocomplete="off"  th:value="${member.nickname}"/>
+            <input onBlur="nicknameValidationCheck()" id="form_nickname_input" type="text" class="grow" name="nickname" th:data-before-nickname="${member.nickname}"
+              placeholder="닉네임" maxlength="10" autocomplete="off"  th:value="${member.nickname}" />
           </div>
 
         </div>

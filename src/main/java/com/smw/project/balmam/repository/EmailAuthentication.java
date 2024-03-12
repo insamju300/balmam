@@ -6,8 +6,8 @@ import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
-import com.smw.project.balmam.Enum.EmailAuthenticationType;
 import com.smw.project.balmam.entity.EmailAuthenticationsEntity;
+import com.smw.project.balmam.enums.EmailAuthenticationType;
 
 @Mapper
 public interface EmailAuthentication {

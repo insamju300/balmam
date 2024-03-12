@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.smw.project.balmam.Enum.EmailAuthenticationType;
 import com.smw.project.balmam.dto.LoginInfoDTO;
 import com.smw.project.balmam.dto.MemberInputDto;
 import com.smw.project.balmam.dto.MemberOutputDto;
@@ -20,6 +19,7 @@ import com.smw.project.balmam.dto.ResultData;
 import com.smw.project.balmam.dto.UserDto;
 import com.smw.project.balmam.entity.EmailAuthenticationsEntity;
 import com.smw.project.balmam.entity.MemberEntity;
+import com.smw.project.balmam.enums.EmailAuthenticationType;
 import com.smw.project.balmam.service.EmailService;
 import com.smw.project.balmam.service.FileService;
 import com.smw.project.balmam.service.MemberService;
@@ -51,10 +51,11 @@ public class MemberController {
 	
 	//회원가입
 	@PostMapping("/member/join")
-	public String doJoin(MemberInputDto memberInputDto, RedirectAttributes redirectAttributes) {
+	public String doJoin(MemberInputDto memberInputDto, RedirectAttributes redirectAttributes, HttpServletRequest request) {
 		MemberEntity memberEntity = new MemberEntity(memberInputDto);
 		memberService.insertMember(memberEntity);		
-		emailService.sendEmailVerification(memberEntity.getEmail(), memberEntity.getId());
+		String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+		emailService.sendEmailVerification(memberEntity.getEmail(), memberEntity.getId(), baseUrl);
 		//todo 로그인시 미인증 계정이면 인증 재전송 필요
 		MessageResponse message = new MessageResponse("INFO", String.format("메일 인증 링크를, 설정해주신 이메일(%s)로 전송하였습니다.\n 인증을 완료하시고 멋진 여행을 시작해 주세요.", memberInputDto.getEmail()), "환영합니다.");
 		redirectAttributes.addFlashAttribute("message", message);
@@ -64,14 +65,15 @@ public class MemberController {
 	//이메일 변경 메일 전송
 	@GetMapping("/member/sendPasswordRestorationForm")
 	@ResponseBody
-	public ResultData<String> sendPasswordRestorationForm(String email, RedirectAttributes redirectAttributes) {
+	public ResultData<String> sendPasswordRestorationForm(String email, RedirectAttributes redirectAttributes, HttpServletRequest request) {
 		System.err.println(email);
 		MemberEntity findMember = memberService.findMemberByEmail(email);
 		if(findMember == null) {
 			ResultData<String> resultData = ResultData.ofMessage("F-1",  String.format("가입되지 않은 email입니다."));	
 			return resultData;
 		}
-		emailService.sendPasswordRestorationForm(email, findMember.getId());
+		String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+		emailService.sendPasswordRestorationForm(email, findMember.getId(), baseUrl);
 		
 		ResultData<String> resultData = ResultData.ofMessage("S-1",  String.format("비밀번호 변경을 위한 링크를 메일(%s)로 전송하였습니다.\n전송된 링크에서 비밀번호를 변경해 주세요.", email));
 		return resultData;
@@ -162,7 +164,7 @@ public class MemberController {
 	
 	//로그인 처리
 	@PostMapping("/member/login")
-	public String doLogin(String email, String password, HttpSession session, HttpServletRequest request, RedirectAttributes redirectAttributes ) {
+	public String doLogin(String email, String password, String previouseUrl, HttpSession session, HttpServletRequest request, RedirectAttributes redirectAttributes ) {
 		LoginInfoDTO loginInfo = (LoginInfoDTO)request.getAttribute("loginInfo");
 		if(Ut.isNullOrEmpty(email)) {
 			MessageResponse message = new MessageResponse("EXCEPTION", "email이 입력되지 않았습니다.", "잘못된 요청");
@@ -204,8 +206,8 @@ public class MemberController {
 
 		UserDto userDto = new UserDto(findMember, path);
 		session.setAttribute("userDto", userDto);
-		String previouseUrl = loginInfo.getPreviousUrl();
-		if(previouseUrl == null) {
+//		String previouseUrl = loginInfo.getPreviousUrl();
+		if(previouseUrl == null || previouseUrl.split("/").length<2) {
 			previouseUrl="/";
 		}
 		return "redirect:"+previouseUrl;

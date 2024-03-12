@@ -2,7 +2,7 @@ package com.smw.project.balmam.entity;
 
 import java.time.LocalDateTime;
 
-import com.smw.project.balmam.Enum.EmailAuthenticationType;
+import com.smw.project.balmam.enums.EmailAuthenticationType;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

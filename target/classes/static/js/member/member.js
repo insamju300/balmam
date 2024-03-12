@@ -138,7 +138,9 @@ function confirmPasswordValidationCheck() {
 function nicknameValidationCheck() {
 	let validationMessage = "";
 	let nickname = $("#form_nickname_input").val();
-
+	let beforeNickname = $('#form_nickname_input').data('before-nickname');
+	
+    if(beforeNickname===nickname){return true;}
 	if (nickname === "") {
 		validationMessage = "닉네임 입력은 필수입니다.";
 	} else if (!validateNicknameFormat(nickname)) {

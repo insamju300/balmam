@@ -47,6 +47,7 @@
   <main class="flex w-screen justify-center p-5">
     <div class="2xl:w-2/6 lg:w-2/4 w-full h-full flex flex-col p-6 mt-2">
       <form action="#" method="POST" id="login_form">
+      <input type="hidden" name="previouseUrl" th:value="${loginInfo.previousUrl}">
         <div class="flex md:flex-row flex-col mt-2">
           <label for="login_form_email_input" class="block text-2xl text-neutral mx-2 w-36">Email</label>
           <div class="input input-bordered flex items-center gap-2 text-neutral text-xl grow">

@@ -2,8 +2,8 @@ package com.smw.project.balmam.entity;
 
 import java.time.LocalDateTime;
 
-import com.smw.project.balmam.Enum.RoleType;
 import com.smw.project.balmam.dto.MemberInputDto;
+import com.smw.project.balmam.enums.RoleType;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
