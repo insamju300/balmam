@@ -20,7 +20,7 @@ let timestampInSeconds = 1000;
 let recodingStartTime;
 let recodingEndTime;
 let recodingLimitTime = 3 * timestampInHours; //3시간
-let recodingMinTime = 1 * timestampInMinutes; //todo 개발 후 3분 최저 경로녹화 시간으로 바꿀것
+let recodingMinTime = 0.5 * timestampInMinutes; //todo 개발 후 3분 최저 경로녹화 시간으로 바꿀것
 
 let puseTime = null;
 let puseTimes = [];
@@ -244,7 +244,7 @@ function stopTraceRecoding() {
     stopVideo();
   }
 
-  document.getElementById("#confirm_for_stop_trace_modal").close();
+  document.getElementById('confirm_for_stop_trace_modal').close()
 
   if (puseTime && !puseTime.endTime) {
     puseTime.endTime = Date.now();
@@ -284,46 +284,65 @@ function stopTraceRecoding() {
   console.log(hours + ":" + minutes + ":" + seconds);
   console.log("녹화된 경로");
   console.log(pathCoordinatesGroups); //todo 길이가 0일경우 어떻게 할지 생각할 것.
-  console.log("일시정지 시간");
-  console.log(puseTimes);
+//  console.log("일시정지 시간");
+//  console.log(puseTimes);
   console.log("전체 일시정지 시간");
   console.log(getTotalPuseTime());
   console.log("머문 도시 리스트");
   console.log(stayedCities);
   console.log("지오 미디어 리스트");
   console.log(geoMedias);
-
-  //녹화정보 json형식으로 다운로드. 프론트단 작업을 위한 부분이며 추후 삭제할 것. start
-  const dataToDownload = {
-    totalRecordingTime: recodingEndTime - recodingStartTime,
-    pathCoordinatesGroups: pathCoordinatesGroups, // Assuming this is already an array or object
-    pauseTimes: puseTimes,
-    totalPauseTime: getTotalPuseTime(), // Make sure this function returns the total pause time
-    stayedCities: Object.fromEntries(stayedCities),
-    geoMedias:  Object.fromEntries(geoMedias) // Assuming this is already an array or object
+  
+  
+    // Code to send the POST request without waiting for a response
+  const routeRecordingDTO = {
+    recordingStartTime: recodingStartTime,
+    recordingEndTime: recodingEndTime,
+    totalPauseTime: getTotalPuseTime()
   };
 
-  // Convert the data to a JSON string
-  const jsonString = JSON.stringify(dataToDownload, null, 2);
+  fetch('/trace/routeRecording', {
+    method: 'POST', // or 'PUT'
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(routeRecordingDTO),
+  })
+  .catch((error) => {
+    console.error('Error:', error);
+  });
 
-  // Create a Blob from the JSON string
-  const blob = new Blob([jsonString], {type: "application/json"});
-
-  // Generate a URL for the Blob
-  const url = URL.createObjectURL(blob);
-
-  // Create a temporary anchor element
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "traceData.json"; // File name for the downloaded data
-
-  // Append the anchor to the document, trigger the download, and remove the anchor
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-
-  // Optional: Revoke the blob URL to free up resources
-  URL.revokeObjectURL(url);
+//  //녹화정보 json형식으로 다운로드. 프론트단 작업을 위한 부분이며 추후 삭제할 것. start
+//  const dataToDownload = {
+//    totalRecordingTime: recodingEndTime - recodingStartTime,
+//    pathCoordinatesGroups: pathCoordinatesGroups, // Assuming this is already an array or object
+//    pauseTimes: puseTimes,
+//    totalPauseTime: getTotalPuseTime(), // Make sure this function returns the total pause time
+//    stayedCities: Object.fromEntries(stayedCities),
+//    geoMedias:  Object.fromEntries(geoMedias) // Assuming this is already an array or object
+//  };
+//
+//  // Convert the data to a JSON string
+//  const jsonString = JSON.stringify(dataToDownload, null, 2);
+//
+//  // Create a Blob from the JSON string
+//  const blob = new Blob([jsonString], {type: "application/json"});
+//
+//  // Generate a URL for the Blob
+//  const url = URL.createObjectURL(blob);
+//
+//  // Create a temporary anchor element
+//  const a = document.createElement("a");
+//  a.href = url;
+//  a.download = "traceData.json"; // File name for the downloaded data
+//
+//  // Append the anchor to the document, trigger the download, and remove the anchor
+//  document.body.appendChild(a);
+//  a.click();
+//  document.body.removeChild(a);
+//
+//  // Optional: Revoke the blob URL to free up resources
+//  URL.revokeObjectURL(url);
   //녹화정보 json형식으로 다운로드. 프론트단 작업을 위한 부분이며 추후 삭제할 것. end
 
 }

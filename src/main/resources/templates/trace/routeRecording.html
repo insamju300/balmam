@@ -104,10 +104,8 @@
       </div>
 
       <div class="modal-action">
-        <form method="dialog ">
           <!-- if there is a button in form, it will close the modal -->
-          <button class="btn text-neutral">취소</button>
-        </form>
+          <button class="btn text-neutral" onclick="document.getElementById('confirm_for_stop_trace_modal').close()">취소</button>
         <button onclick="stopTraceRecoding()" class="btn text-neutral">경로 녹화 종료</button>
       </div>
     </div>
