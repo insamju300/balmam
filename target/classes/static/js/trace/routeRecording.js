@@ -664,6 +664,7 @@ function takeVideo() {
     alert("Your browser does not support video capture.");
   }
 }
+
 async function stopVideo() {
   let tmpPosition = JSON.stringify({ lat: marker.position.lat, lng: marker.position.lng });
   if (geoMarkers.has(tmpPosition)) {
@@ -700,6 +701,34 @@ async function stopVideo() {
       let mediaFileDto = response.data;
       console.log(mediaFileDto);
       // todo: 업로드된 비디오 파일에 대한 처리 추가
+      let img = document.createElement("img");
+      img.src = mediaFileDto.thumbnailUrl;
+      
+       img.style.width = "100%";
+       img.style.height = "100%"
+       
+        const pin = new PinElement({
+          glyph: img,
+          background: "#E07A5F",
+          borderColor: "#B3614C",
+        });
+        
+        let mediaMarker = new AdvancedMarkerElement({
+          map,
+          position: marker.position,
+          content: pin.element,
+        });
+        
+        if(geoMedias.has(tmpPosition)){
+          let geoMediaList = geoMedias.get(tmpPosition);
+          geoMediaList.push(mediaFileDto);
+          
+        }else{
+          geoMedias.set(tmpPosition, [mediaFileDto]);
+        }
+        geoMarkers.set(tmpPosition, mediaMarker);
+        createSlideImageForMediaMarker(geoMedias.get(tmpPosition), mediaMarker);
+        
 
       // UI 업데이트: "녹화 중지" 버튼을 숨기고 "비디오 촬영 시작" 버튼을 다시 표시합니다.
       $("#stop_video_button").hide();
@@ -806,25 +835,25 @@ async function stopVideo() {
 //  };
 //}
 
-function createThumbnail(video) {
-  video.currentTime = 0; // 비디오의 마지막 프레임에 접근하기 위해 시간을 설정합니다.
-  video.addEventListener("seeked", function () {
-    // 비디오의 첫 프레임을 캔버스에 그립니다.
-    let canvas = document.createElement("canvas");
-    canvas.width = video.videoWidth; // 캔버스의 너비를 비디오의 너비로 설정합니다.
-    canvas.height = video.videoHeight; // 캔버스의 높이를 비디오의 높이로 설정합니다.
-    let ctx = canvas.getContext("2d");
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height); // 비디오의 현재 프레임을 캔버스에 그립니다.
-
-    // 캔버스의 내용을 기반으로 이미지를 생성하고, 이를 페이지에 표시합니다.
-    let thumbnailURL = canvas.toDataURL("image/png"); // 캔버스를 이미지 데이터 URL로 변환합니다.
-    let img = document.createElement("img"); // 이미지 엘리먼트를 생성합니다.
-    img.src = thumbnailURL; // 생성된 이미지 데이터 URL을 이미지 소스로 설정합니다.
-    console.log(img);
-    return img;
-    // document.getElementById('recordedVideos').appendChild(img); // 생성된 이미지를 동영상 목록 컨테이너에 추가합니다.
-  });
-}
+//function createThumbnail(video) {
+//  video.currentTime = 0; // 비디오의 마지막 프레임에 접근하기 위해 시간을 설정합니다.
+//  video.addEventListener("seeked", function () {
+//    // 비디오의 첫 프레임을 캔버스에 그립니다.
+//    let canvas = document.createElement("canvas");
+//    canvas.width = video.videoWidth; // 캔버스의 너비를 비디오의 너비로 설정합니다.
+//    canvas.height = video.videoHeight; // 캔버스의 높이를 비디오의 높이로 설정합니다.
+//    let ctx = canvas.getContext("2d");
+//    ctx.drawImage(video, 0, 0, canvas.width, canvas.height); // 비디오의 현재 프레임을 캔버스에 그립니다.
+//
+//    // 캔버스의 내용을 기반으로 이미지를 생성하고, 이를 페이지에 표시합니다.
+//    let thumbnailURL = canvas.toDataURL("image/png"); // 캔버스를 이미지 데이터 URL로 변환합니다.
+//    let img = document.createElement("img"); // 이미지 엘리먼트를 생성합니다.
+//    img.src = thumbnailURL; // 생성된 이미지 데이터 URL을 이미지 소스로 설정합니다.
+//    console.log(img);
+//    return img;
+//    // document.getElementById('recordedVideos').appendChild(img); // 생성된 이미지를 동영상 목록 컨테이너에 추가합니다.
+//  });
+//}
 
 
 function mediaCountCheck(){
@@ -835,6 +864,8 @@ function mediaCountCheck(){
 }
 
 function createSlideImageForMediaMarker(geoMediaList, mediaMarker){
+	    console.log(geoMediaList);
+	
         let slideIdCount=1;
         let carousel=document.createElement('div');
 
