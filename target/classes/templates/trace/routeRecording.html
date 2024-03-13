@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="utf-8">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>발맘:발자취 등록</title>
+
+  <!-- 테일윈드 불러오기 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- daisy ui 불러오기 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/daisyui/4.6.1/full.css" />
+  <!-- 폰트어썸 불러오기 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+  <!-- anime js 불러보기-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
+  <!-- 제이쿼리 불러오기 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+  <!--지도 그리기 불러오기-->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+
+  <!--공통 및 헤드 css, js-->
+  <link rel="stylesheet" href="/css/common.css">
+  <link rel="stylesheet" href="/css/trace.css">
+  <script src="/js/common.js"></script>
+
+
+</head>
+
+<body>
+
+  <header th:insert="/header :: header"></header>
+  <header id="ghost_header" class="w-screen">
+  </header>
+
+  <main class="flex w-screen justify-center p-1 md:p-5 text-neutral">
+    <div class="md:w-4/6 w-full flex md:flex-row flex-col md:p-6 mt-2 ">
+
+      <!--todo-->
+      <!--과제 1 현재 위치 정보 표시 ㅇ-->
+      <!--과제 2 1초 간격으로 찍히는 선 표시 ㅇ-->
+      <!--과제 3 일시정지 기능 추가 ㅇ-->
+      <!--과제 4. 정지 버튼 눌릴 때 까지의 시간 기록 기능 추가.  ㅇ-->
+      <!--과제 5. 3시간 지나면 자동 정지 기능 추가 *  ㅇ-->
+      <!--과제 6. 3시간 안에 일시정지 시간이 들어가지 않도록 조정. ㅇ-->
+      <!--과제 7. 머물고있는 도시 리스트 저장 ㅇ -->
+      <!--과제 8. 머물고 있는 관광지 리스트 저장 x-->
+      <!--과제 9.  현재 웹캠 화면 표시 ㅇ-->
+      <!--과제 10. 영상 촬영 ㅇ-->
+      <!--과제 11. 사진 앞 뒤 돌리기 x-->
+      <!--과제 12. 촬영된 사진 표시 ㅇ-->
+      <div class="md:w-4/6 w-full flex-col p-2">
+        <div id="map" class="h-96 w-full shadow-xl"></div>
+        <div class="flex justify-center text-error mt-2"> 
+          <button onclick="resumeTraceRecoding()" id = "trace_recoding_resume_btn" class="btn btn-ghost text-4xl hidden"> <i class="fa-regular fa-circle-dot"></i> </button>
+          <button onclick="pauseTraceRecoding()" id = "trace_recoding_pause_btn" class="btn btn-ghost text-4xl"> <i class="fa-regular fa-circle-pause"></i> </button>
+          <button onclick="stopTraceRecodingValidation()" id = "trace_recoding_stop_btn" class="btn btn-ghost text-4xl"> <i class="fa-regular fa-circle-stop"></i> </button>
+          
+        </div>
+      </div>
+
+      <div class="md:w-2/6 w-full flex-col p-5">
+        <div class="mockup-phone">
+          <div class="camera"></div> 
+          <div class="display flex-col">
+            <div class="w-full flex items-center bg-neutral_hard py-16">
+              <video id="camera_view" class="w-full h-auto" autoplay></video>
+              <canvas id="canvas" class="hidden"><canvas>
+          </div>
+            <div class="h-24 w-full bg-black bottom-0">
+              <div class="text-white text-xl flex justify-center">
+                <button onclick="photoToggle()" id="photo_toggle_button" class="btn btn-ghost hidden hover:text-primary">사진 모드</button>
+                <button onclick="videoToggle()" id="video_toggle_button" class="btn btn-ghost hover:text-primary">동영상 모드</button>
+              </div>
+              <div class="flex justify-center w-full">
+                  <i onclick="takePhoto()" id="take_photo_button" class="fa-solid fa-circle text-white text-4xl cursor-pointer hover:text-primary"></i>
+                  <i onclick="takeVideo()" id="take_video_button" class="fa-regular fa-circle-dot hidden text-white text-4xl cursor-pointer hover:text-primary"></i>
+                  <i onclick="stopVideo()" id="stop_video_button" class="fa-regular fa-circle-stop hidden text-white text-4xl cursor-pointer hover:text-primary"></i>
+                  
+              </div>
+              
+            </div>
+          </div>
+        </div>
+        
+      </div>
+
+
+
+    </div>
+  </main>
+
+  <dialog id="confirm_for_stop_trace_modal" class="modal text-neutral">
+    <div class="modal-box">
+      <h3 class="font-bold text-lg text-primary">경로 녹화를 종료하시겠습니까?</h3>
+      <p class="py-4">종료 후에는 녹화로 돌아갈 수 없으며, 다음 입력 화면으로 넘어가게 됩니다. <bR>
+      잠시 녹화를 중단하고 싶으시다면 일시정지 버튼을 통해 녹화를 중단하실 수 있습니다.</p>
+
+      <div id="password_restoration_validation_message_container" class="flex items-center justify-between">
+        <p class="block text-2xl text-error">
+        </p>
+      </div>
+
+      <div class="modal-action">
+        <form method="dialog ">
+          <!-- if there is a button in form, it will close the modal -->
+          <button class="btn text-neutral">취소</button>
+        </form>
+        <button onclick="stopTraceRecoding()" class="btn text-neutral">경로 녹화 종료</button>
+      </div>
+    </div>
+  </dialog>
+
+  <div id="recordedVideos" class="mt-4">
+    <h2>Recorded Videos</h2>
+  </div>
+
+</body>
+<script src="/js/header.js"></script>
+
+<script src="/js_keys.js"></script>
+<script id="script" type="text/javascript" charset="utf-8" defer></script>
+<!-- prettier-ignore -->
+<script>
+  (g => { var h, a, k, p = "The Google Maps JavaScript API", c = "google", l = "importLibrary", q = "__ib__", m = document, b = window; b = b[c] || (b[c] = {}); var d = b.maps || (b.maps = {}), r = new Set, e = new URLSearchParams, u = () => h || (h = new Promise(async (f, n) => { await (a = m.createElement("script")); e.set("libraries", [...r] + ""); for (k in g) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]); e.set("callback", c + ".maps." + q); a.src = `https://maps.${c}apis.com/maps/api/js?` + e; d[q] = f; a.onerror = () => h = n(Error(p + " could not load.")); a.nonce = m.querySelector("script[nonce]")?.nonce || ""; m.head.append(a) })); d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n)) })
+    ({ key: getGoogleMapKey(), v: "weekly",region: "KR", language: "ko" });</script>
+
+<!--경로녹화 관련 trace-->
+<script src="/js/trace/routeRecording.js"></script>
+
+
+</html>

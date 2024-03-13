@@ -440,19 +440,15 @@ function getTotalPuseTime() {
 }
 
 async function takePhoto() {
-
-  
-  if(isExceededMaxMediaCount){
+  if (isExceededMaxMediaCount) {
     commonsAlert("최대 촬영 횟수에 달하여 더이상 사진 촬영 및 녹화가 불가능합니다. 2");
     return;
   }
 
-  const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary(
-    "marker"
-  );
+  const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary("marker");
 
-  let tmpPosition = JSON.stringify({lat: marker.position.lat, lng: marker.position.lng});
-  if(geoMarkers.has(tmpPosition)){
+  let tmpPosition = JSON.stringify({ lat: marker.position.lat, lng: marker.position.lng });
+  if (geoMarkers.has(tmpPosition)) {
     let existingMarker = geoMarkers.get(tmpPosition);
     existingMarker.setMap(null);
     existingMarker = null;
@@ -463,44 +459,130 @@ async function takePhoto() {
 
   context.drawImage(cameraView, 0, 0, canvas.width, canvas.height);
 
-  //사진 저장
-  const imageDataUrl = canvas.toDataURL("image/png", 1.0);
-  // localStorage.setItem('capturedImage', imageDataUrl);
+  // 캔버스에 그려진 이미지를 Blob으로 변환
+  canvas.toBlob(async function (blob) {
+    // 임시 파일명 생성 (예: tmp.png)
+    const tmpFileName = 'tmp.png';
 
-  // Display the captured image
-  const img = document.createElement("img");
-  img.src = imageDataUrl;
-  img.style.width = "100%";
-  img.style.height = "100%";
+    // FormData 생성
+    let formData = new FormData();
+    // 파일 객체에 이름 설정
+    formData.append("file", blob, tmpFileName);
 
-  const pin = new PinElement({
-    glyph: img,
-    background: "#E07A5F",
-    borderColor: "#B3614C",
-  });
+    try {
+      // AJAX를 사용하여 이미지를 업로드
+      const response = await $.ajax({
+        url: "/files/upload",
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+      });
 
-  let mediaMarker = new AdvancedMarkerElement({
-    map,
-    position: marker.position,
-    content: pin.element,
-  });
+      // 파일 업로드 성공 시, 처리
+      console.log(response);
+      let mediaFileDto = response.data;
+      
+      const img = document.createElement("img");
+      img.src = mediaFileDto.url;
+      img.style.width = "100%";
+      img.style.height = "100%"; 
+      
 
-  
-
-  if(geoMedias.has(tmpPosition)){
-    let geoMediaList = geoMedias.get(tmpPosition);
-    geoMediaList.push({time:Date.now(), mediaId:tmpId++, mediaType: "photo", url: imageDataUrl});
-  }else{
-    geoMedias.set(tmpPosition, [{time:Date.now(), mediaId:tmpId++, mediaType: "photo", url: imageDataUrl}]);
-  }
-
-  geoMarkers.set(tmpPosition, mediaMarker);
-  
-
-  createSlideImageForMediaMarker(geoMedias.get(tmpPosition), mediaMarker);
-  mediaCount++;
-  mediaCountCheck();
+	  const pin = new PinElement({
+	    glyph: img,
+	    background: "#E07A5F",
+	    borderColor: "#B3614C",
+	  });
+	  
+	  let mediaMarker = new AdvancedMarkerElement({
+	    map,
+	    position: marker.position,
+	    content: pin.element,
+	  });
+	  
+	  if(geoMedias.has(tmpPosition)){
+	    let geoMediaList = geoMedias.get(tmpPosition);
+	    geoMediaList.push(mediaFileDto);
+	  }else{
+	    geoMedias.set(tmpPosition, [mediaFileDto]);
+	  }
+	   geoMarkers.set(tmpPosition, mediaMarker);
+	   
+      
+	  createSlideImageForMediaMarker(geoMedias.get(tmpPosition), mediaMarker);
+	  mediaCount++;
+	  mediaCountCheck();
+      //todo 에러처리
+    } catch (error) {
+      // 파일 업로드 실패 시, 에러 처리
+      console.error("파일 업로드에 실패하였습니다.", error);
+      alert("파일 업로드에 실패하였습니다.");
+    }
+  }, 'image/png');
 }
+//async function takePhoto() {
+//
+//  
+//  if(isExceededMaxMediaCount){
+//    commonsAlert("최대 촬영 횟수에 달하여 더이상 사진 촬영 및 녹화가 불가능합니다. 2");
+//    return;
+//  }
+//
+//  const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary(
+//    "marker"
+//  );
+//
+//  let tmpPosition = JSON.stringify({lat: marker.position.lat, lng: marker.position.lng});
+//  if(geoMarkers.has(tmpPosition)){
+//    let existingMarker = geoMarkers.get(tmpPosition);
+//    existingMarker.setMap(null);
+//    existingMarker = null;
+//  }
+//
+//  canvas.width = cameraView.offsetWidth * 2;
+//  canvas.height = cameraView.offsetHeight * 2;
+//
+//  context.drawImage(cameraView, 0, 0, canvas.width, canvas.height);
+//
+//  //사진 저장
+//  const imageDataUrl = canvas.toDataURL("image/png", 1.0);
+//  // localStorage.setItem('capturedImage', imageDataUrl);
+//
+//  // Display the captured image
+//  const img = document.createElement("img");
+//  img.src = imageDataUrl;
+//  img.style.width = "100%";
+//  img.style.height = "100%";
+//
+//  const pin = new PinElement({
+//    glyph: img,
+//    background: "#E07A5F",
+//    borderColor: "#B3614C",
+//  });
+//
+//  let mediaMarker = new AdvancedMarkerElement({
+//    map,
+//    position: marker.position,
+//    content: pin.element,
+//  });
+//
+//  
+//
+//  if(geoMedias.has(tmpPosition)){
+//    let geoMediaList = geoMedias.get(tmpPosition);
+//    geoMediaList.push({time:Date.now(), mediaId:tmpId++, mediaType: "photo", url: imageDataUrl});
+//  }else{
+//    geoMedias.set(tmpPosition, [{time:Date.now(), mediaId:tmpId++, mediaType: "photo", url: imageDataUrl}]);
+//  }
+//
+//  geoMarkers.set(tmpPosition, mediaMarker);
+//  
+//
+//  createSlideImageForMediaMarker(geoMedias.get(tmpPosition), mediaMarker);
+//  mediaCount++;
+//  mediaCountCheck();
+//}
 
 function videoToggle() {
   $("#take_video_button").show();
@@ -582,19 +664,15 @@ function takeVideo() {
     alert("Your browser does not support video capture.");
   }
 }
-
 async function stopVideo() {
-  let tmpPosition = JSON.stringify({lat: marker.position.lat, lng: marker.position.lng});
-  if(geoMarkers.has(tmpPosition)){
+  let tmpPosition = JSON.stringify({ lat: marker.position.lat, lng: marker.position.lng });
+  if (geoMarkers.has(tmpPosition)) {
     let existingMarker = geoMarkers.get(tmpPosition);
     existingMarker.setMap(null);
     existingMarker = null;
   }
-  
 
-  const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary(
-    "marker"
-  );
+  const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary("marker");
 
   isVideoRecording = false;
 
@@ -602,80 +680,131 @@ async function stopVideo() {
   mediaRecorder.onstop = async function () {
     const blob = new Blob(recordedChunks, { type: "video/mp4" }); // 녹화된 청크들을 합쳐 하나의 Blob 객체를 생성합니다.
     recordedChunks = []; // 다음 녹화를 위해 청크 배열을 초기화합니다.
-    const videoURL = URL.createObjectURL(blob); // Blob 객체로부터 URL을 생성합니다. todo -> 이부분 확인해서 ajax처리.
 
-    // 비디오 태그를 생성하고, 녹화된 비디오를 소스로 설정합니다.
-    let video = document.createElement("video");
-    
-    video.src = videoURL;
-    video.load(); // 비디오를 로드합니다.
-    video.addEventListener("loadeddata", function () {
-      video.currentTime = 0; // 비디오의 첫 프레임에 접근하기 위해 시간을 설정합니다.
-      video.addEventListener("seeked", function () {
-        // 비디오의 첫 프레임을 캔버스에 그립니다.
-        let canvas = document.createElement("canvas");
-        canvas.width = video.videoWidth; // 캔버스의 너비를 비디오의 너비로 설정합니다.
-        canvas.height = video.videoHeight; // 캔버스의 높이를 비디오의 높이로 설정합니다.
-        let ctx = canvas.getContext("2d");
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height); // 비디오의 현재 프레임을 캔버스에 그립니다.
-    
-        // 캔버스의 내용을 기반으로 이미지를 생성하고, 이를 페이지에 표시합니다.
-        let thumbnailURL = canvas.toDataURL("image/png"); // 캔버스를 이미지 데이터 URL로 변환합니다.
-        let img = document.createElement("img"); // 이미지 엘리먼트를 생성합니다.
-        img.src = thumbnailURL; // 생성된 이미지 데이터 URL을 이미지 소스로 설정합니다.
-        // document.getElementById('recordedVideos').appendChild(img); // 생성된 이미지를 동영상 목록 컨테이너에 추가합니다.
+    // FormData 생성
+    let formData = new FormData();
+    // Blob 객체에 임시 파일명 설정 (tmp.mp4)
+    formData.append("file", blob, "tmp.mp4");
 
-        img.style.width = "100%";
-        img.style.height = "100%";
-    
-        const pin = new PinElement({
-          glyph: img,
-          background: "#E07A5F",
-          borderColor: "#B3614C",
-        });
-
-        let mediaMarker = new AdvancedMarkerElement({
-          map,
-          position: marker.position,
-          content: pin.element,
-        });
-
-
-        if(geoMedias.has(tmpPosition)){
-          let geoMediaList = geoMedias.get(tmpPosition);
-          let id1 = tmpId++;
-          let id2 = tmpId++;
-          geoMediaList.push({time:Date.now(), mediaId:id1, mediaType: "video", url:videoURL});
-          geoMediaList.push({time:Date.now(), mediaId:id2, mediaType: "thumbnail", parentMedia: id1, url:thumbnailURL});
-        }else{
-          let id1 = tmpId++;
-          let id2 = tmpId++;
-          geoMedias.set(tmpPosition, [{time:Date.now(), mediaId:id1, mediaType: "video",  url:videoURL}, {time:Date.now(), mediaId:id2, mediaType: "thumbnail", parentMedia: id1}]);
-        }
-
-        geoMarkers.set(tmpPosition, mediaMarker);
-
-        createSlideImageForMediaMarker(geoMedias.get(tmpPosition), mediaMarker);
-
-
-    
+    try {
+      // AJAX를 사용하여 비디오를 업로드
+      const response = await $.ajax({
+        url: "/files/upload",
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
       });
-    });
 
-   
+      // 파일 업로드 성공 시, 처리
+      let mediaFileDto = response.data;
+      console.log(mediaFileDto);
+      // todo: 업로드된 비디오 파일에 대한 처리 추가
 
-
-    mediaCount++;
-    mediaCountCheck();
-
-    // videoElement.style.width = '100%'; // 비디오 너비를 100%로 설정합니다.
-    // videosContainer.appendChild(videoElement); // 생성된 비디오 요소를 동영상 목록 컨테이너에 추가합니다.
-
-    // UI 업데이트: "녹화 중지" 버튼을 숨기고 "비디오 촬영 시작" 버튼을 다시 표시합니다.
-    $("#stop_video_button").hide();
-    $("#take_video_button").show();
+      // UI 업데이트: "녹화 중지" 버튼을 숨기고 "비디오 촬영 시작" 버튼을 다시 표시합니다.
+      $("#stop_video_button").hide();
+      $("#take_video_button").show();
+    } catch (error) {
+      // 파일 업로드 실패 시, 에러 처리
+      console.error("비디오 업로드에 실패하였습니다.", error);
+      alert("비디오 업로드에 실패하였습니다.");
+    }
   };
 }
+
+//async function stopVideo() {
+//  let tmpPosition = JSON.stringify({lat: marker.position.lat, lng: marker.position.lng});
+//  if(geoMarkers.has(tmpPosition)){
+//    let existingMarker = geoMarkers.get(tmpPosition);
+//    existingMarker.setMap(null);
+//    existingMarker = null;
+//  }
+//  
+//
+//  const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary(
+//    "marker"
+//  );
+//
+//  isVideoRecording = false;
+//
+//  mediaRecorder.stop(); // 녹화를 중지합니다.
+//  mediaRecorder.onstop = async function () {
+//    const blob = new Blob(recordedChunks, { type: "video/mp4" }); // 녹화된 청크들을 합쳐 하나의 Blob 객체를 생성합니다.
+//    recordedChunks = []; // 다음 녹화를 위해 청크 배열을 초기화합니다.
+//    const videoURL = URL.createObjectURL(blob); // Blob 객체로부터 URL을 생성합니다. todo -> 이부분 확인해서 ajax처리.
+//
+//    // 비디오 태그를 생성하고, 녹화된 비디오를 소스로 설정합니다.
+//    let video = document.createElement("video");
+//    
+//    video.src = videoURL;
+//    video.load(); // 비디오를 로드합니다.
+//    video.addEventListener("loadeddata", function () {
+//      video.currentTime = 0; // 비디오의 첫 프레임에 접근하기 위해 시간을 설정합니다.
+//      video.addEventListener("seeked", function () {
+//        // 비디오의 첫 프레임을 캔버스에 그립니다.
+//        let canvas = document.createElement("canvas");
+//        canvas.width = video.videoWidth; // 캔버스의 너비를 비디오의 너비로 설정합니다.
+//        canvas.height = video.videoHeight; // 캔버스의 높이를 비디오의 높이로 설정합니다.
+//        let ctx = canvas.getContext("2d");
+//        ctx.drawImage(video, 0, 0, canvas.width, canvas.height); // 비디오의 현재 프레임을 캔버스에 그립니다.
+//    
+//        // 캔버스의 내용을 기반으로 이미지를 생성하고, 이를 페이지에 표시합니다.
+//        let thumbnailURL = canvas.toDataURL("image/png"); // 캔버스를 이미지 데이터 URL로 변환합니다.
+//        let img = document.createElement("img"); // 이미지 엘리먼트를 생성합니다.
+//        img.src = thumbnailURL; // 생성된 이미지 데이터 URL을 이미지 소스로 설정합니다.
+//        // document.getElementById('recordedVideos').appendChild(img); // 생성된 이미지를 동영상 목록 컨테이너에 추가합니다.
+//
+//        img.style.width = "100%";
+//        img.style.height = "100%";
+//    
+//        const pin = new PinElement({
+//          glyph: img,
+//          background: "#E07A5F",
+//          borderColor: "#B3614C",
+//        });
+//
+//        let mediaMarker = new AdvancedMarkerElement({
+//          map,
+//          position: marker.position,
+//          content: pin.element,
+//        });
+//
+//
+//        if(geoMedias.has(tmpPosition)){
+//          let geoMediaList = geoMedias.get(tmpPosition);
+//          let id1 = tmpId++;
+//          let id2 = tmpId++;
+//          geoMediaList.push({time:Date.now(), mediaId:id1, mediaType: "video", url:videoURL});
+//          geoMediaList.push({time:Date.now(), mediaId:id2, mediaType: "thumbnail", parentMedia: id1, url:thumbnailURL});
+//        }else{
+//          let id1 = tmpId++;
+//          let id2 = tmpId++;
+//          geoMedias.set(tmpPosition, [{time:Date.now(), mediaId:id1, mediaType: "video",  url:videoURL}, {time:Date.now(), mediaId:id2, mediaType: "thumbnail", parentMedia: id1}]);
+//        }
+//
+//        geoMarkers.set(tmpPosition, mediaMarker);
+//
+//        createSlideImageForMediaMarker(geoMedias.get(tmpPosition), mediaMarker);
+//
+//
+//    
+//      });
+//    });
+//
+//   
+//
+//
+//    mediaCount++;
+//    mediaCountCheck();
+//
+//    // videoElement.style.width = '100%'; // 비디오 너비를 100%로 설정합니다.
+//    // videosContainer.appendChild(videoElement); // 생성된 비디오 요소를 동영상 목록 컨테이너에 추가합니다.
+//
+//    // UI 업데이트: "녹화 중지" 버튼을 숨기고 "비디오 촬영 시작" 버튼을 다시 표시합니다.
+//    $("#stop_video_button").hide();
+//    $("#take_video_button").show();
+//  };
+//}
 
 function createThumbnail(video) {
   video.currentTime = 0; // 비디오의 마지막 프레임에 접근하기 위해 시간을 설정합니다.
@@ -710,13 +839,10 @@ function createSlideImageForMediaMarker(geoMediaList, mediaMarker){
         let carousel=document.createElement('div');
 
         carousel.classList.add("carousel", "w-full");
-
-        const geoMediaListWithoutThumbnail = geoMediaList.filter((geoMedia) => geoMedia.mediaType != "thumbnail");
-
         
-
-        geoMediaListWithoutThumbnail.forEach( function(geoMedia){
-              if(geoMedia.mediaType==='video'){
+        geoMediaList.forEach( function(geoMedia){
+			  
+              if(geoMedia.type==='video'){
               const carouselItem = document.createElement("div");
               carouselItem.classList.add("carousel-item", "relative", "w-full");
               carouselItem.id="slide"+(slideIdCount++);
@@ -727,15 +853,15 @@ function createSlideImageForMediaMarker(geoMediaList, mediaMarker){
                videoElement.controls = true;
                videoElement.classList.add("w-full", "h-auto");
                carouselItem.appendChild(videoElement);
-               if(geoMediaListWithoutThumbnail.length > 1){
+               if(geoMediaList.length > 1){
                 const carouselBtns = document.createElement("div");
                 carouselBtns.classList.add("absolute" ,"flex", "justify-between" , "transform", "-translate-y-1/2", "left-5", "right-5" ,"top-1/2");
                 let beforSlideId = slideIdCount-2;
                 if(beforSlideId<1){
-                  beforSlideId = geoMediaListWithoutThumbnail.length;
+                  beforSlideId = geoMediaList.length;
                 }
                 let afterSlideId = slideIdCount;
-                if(afterSlideId>geoMediaListWithoutThumbnail.length){
+                if(afterSlideId>geoMediaList.length){
                   afterSlideId = 1;
                 }
 
@@ -760,7 +886,7 @@ function createSlideImageForMediaMarker(geoMediaList, mediaMarker){
                carousel.appendChild(carouselItem);
 
 
-              }else if(geoMedia.mediaType === 'photo'){
+              }else if(geoMedia.type==='image'){
                 
 
                 const carouselItem = document.createElement("div");
@@ -772,15 +898,15 @@ function createSlideImageForMediaMarker(geoMediaList, mediaMarker){
                 img.classList.add("w-full", "h-auto");
                 carouselItem.appendChild(img);
 
-                if(geoMediaListWithoutThumbnail.length > 1){
+                if(geoMediaList.length > 1){
                   const carouselBtns = document.createElement("div");
                   carouselBtns.classList.add("absolute" ,"flex", "justify-between" , "transform", "-translate-y-1/2", "left-5", "right-5" ,"top-1/2");
                   let beforSlideId = slideIdCount-2;
                   if(beforSlideId<1){
-                    beforSlideId = geoMediaListWithoutThumbnail.length;
+                    beforSlideId = geoMediaList.length;
                   }
                   let afterSlideId = slideIdCount;
-                  if(afterSlideId>geoMediaListWithoutThumbnail.length){
+                  if(afterSlideId>geoMediaList.length){
                     afterSlideId = 1;
                   }
   

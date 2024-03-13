@@ -15,6 +15,10 @@ spring:
           auth: true
           starttls:
             enable: true
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 10MB
 
 #시작 메뉴에서 마우스 오른쪽 버튼으로 시스템을 클릭합니다.
 #시스템 정보 → 고급 시스템 설정 → 환경 변수 순으로 이동합니다.
@@ -31,3 +35,11 @@ file:
   upload:
     realPath: "C:/files/balmam/upload/"
     path: "/files"
+  tools:
+    ffmpegPath: "C:/files/balmam/tools/ffmpeg/bin/ffmpeg.exe"
+    
+
+ 
+server:
+  tomcat:
+    max-http-form-post-size: 10MB

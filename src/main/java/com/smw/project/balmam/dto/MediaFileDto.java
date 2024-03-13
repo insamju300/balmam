@@ -2,9 +2,8 @@ package com.smw.project.balmam.dto;
 
 import java.time.LocalDateTime;
 
-import org.springframework.beans.factory.annotation.Value;
-
 import com.smw.project.balmam.entity.MediaFileEntity;
+import com.smw.project.balmam.enums.MediaType;
 
 import lombok.Getter;
 
@@ -16,7 +15,9 @@ public class MediaFileDto {
     private LocalDateTime updateDate;
     private String url;
     private Long size;
-    private String type; // e.g., "video" or "image"
+    private MediaType type; // e.g., "video" or "image"
+    private String thumbnailUrl;
+    
     //private List<MediaFileDto> subFiles; // Nested DTOs for subFiles
     public MediaFileDto(MediaFileEntity mediaFileEntity, String path) {
 		this.id = mediaFileEntity.getId();
@@ -25,6 +26,14 @@ public class MediaFileDto {
 		this.url = path + "/" + mediaFileEntity.getName();
 		this.size = mediaFileEntity.getSize();
 		this.type = mediaFileEntity.getType();
+		if(mediaFileEntity.getThumbnailName()!=null) {
+			this.thumbnailUrl = path + "/" + mediaFileEntity.getThumbnailName();
+		}
+		
+//		if(type.equals(MediaType.video)){
+//			thumbnailUrl = path + "/" + mediaFileEntity.getName();
+//		}
+		
 	}
     // Getters and Setters
     // Constructors

@@ -13,6 +13,7 @@ public interface FileRepository {
 			INSERT INTO
 			mediaFiles SET
 			`name` = #{name},
+			thumbnailName = #{thumbnailName},
 			size = #{size}, 
 			`type` = #{type}
 			""")

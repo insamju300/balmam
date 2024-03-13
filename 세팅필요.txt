@@ -1,0 +1,9 @@
+1. 환경변수 설정
+   다음과 같은 값들을 환경변수에 설정 해야한다.
+   MAIL_USERNAME
+   MAIL_PASSWORD
+2. resources에 js_keys.js를 생성하고 getGoogleMapKey함수를 정의햐아한다.
+3. https://github.com/BtbN/FFmpeg-Builds/releases에서 ffmpeg-master-latest-win64-gpl-shared.zip을 다운받는다.
+   다음과 같은 경로가 되게 다운받은 파일을 배치한다. C:/files/balmam/tools/ffmpeg/bin/ffmpeg.exe
+
+   
