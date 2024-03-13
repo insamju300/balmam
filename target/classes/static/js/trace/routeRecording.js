@@ -272,6 +272,10 @@ function stopTraceRecoding() {
       );
     }
   }
+  
+
+
+  
 
   recodingEndTime = Date.now();
   let totalRecodingTime = recodingEndTime - recodingStartTime;
@@ -291,14 +295,39 @@ function stopTraceRecoding() {
   console.log("머문 도시 리스트");
   console.log(stayedCities);
   console.log("지오 미디어 리스트");
-  console.log(geoMedias);
+//  console.log(geoMedias);
   
+  
+  const stayedCitiesForTransfer = [];
+
+  stayedCities.forEach((value, key) => {
+    stayedCitiesForTransfer.push({
+      name: key,
+      stayedTime: value
+    });
+  });
+  
+  
+  const geoMediasForTransfer = [];
+
+  for (let [coordinateString, mediaFiles] of geoMedias) {
+    // 각 Map 항목을 원하는 형태의 객체로 변환하여 리스트에 추가
+    let  coordinate = JSON.parse(coordinateString);
+    geoMediasForTransfer.push({
+      coordinate,
+      mediaFiles
+    });
+  }
+  console.log(geoMediasForTransfer);
   
     // Code to send the POST request without waiting for a response
   const routeRecordingDTO = {
     recordingStartTime: recodingStartTime,
     recordingEndTime: recodingEndTime,
-    totalPauseTime: getTotalPuseTime()
+    totalPauseTime: getTotalPuseTime(),
+    pathCoordinatesGroups: pathCoordinatesGroups,
+    stayedCities: stayedCitiesForTransfer,
+    geoMedias: geoMediasForTransfer
   };
 
   fetch('/trace/routeRecording', {

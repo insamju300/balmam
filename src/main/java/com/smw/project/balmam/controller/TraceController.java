@@ -20,6 +20,9 @@ public class TraceController {
 	    System.err.println("레코드 시작 시간: " + routeRecordingDTO.getRecordingStartTime());
 	    System.err.println("레코드 종료 시간: " + routeRecordingDTO.getRecordingEndTime());
 	    System.err.println("총 일시정지 시간: " + routeRecordingDTO.getTotalPauseTime());
+	    System.err.println("경로 좌표 그룹" + routeRecordingDTO.getPathCoordinatesGroups());
+	    System.err.println("방문 도시 목록" + routeRecordingDTO.getStayedCities());
+	    System.err.println("미디어 목록" + routeRecordingDTO.getGeoMedias());
 	    
 	    // Processing goes here...
 	    return "/trace/routeRecording";

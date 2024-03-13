@@ -5,9 +5,17 @@ import java.time.LocalDateTime;
 import com.smw.project.balmam.entity.MediaFileEntity;
 import com.smw.project.balmam.enums.MediaType;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Getter
+@Setter
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class MediaFileDto {
 
 	private Long id;
