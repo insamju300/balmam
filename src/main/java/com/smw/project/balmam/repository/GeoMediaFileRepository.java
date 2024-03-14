@@ -7,8 +7,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 
-import com.smw.project.balmam.entity.GeoMediaFilesEntity;
-import com.smw.project.balmam.entity.pathCoordinateEntity;
+import com.smw.project.balmam.entity.GeoMediaFileEntity;
+import com.smw.project.balmam.entity.MediaFileEntity;
 
 @Mapper
 public interface GeoMediaFileRepository {
@@ -23,6 +23,9 @@ public interface GeoMediaFileRepository {
         "</script>"
     })
     @Options(useGeneratedKeys=true, keyProperty="id")
-    void insertGeoMediaFiles(@Param("geoMediaFiles") List<GeoMediaFilesEntity> geoMediaFiles);
+    void insertGeoMediaFiles(@Param("geoMediaFiles") List<GeoMediaFileEntity> geoMediaFiles);
+
+    
+	List<MediaFileEntity> findAllMedaFileByTraceIdFromGeoMedia(Long traceId);
 
 }

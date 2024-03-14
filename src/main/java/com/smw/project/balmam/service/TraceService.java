@@ -7,7 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.smw.project.balmam.entity.CityTagEntity;
 import com.smw.project.balmam.entity.GeoMediaEntity;
-import com.smw.project.balmam.entity.GeoMediaFilesEntity;
+import com.smw.project.balmam.entity.GeoMediaFileEntity;
+import com.smw.project.balmam.entity.MediaFileEntity;
 import com.smw.project.balmam.entity.PathCoordinatesGroupEntity;
 import com.smw.project.balmam.entity.StayedCityEntity;
 import com.smw.project.balmam.entity.TraceEntity;
@@ -75,9 +76,19 @@ public class TraceService {
 		geoMediaRepository.insertGeoMedia(geoMedia);
 	}
 
-	public void insertGeoMediaFiles(List<GeoMediaFilesEntity> geoMediaFiles) {
+	public void insertGeoMediaFiles(List<GeoMediaFileEntity> geoMediaFiles) {
 		geoMediaFileRepository.insertGeoMediaFiles(geoMediaFiles);
 		
+	}
+
+	public TraceEntity findTraceById(Long id) {
+		// TODO Auto-generated method stub
+		return traceRepository.findTraceByid(id);
+	}
+
+	public List<MediaFileEntity> findAllMedaFileByTraceIdFromGeoMedia(Long id) {
+		// TODO Auto-generated method stub
+		return geoMediaFileRepository.findAllMedaFileByTraceIdFromGeoMedia(id);
 	}
 	
 

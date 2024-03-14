@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class GeoMediaFilesEntity {
+public class GeoMediaFileEntity {
 
 	private Long id;
     private Timestamp regDate;
@@ -19,7 +19,7 @@ public class GeoMediaFilesEntity {
     private Boolean isDeleted;
     private Timestamp deletedDate;
     
-    public GeoMediaFilesEntity(Long geoMediaId, Long mediaFileId) {
+    public GeoMediaFileEntity(Long geoMediaId, Long mediaFileId) {
 		this.geoMediaId = geoMediaId;
 		this.mediaFileId = mediaFileId;
 	}

@@ -28,6 +28,7 @@ public class TraceEntity {
     private Integer commentCount;
     private Integer orderPoint;
     private TraceStatus status;
+    private String extra__writerNickname;
     
     public TraceEntity(RouteRecordingDTO routeRecordingDTO, Long writerId) {
 		this.recordingStartTime = routeRecordingDTO.getRecordingStartTime();

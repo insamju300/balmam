@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,7 +18,8 @@ import com.smw.project.balmam.dto.StayedCityDto;
 import com.smw.project.balmam.dto.UserDto;
 import com.smw.project.balmam.entity.CityTagEntity;
 import com.smw.project.balmam.entity.GeoMediaEntity;
-import com.smw.project.balmam.entity.GeoMediaFilesEntity;
+import com.smw.project.balmam.entity.GeoMediaFileEntity;
+import com.smw.project.balmam.entity.MediaFileEntity;
 import com.smw.project.balmam.entity.PathCoordinatesGroupEntity;
 import com.smw.project.balmam.entity.StayedCityEntity;
 import com.smw.project.balmam.entity.TraceEntity;
@@ -93,7 +95,7 @@ public class TraceController {
 	    for(GeoMediasDto geoMediaDto : geoMediaDtos) {
 	    	GeoMediaEntity geoMedia = new GeoMediaEntity(geoMediaDto.getCoordinate(), traceId);
 	    	traceService.insertGeoMedia(geoMedia);
-	    	List<GeoMediaFilesEntity> geoMediaFiles = geoMediaDto.getMediaFiles().stream().map(files-> new GeoMediaFilesEntity(geoMedia.getId(), files.getId())).collect(Collectors.toList());
+	    	List<GeoMediaFileEntity> geoMediaFiles = geoMediaDto.getMediaFiles().stream().map(files-> new GeoMediaFileEntity(geoMedia.getId(), files.getId())).collect(Collectors.toList());
 	        traceService.insertGeoMediaFiles(geoMediaFiles);
 	    	
 	    }
@@ -102,8 +104,27 @@ public class TraceController {
 	    
 	    
 	    // Processing goes here...
-	    return "/trace/routeRecording";
+	    return "redirect:/trace/writeTraceDetail?id"+traceId;
 	    //return "redirect:/traceDetail/{traceId}"; // Adjust the redirection as needed
+	}
+	
+	@GetMapping("/trace/writeTraceDetail")
+	public String showWriteTraceDetail(Long id, Model model) {
+		//1. trace 가지고 오기
+		TraceEntity traceEntity = traceService.findTraceById(id); 
+		
+		//todo 예외처리 해주기. 작성 권한등 확인.
+		
+		//2. 모든 이미지 들고오기.
+		List<MediaFileEntity> mediaFileEntity =  traceService.findAllMedaFileByTraceIdFromGeoMedia(traceId);
+//		SELECT geoMediaFile.* FROM geoMedia
+//		INNER JOIN geoMediaFile 
+//		ON geoMedia.id = geoMediaFile.geoMediaId AND geoMedia.isDeleted = FALSE AND geoMediaFile.isDeleted = FALSE
+//		INNER JOIN mediaFiles ON geoMediaFile.mediaFileId = 
+		
+	    //3. dto만들어서 뿌려주기
+				
+		return "/trace/writeTraceDetail";
 	}
 
 }
