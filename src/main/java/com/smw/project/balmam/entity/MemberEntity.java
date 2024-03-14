@@ -27,6 +27,8 @@ public class MemberEntity {
     private boolean emailVerified;
     private RoleType roleType;
     
+
+    
     private String extra__profileImageName;
 
     

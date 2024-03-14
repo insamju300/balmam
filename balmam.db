@@ -34,10 +34,6 @@ CREATE TABLE `Member` (
     roleType VARCHAR(50) DEFAULT 'user'
 );
 
-
-
-
-
 CREATE TABLE EmailAuthentications (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     memberId BIGINT NOT NULL,
@@ -47,3 +43,79 @@ CREATE TABLE EmailAuthentications (
     verified BOOLEAN DEFAULT FALSE,
     type VARCHAR(50)
 );
+
+CREATE TABLE trace (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    regDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updateDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    writerId BIGINT UNSIGNED,
+    isDeleted BOOLEAN DEFAULT FALSE,
+    deletedDate TIMESTAMP NULL,
+    title VARCHAR(255),
+    recordingStartTime TIMESTAMP NULL,
+    recordingEndTime TIMESTAMP NULL,
+    totalPauseTime BIGINT DEFAULT 0,
+    hitCount INT DEFAULT 0,
+    likeCount INT DEFAULT 0,
+    bookmarkCount INT DEFAULT 0,
+    commentCount INT DEFAULT 0,
+    orderPoint BIGINT DEFAULT 0,
+    status VARCHAR(255)
+);
+
+##경로 좌표 그룹
+CREATE TABLE pathCoordinatesGroup(
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    regDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updateDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    traceId BIGINT UNSIGNED NOT NULL,
+    order INT NOT NULL
+)
+
+##경로 좌표
+CREATE TABLE pathCoordinate (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    regDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updateDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    pathCoordinatesGroupId BIGINT UNSIGNED NOT NULL,
+    time TIMESTAMP NOT NULL, 
+    lat DECIMAL(10, 8) NOT NULL, 
+    lng DECIMAL(11, 8) NOT NULL
+);
+
+
+
+DELIMITER //
+CREATE TRIGGER before_insert_trace
+BEFORE INSERT ON trace
+FOR EACH ROW
+BEGIN
+    -- Calculate the difference in seconds from the reference date to regDate
+    -- Assuming January 1, 2024, as the reference date
+    SET NEW.orderPoint = NEW.hitCount + NEW.likeCount + NEW.bookmarkCount + NEW.commentCount 
+                         + (UNIX_TIMESTAMP(NEW.regDate) - UNIX_TIMESTAMP('2024-01-01 00:00:00'));
+END; //
+DELIMITER ;
+
+DELIMITER //
+CREATE TRIGGER before_update_trace
+BEFORE UPDATE ON trace
+FOR EACH ROW
+BEGIN
+    -- Recalculate considering the current counts and the difference in seconds from the reference date
+    SET NEW.orderPoint = NEW.hitCount + NEW.likeCount + NEW.bookmarkCount + NEW.commentCount 
+                         + (UNIX_TIMESTAMP(NEW.regDate) - UNIX_TIMESTAMP('2024-01-01 00:00:00'));
+END; //
+DELIMITER ;
+
+일단 저장용.
+SELECT *
+FROM trace
+WHERE someCondition = true
+  AND (
+    orderPoint < :currentOrderPoint
+    OR
+    (orderPoint = :currentOrderPoint AND id < :currentId)
+  )
+ORDER BY orderPoint DESC, id DESC
+LIMIT 10;
