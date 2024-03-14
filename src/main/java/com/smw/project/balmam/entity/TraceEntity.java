@@ -3,6 +3,7 @@ package com.smw.project.balmam.entity;
 import java.sql.Timestamp;
 
 import com.smw.project.balmam.dto.RouteRecordingDTO;
+import com.smw.project.balmam.enums.TraceStatus;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

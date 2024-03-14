@@ -1,4 +1,4 @@
-package com.smw.project.balmam.entity;
+package com.smw.project.balmam.enums;
 
 public enum TraceStatus {
 	recordingDone, done

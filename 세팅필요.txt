@@ -7,3 +7,4 @@
    다음과 같은 경로가 되게 다운받은 파일을 배치한다. C:/files/balmam/tools/ffmpeg/bin/ffmpeg.exe
 
    
+참고 //https://stackoverflow.com/questions/45206154/why-the-google-maps-api-does-not-work-on-a-server-error-the-geolocation-servi

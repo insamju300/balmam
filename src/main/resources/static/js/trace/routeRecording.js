@@ -106,11 +106,17 @@ async function initMap() {
           if (results[0]) {
             // 결과에서 도시 이름을 찾습니다.
             const addressComponents = results[0].address_components;
+            console.log(addressComponents);
             const cityComponent = addressComponents.find(
               (component) =>
                 component.types.includes("administrative_area_level_1") &&
                 component.types.includes("political")
             );
+//		      const cityComponent = addressComponents.find(
+//		        (component) =>
+//		          component.types.includes("locality") && // 'locality'를 사용해 도시를 찾습니다.
+//		          component.types.includes("political")
+//		      );
             const cityName = cityComponent ? cityComponent.long_name : null;
 
             if (cityName) {
@@ -420,6 +426,7 @@ function successWatch(position) {
       if (results[0]) {
         // 결과에서 도시 이름을 찾습니다.
         const addressComponents = results[0].address_components;
+         console.log(addressComponents);
         const cityComponent = addressComponents.find(
           (component) =>
             component.types.includes("administrative_area_level_1") &&
