@@ -5,20 +5,20 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.smw.project.balmam.entity.CityTagEntity;
 import com.smw.project.balmam.entity.GeoMediaEntity;
 import com.smw.project.balmam.entity.GeoMediaFileEntity;
 import com.smw.project.balmam.entity.MediaFileEntity;
+import com.smw.project.balmam.entity.PathCoordinateEntity;
 import com.smw.project.balmam.entity.PathCoordinatesGroupEntity;
 import com.smw.project.balmam.entity.StayedCityEntity;
+import com.smw.project.balmam.entity.TagMappingEntity;
 import com.smw.project.balmam.entity.TraceEntity;
-import com.smw.project.balmam.entity.pathCoordinateEntity;
-import com.smw.project.balmam.repository.CityTagRepository;
 import com.smw.project.balmam.repository.GeoMediaFileRepository;
 import com.smw.project.balmam.repository.GeoMediaRepository;
 import com.smw.project.balmam.repository.PathCoordinateEntityRepository;
 import com.smw.project.balmam.repository.PathCoordinatesGroupRepository;
 import com.smw.project.balmam.repository.StayedCityRepository;
+import com.smw.project.balmam.repository.TagMappingRepository;
 import com.smw.project.balmam.repository.TraceRepository;
 
 @Service
@@ -36,13 +36,13 @@ public class TraceService {
 	StayedCityRepository stayedCityRepository;	
 	
 	@Autowired
-	CityTagRepository cityTagRepository;	
-	
-	@Autowired
 	GeoMediaRepository geoMediaRepository;
 	
 	@Autowired
 	GeoMediaFileRepository geoMediaFileRepository;
+	
+	@Autowired
+	TagMappingRepository tagMappingRepository;
 	
 
 	public void insertTrace(TraceEntity traceEntity) {
@@ -56,7 +56,7 @@ public class TraceService {
 		
 	}
 
-	public void insertPathCoordinates(List<pathCoordinateEntity> pathCoordinates) {
+	public void insertPathCoordinates(List<PathCoordinateEntity> pathCoordinates) {
 		// TODO Auto-generated method stub
 		pathCoordinatesRepository.insertPathCoordinates(pathCoordinates);
 	}
@@ -66,11 +66,7 @@ public class TraceService {
 		
 	}
 
-	public void insertCityTags(List<CityTagEntity> cityTags) {
-		// TODO Auto-generated method stub
-		cityTagRepository.insertCityTags(cityTags);
-		
-	}
+
 
 	public void insertGeoMedia(GeoMediaEntity geoMedia) {
 		geoMediaRepository.insertGeoMedia(geoMedia);
@@ -90,6 +86,29 @@ public class TraceService {
 		// TODO Auto-generated method stub
 		return geoMediaFileRepository.findAllMedaFileByTraceIdFromGeoMedia(id);
 	}
+
+	public void updateTrace(TraceEntity traceEntity) {
+		traceRepository.updateTrace(traceEntity);
+		
+	}
+
+	public void markMediaFilesAsDeleted(List<Long> deletedMediaFileIds) {
+		geoMediaFileRepository.markMediaFilesAsDeleted(deletedMediaFileIds);
+	}
+
+	public void updateGeoMediaDeletionStatusForAllDeletedMediaFiles(Long traceId) {
+		// TODO Auto-generated method stub
+		geoMediaRepository.updateGeoMediaDeletionStatusForAllDeletedMediaFiles(traceId);
+	}
+
+	public void insertTagMappings(List<TagMappingEntity> tagMappings) {
+		tagMappingRepository.insertTagMappings(tagMappings);
+		
+	}
+	
+	
+	
+
 	
 
 }

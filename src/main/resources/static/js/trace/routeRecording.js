@@ -336,16 +336,25 @@ function stopTraceRecoding() {
     geoMedias: geoMediasForTransfer
   };
 
-  fetch('/trace/routeRecording', {
-    method: 'POST', // or 'PUT'
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(routeRecordingDTO),
-  })
-  .catch((error) => {
-    console.error('Error:', error);
-  });
+	fetch('/trace/routeRecording', {
+	    method: 'POST',
+	    headers: {
+	      'Content-Type': 'application/json',
+	    },
+	    body: JSON.stringify(routeRecordingDTO),
+	})
+	.then(response => response.json()) // 응답을 JSON으로 파싱
+	.then(result => {
+	    if (result.success) {
+	        window.location.href = result.data; // 서버로부터 받은 리다이렉트 URL로 페이지 이동
+	    } else {
+	        // 에러 처리 또는 사용자에게 메시지 표시
+	        console.error('Failed:', result.message);
+	    }
+	})
+	.catch((error) => {
+	    console.error('Error:', error);
+	});
 
 //  //녹화정보 json형식으로 다운로드. 프론트단 작업을 위한 부분이며 추후 삭제할 것. start
 //  const dataToDownload = {

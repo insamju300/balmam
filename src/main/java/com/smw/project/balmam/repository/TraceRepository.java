@@ -4,6 +4,7 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import com.smw.project.balmam.entity.TraceEntity;
 
@@ -16,11 +17,31 @@ public interface TraceRepository {
 	void insertTrace(TraceEntity traceEntity);
 
 	@Select("""
-			SELECT trace.*, `member`.nickname AS extra__writerNickname
-			FROM trace INNER JOIN `member`
-			ON trace.writerId = `member`.id
-			WHERE trace.id = {id}
+			SELECT *
+			FROM trace
+			WHERE trace.id = #{id}
 			""")
 	TraceEntity findTraceByid(Long id);
+
+	@Update("""
+			<script>
+			Update TRACE
+			    <set>
+		            <if test="title != null">
+		                title = #{title},
+		            </if>
+		            <if test="featuredImageId != null">
+		                featuredImageId = #{featuredImageId},
+		            </if>
+		            <if test="status != null">
+		                status = #{status},
+		            </if>
+		        </set>
+    		where id=#{id}
+    		</script> 
+			""")
+	
+	
+	void updateTrace(TraceEntity traceEntity);
 
 }

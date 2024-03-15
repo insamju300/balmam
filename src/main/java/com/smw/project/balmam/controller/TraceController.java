@@ -4,36 +4,53 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.smw.project.balmam.dto.GeoMediasDto;
 import com.smw.project.balmam.dto.LoginInfoDTO;
+import com.smw.project.balmam.dto.MediaFileDto;
 import com.smw.project.balmam.dto.PathCoordinateDto;
+import com.smw.project.balmam.dto.ResultData;
 import com.smw.project.balmam.dto.RouteRecordingDTO;
 import com.smw.project.balmam.dto.StayedCityDto;
+import com.smw.project.balmam.dto.TagOutputDto;
 import com.smw.project.balmam.dto.UserDto;
-import com.smw.project.balmam.entity.CityTagEntity;
+import com.smw.project.balmam.dto.WriteOrModifyTraceDetailDto;
 import com.smw.project.balmam.entity.GeoMediaEntity;
 import com.smw.project.balmam.entity.GeoMediaFileEntity;
 import com.smw.project.balmam.entity.MediaFileEntity;
+import com.smw.project.balmam.entity.PathCoordinateEntity;
 import com.smw.project.balmam.entity.PathCoordinatesGroupEntity;
 import com.smw.project.balmam.entity.StayedCityEntity;
+import com.smw.project.balmam.entity.TagEntity;
+import com.smw.project.balmam.entity.TagMappingEntity;
 import com.smw.project.balmam.entity.TraceEntity;
-import com.smw.project.balmam.entity.pathCoordinateEntity;
+import com.smw.project.balmam.enums.RelType;
+import com.smw.project.balmam.enums.TagType;
+import com.smw.project.balmam.enums.TraceStatus;
+import com.smw.project.balmam.service.TagService;
 import com.smw.project.balmam.service.TraceService;
 import com.smw.project.balmam.utill.Ut;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+
+//todo ajax용 로딩화면 만들기
 @Controller
 public class TraceController {
 	
 	@Autowired
 	TraceService traceService;
+	
+	@Autowired
+	TagService tagService;
+	
 	
 	//회원가입
 	@GetMapping("/trace/routeRecording")
@@ -41,8 +58,12 @@ public class TraceController {
 		return "/trace/routeRecording";
 	}
 	
-	@PostMapping("/trace/routeRecording")
-	public String doRouteRecording(@RequestBody RouteRecordingDTO routeRecordingDTO, HttpServletRequest request) {
+	@Value("${file.upload.path}")
+	private String path;
+	
+	 @PostMapping("/trace/routeRecording")
+	 @ResponseBody
+	public ResultData<String> doRouteRecording(@RequestBody RouteRecordingDTO routeRecordingDTO, HttpServletRequest request) {
 		LoginInfoDTO loginInfo = (LoginInfoDTO)request.getAttribute("loginInfo");
 		UserDto user = loginInfo.getUserDto();
 		
@@ -71,8 +92,8 @@ public class TraceController {
 	        List<PathCoordinateDto> pathCoordinateDtos = pathCoordinatesGroups.get(i);
 	        
 	        
-	        List<pathCoordinateEntity> pathCoordinateEntities = 
-	        		pathCoordinateDtos.stream().map(dto -> new pathCoordinateEntity(dto, pathCoordinatesGroupId)).collect(Collectors.toList());
+	        List<PathCoordinateEntity> pathCoordinateEntities = 
+	        		pathCoordinateDtos.stream().map(dto -> new PathCoordinateEntity(dto, pathCoordinatesGroupId)).collect(Collectors.toList());
 	        
 	        traceService.insertPathCoordinates(pathCoordinateEntities);
 	        
@@ -85,9 +106,9 @@ public class TraceController {
 	    
 	    traceService.insertStayedCities(stayedCities);
 	    
-	    List<CityTagEntity> cityTags = 
-	    		stayedCitiesDto.stream().map(dto->new CityTagEntity(dto.getName(), Ut.generatePastelColorHex())).collect(Collectors.toList());
-	    traceService.insertCityTags(cityTags);	    
+	    List<TagEntity> cityTags = 
+	    		stayedCitiesDto.stream().map(dto->new TagEntity(dto.getName(), Ut.generatePastelColorHex(), TagType.city)).collect(Collectors.toList());
+	    tagService.insertTags(cityTags);	    
 	    
 	    
 	    //4단계 미디어 목록 관련 db insert 처리
@@ -103,10 +124,9 @@ public class TraceController {
 	    
 	    
 	    
-	    // Processing goes here...
-	    return "redirect:/trace/writeTraceDetail?id"+traceId;
-	    //return "redirect:/traceDetail/{traceId}"; // Adjust the redirection as needed
-	}
+        String redirectUrl = "/trace/writeTraceDetail?id="+traceId; // 원하는 리다이렉트 경로
+        return ResultData.ofData("S-1", "Success", "redirectUrl", redirectUrl);
+    }
 	
 	@GetMapping("/trace/writeTraceDetail")
 	public String showWriteTraceDetail(Long id, Model model) {
@@ -116,15 +136,76 @@ public class TraceController {
 		//todo 예외처리 해주기. 작성 권한등 확인.
 		
 		//2. 모든 이미지 들고오기.
-		List<MediaFileEntity> mediaFileEntity =  traceService.findAllMedaFileByTraceIdFromGeoMedia(traceId);
-//		SELECT geoMediaFile.* FROM geoMedia
-//		INNER JOIN geoMediaFile 
-//		ON geoMedia.id = geoMediaFile.geoMediaId AND geoMedia.isDeleted = FALSE AND geoMediaFile.isDeleted = FALSE
-//		INNER JOIN mediaFiles ON geoMediaFile.mediaFileId = 
+		List<MediaFileEntity> mediaFileEntitys =  traceService.findAllMedaFileByTraceIdFromGeoMedia(id); 
 		
 	    //3. dto만들어서 뿌려주기
+		List<MediaFileDto> mediaFileDtos = mediaFileEntitys.stream().map(entity-> new MediaFileDto(entity, path)).toList();
+		
+		model.addAttribute("mediaFiles", mediaFileDtos);
+		model.addAttribute("traceId", id);
 				
 		return "/trace/writeTraceDetail";
 	}
+	
+	@PostMapping("/trace/writeTraceDetail")
+	@ResponseBody
+	public ResultData<String>  doWriteTraceDetail(@RequestBody WriteOrModifyTraceDetailDto writeOrModifyTraceDto) {
+		System.err.println(writeOrModifyTraceDto.toString());
+		
+		Long traceId = writeOrModifyTraceDto.getId();
+		TraceEntity traceEntity = traceService.findTraceById(traceId); 
+		//예외처리 todo
+		
+		// trace 테이블 갱신 
+		String title = writeOrModifyTraceDto.getTitle().trim();
+		traceEntity.setTitle(title);
+		
+		Long featuredImageId = writeOrModifyTraceDto.getFeaturedImageId();
+		traceEntity.setFeaturedImageId(featuredImageId);
+		traceEntity.setStatus(TraceStatus.done);
+		
+		traceService.updateTrace(traceEntity);
+		
+      //삭제처리된 이미지들 갱신
+		List<Long> deletedMediaFileIds = writeOrModifyTraceDto.getDeletedMediaFileIds();
+		if(deletedMediaFileIds!=null && deletedMediaFileIds.size()>0) {
+		    traceService.markMediaFilesAsDeleted(deletedMediaFileIds);
+		    traceService.updateGeoMediaDeletionStatusForAllDeletedMediaFiles(writeOrModifyTraceDto.getId());
+		}
+		
+		List<TagOutputDto> tags = writeOrModifyTraceDto.getTags();
+		if(deletedMediaFileIds!=null && deletedMediaFileIds.size()>0) {
+			List<TagMappingEntity> tagMappings =  tags.stream().map(tag -> new TagMappingEntity(traceId, RelType.trace, tag.getId())).toList();
+			traceService.insertTagMappings(tagMappings);
+		}
+		
+				
+        String redirectUrl = "/trace/traceDetail?id="+writeOrModifyTraceDto.getId(); // 원하는 리다이렉트 경로
+        return ResultData.ofData("S-1", "Success", "redirectUrl", redirectUrl);
+	}
+	
+	@GetMapping("/trace/traceDetail")
+	public String showTraceDetail(Long id, Model model) {
+		
+		return "/trace/traceDetail";
+	}
+//	@PostMapping("/trace/writeTraceDetail")
+//	public String doWriteTraceDetail(Long id, Model model) {
+//		//1. trace 가지고 오기
+////		TraceEntity traceEntity = traceService.findTraceById(id); 
+////		
+////		//todo 예외처리 해주기. 작성 권한등 확인.
+////		
+////		//2. 모든 이미지 들고오기.
+////		List<MediaFileEntity> mediaFileEntitys =  traceService.findAllMedaFileByTraceIdFromGeoMedia(id); 
+////		
+////	    //3. dto만들어서 뿌려주기
+////		List<MediaFileDto> mediaFileDtos = mediaFileEntitys.stream().map(entity-> new MediaFileDto(entity, path)).toList();
+////		
+////		model.addAttribute("mediaFiles", mediaFileDtos);
+////		model.addAttribute("traceId", id);
+////				
+////		return "/trace/writeTraceDetail";
+//	}
 
 }

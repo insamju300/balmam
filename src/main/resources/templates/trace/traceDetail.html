@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="utf-8">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>발맘:발자취 상세</title>
+
+  <!-- 테일윈드 불러오기 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- daisy ui 불러오기 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/daisyui/4.6.1/full.css" />
+  <!-- 폰트어썸 불러오기 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+  <!-- anime js 불러보기-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
+  <!-- 제이쿼리 불러오기 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+  <!--지도 그리기 불러오기-->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+
+  <!--공통 및 헤드 css, js-->
+  <link rel="stylesheet" href="/css/common.css">
+  <link rel="stylesheet" href="/css/trace.css">
+  <script src="/js/common.js"></script>
+
+
+</head>
+
+<body>
+
+  <header th:insert="/header :: header"></header>
+  <header id="ghost_header" class="w-screen">
+  </header>
+
+  <main class="flex w-screen justify-center p-1 md:p-5 text-neutral">
+    <div class="md:w-4/6 w-full flex flex-col md:p-6 mt-2 ">
+      <!--todo-->
+      <!--1. 지도 그리기-->
+      <!--2. 경로 그리기-->
+      <!--3. 사진 올리기-->
+      <!--4. 통합 가능한가 검토-->
+      <!--5. 내 위치 표시-->
+      <div class="w-full flex flex-row">
+        <div class="flex grow flex-col">
+          <div id="map" class="h-96 w-full shadow-xl"></div>
+
+          <div class="w-full h-96 md:flex-row flex-col flex gap-1 mt-2">
+            <div class="w-1/2 flex flex-col">
+              <h1 class="text-3xl font-bold">그리스 여행기 </h1>
+              <p>2024-02-25 02:54 ~ 2024-02-25 04:54 </p>
+              <p>(1시간중 실제 녹화 50분)</p>
+              <div class="flex gap-2 flex-col xl:flex-row">
+                <div class="flex flex-row items-center gap-2">
+                  <div class="avatar">
+                    <div class="w-9 rounded-full">
+                      <img src="/images/avatar/boy.webp" />
+                    </div>
+                  </div>
+                  <a href="#">가장긴이름가장긴이름</a>
+                </div>
+
+
+                <button type="button" onclick="subscriptButtonToggleEvent(this);" class="btn bg-base_white btn-xs text-secondary_hard
+              hover:bg-secondary_hard hover:text-bg_main text-md mr-5 subscript_btn w-24" data-member-id="1"
+                  data-state="0">구독</button>
+
+              </div>
+
+
+              <div id="tag_name_container" class="flex-nowrap flex gap-2 mt-2">
+                <div class="tooltip tag_name_badge_container">
+                  <div
+                    class="tag_name_badge text-sm text-neutral rounded-full px-2 bg-primary w-16 overflow-ellipsis whitespace-nowrap overflow-hidden"
+                    style="background-color: rgb(237, 206, 205);">테스트</div>
+                  <span class="tooltiptext">테스트</span>
+                </div>
+
+                <div class="tooltip tag_name_badge_container">
+                  <div
+                    class="tag_name_badge text-sm text-neutral rounded-full px-2 bg-primary w-16 overflow-ellipsis whitespace-nowrap overflow-hidden"
+                    style="background-color: rgb(237, 206, 205);">긴 글씨를 쓰면 어떻게</div>
+                  <span class="tooltiptext">긴 글씨를 쓰면 어떻게</span>
+                </div>
+
+                <div class="tooltip tag_name_badge_container">
+                  <div
+                    class="tag_name_badge text-sm text-neutral rounded-full px-2 bg-primary w-16 overflow-ellipsis whitespace-nowrap overflow-hidden"
+                    style="background-color: rgb(237, 206, 205);">오늘 날씨가 유독 덥다</div>
+                  <span class="tooltiptext">오늘 날씨가 유독 덥다</span>
+                </div>
+
+              </div>
+
+
+
+              <div id="stayed_city_container" class="flex-nowrap flex gap-2 mt-2">
+                <div class="tooltip stayed_city_badge_container">
+                  <div
+                    class="stayed_city_badge text-sm text-neutral rounded-full px-2 bg-primary w-16 overflow-ellipsis whitespace-nowrap overflow-hidden"
+                    style="background-color: rgb(181, 148, 140);">도쿄</div>
+                  <span class="tooltiptext">도쿄</span>
+                </div>
+
+                <div class="tooltip stayed_city_badge_container">
+                  <div
+                    class="stayed_city_badge text-sm text-neutral rounded-full px-2 bg-primary w-16 overflow-ellipsis whitespace-nowrap overflow-hidden"
+                    style="background-color: rgb(181, 148, 140);">교토</div>
+                  <span class="tooltiptext">교토</span>
+                </div>
+
+              </div>
+
+
+            </div>
+
+            <div class="w-1/2 flex flex-col md:items-end">
+              <span>1년전</span>
+              <span>1시간 전 수정</span>
+              <div class="flex gap-1 mt-2">
+                <button type="button" onclick="location.href='/trace/modifyTraceDetail.html'" class="btn btn-xs bg-base_white text-secondary_hard
+                  hover:bg-secondary_hard hover:text-bg_main text-md mr-5">수정</button>
+                <button type="button" onclick="confirm_for_delete_trace_modal.showModal();" class="btn btn-xs bg-base_white text-secondary_hard
+                  hover:bg-secondary_hard hover:text-bg_main text-md">삭제</button>
+
+              </div>
+
+
+            </div>
+
+
+          </div>
+
+        </div>
+        <ul>
+
+          <li class="flex">
+            <div class="w-8 flex justify-center cursor-pointer hover:brightness-125 hover:shadow-outline duration-100"
+              onclick="showUserCurrentLocation()">
+              <img src="/images/character/balmami.png" class="transition duration-300 ease-in-out">
+            </div>
+          </li>
+
+
+
+          <li class="flex">
+            <div class="w-8  text-primary hover:text-primary_hard cursor-pointer text-xl justify-center flex mt-2"
+              onclick="tracePlay()">
+              <i class="fa-solid fa-circle-play"></i>
+            </div>
+          </li>
+
+          <li class="flex">
+            <div class="w-8 flex justify-center cursor-pointer hover:brightness-125 hover:shadow-outline duration-100"
+              onclick="showAllMideasCarouselsModal()">
+              <img src="/images/icon/camera.png" class="transition duration-300 ease-in-out">
+            </div>
+          </li>
+
+          <li class="flex md:flex-row flex-col">
+            <div class="w-8 text-center">
+              <i class="fa-solid fa-eye"></i>
+            </div>
+            <p>200</p>
+          </li>
+
+          <!--좋아요 버튼을 누르면 자식인 fa-solid를 조정하자.-->
+          <li class="flex md:flex-row flex-col">
+            <div class="w-8 text-center hover:text-primary cursor-pointer"
+              onclick="likeButtonToggleEvent(this); return false" data-reltype="trace" data-relId="12" data-state="0">
+              <i class="fa-solid fa-heart"></i>
+            </div>
+            <p>200</p>
+          </li>
+
+          <li class="flex md:flex-row flex-col">
+            <div class="w-8 text-center hover:text-secondary cursor-pointer"
+              onclick="bookmarkButtonToggleEvent(this); return false" data-reltype="trace" data-relId="12"
+              data-state="0">
+              <i class="fa-solid fa-bookmark"></i>
+            </div>
+            <p>200</p>
+          </li>
+
+          <li class="flex">
+            <!--drawer start-->
+            <div class="drawer drawer-end">
+              <input id="my-drawer" type="checkbox" class="drawer-toggle" />
+
+              <div class="drawer-content">
+                <!-- Page content here -->
+                <label for="my-drawer" class="drawer-button flex md:flex-row flex-col">
+                  <div class="w-8 text-center hover:text-accent cursor-pointer " data-reltype="trace" data-relId="12"
+                    data-isFirst="0">
+                    <i class="fa-solid fa-comment"></i>
+                  </div>
+                  <p>200</p>
+
+                </label>
+              </div>
+              <div class="drawer-side z-50  w-screen">
+                <div class="h-full flex flex-col  w-full md:w-96 z-50">
+                  <label for="my-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
+                  <div class="p-5 md:w-96 w-full min-h-full glass flex flex-col">
+                    <!-- Top Icon -->
+                    <div onclick="$('#my-drawer').click()"
+                      class="text-neutral flex justify-end cursor-pointer text-3xl hover:brightness-125 mb-4">
+                      <i class="fa-solid fa-circle-xmark"></i>
+                    </div>
+
+                    <!-- Contents Area depth 0 -->
+                    <div class="reply_container flex-grow overflow-auto justify-start md:pb-0 pb-20"
+                      data-reltype="trace" data-relId="5" data-depth="0">
+                      <!--
+                      <div class="reply_item py-5" data-id="1">
+
+                        <div class="flex flex-row items-stretch ">
+                          <div class="author_avatar_container">
+
+                            <img class="w-10 h-10 rounded-full mx-4 author_avartar"
+                              src="https://source.unsplash.com/random/50x50?face" alt="Avatar">
+                          </div>
+                    
+                          <div class="w-full">
+                            <div class="flex w-full">
+                              <div class="flex justify-start flex-row grow gap-1">
+                                <div class="text-sm font-semibold text-primary parent_reply_author"></div>
+                                <div class="text-sm font-semibold">User nickName</div>
+                                <div class="text-gray-500 text-xs">3 hours ago</div>
+                              </div>
+                              <div class="dropdown dropdown-hover">
+                                <div tabindex="0" role="button" class="w-5 flex justify-center"><i
+                                    class="fa-solid fa-ellipsis-vertical"></i></div>
+
+                                <ul tabindex="0"
+                                  class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-20 -translate-x-3/4">
+                                  <li class="hover:bg-black hover:text-white reply_modify_button"><a>수정</a></li>
+                                  <li class="hover:bg-black hover:text-white reply_delete_button"><a>삭제</a></li>
+                                </ul>
+                              </div>
+                            </div>
+
+                            <p class="text-gray-700 mb-2 reply_body">코멘트 내용 <br> 엄청 많은 코멘트내용<br><br><br>코멘트</p>
+
+                            <div class="reply_modify_container hidden">
+                              <textarea
+                                class="w-full px-3 py-2 bg-transparent border-0 border-b-2 border-secondary_hard  focus:border-secondary focus:outline-none transition duration-300 placeholder-white items-center"
+                                rows="1"></textarea>
+                              <div class="flex-row flex gap-2">
+                                <button
+                                  class="btn btn-xs flex justify-center border-0 bg-base_white text-secondary_hard
+                        hover:bg-secondary_hard hover:text-bg_main text-md mt-2 transmission_reply_modify_button">전송</button>
+                                <button class="btn btn-xs flex justify-center border-0 bg-base_white text-secondary_hard
+                        hover:bg-secondary_hard hover:text-bg_main text-md mt-2 cancle_reply_modify_button">취소</button>
+                              </div>
+                            </div>
+                            <div class="flex flex-row gap-2 items-center">
+                              <div class="flex flex-row text-md items-center  w-20">
+                                <div class="w-8 text-center hover:text-primary cursor-pointer"
+                                  onclick="likeButtonToggleEvent(this); return false" data-reltype="reply"
+                                  data-relId="1" data-state="0">
+                                  <i class="fa-solid fa-heart"></i>
+                                </div>
+                                <p>2천만</p>
+                              </div>
+
+                              <button class="btn btn-xs border-0 bg-base_white text-secondary_hard
+                        hover:bg-secondary_hard hover:text-bg_main text-md mt-2 reply_input_open_btn">답글<button>
+                            </div>
+
+                            <a href="#" onclick="false" class="show_nested_reply" data-is-already-opend="0"> <i
+                                class="fa-solid fa-caret-down"></i></i>
+                              답글 50개</a>
+
+                          </div>
+
+
+                        </div>
+
+                    
+
+                        <div class="reply_outer_container pl-14 w-full h-30" data-reltype="reply" data-relId="1"
+                          data-depth="1">
+                          <div class="reply_input_container w-full h-20 mt-4 gap-1 hidden" data-reltype="reply"
+                            data-relId="1" data-depth="1">
+                            <div class="flex flex-row">
+                              <div class="avatar user_avatar">
+                                <div class="w-9 rounded-full">
+                                  <img src="/images/avatar/boy.webp" />
+                                </div>
+                              </div>
+                              <textarea
+                                class="w-full px-3 py-2 bg-transparent border-0 border-b-2 border-secondary_hard  focus:border-secondary focus:outline-none transition duration-300 placeholder-white items-center "
+                                rows="1" placeholder="댓글 추가..."></textarea>
+                            </div>
+                            <div class="flex flex-row">
+                              <button
+                                class="btn btn-xs flex justify-center border-0 bg-base_white text-secondary_hard
+                      hover:bg-secondary_hard hover:text-bg_main text-md mt-2 transmission_reply_write_button">전송</button>
+                              <button class="btn btn-xs flex justify-center border-0 bg-base_white text-secondary_hard
+                      hover:bg-secondary_hard hover:text-bg_main text-md mt-2 cancle_reply_cancle_button">취소</button>
+                            </div>
+                          </div>
+
+                          <div class="reply_container w-full flex-grow overflow-auto justify-start hidden"
+                            data-reltype="reply" data-relId="1" data-depth="1">
+
+                            <div class="reply_item py-5" data-id="2">
+
+                              <div class="flex flex-row items-stretch ">
+                                <div class="author_avatar_container">
+
+                                  <img class="w-10 h-10 rounded-full mx-4 author_avartar"
+                                    src="https://source.unsplash.com/random/50x50?face" alt="Avatar">
+                                </div>
+
+                                <div class="w-full">
+                                  <div class="flex w-full">
+                                    <div class="flex justify-start flex-row grow gap-1">
+                                      <div class="text-sm font-semibold text-primary parent_reply_author"></div>
+                                      <div class="text-sm font-semibold">User nickName</div>
+                                      <div class="text-gray-500 text-xs">3 hours ago</div>
+                                    </div>
+                                    <div class="dropdown dropdown-hover">
+                                      <div tabindex="0" role="button" class="w-5 flex justify-center"><i
+                                          class="fa-solid fa-ellipsis-vertical"></i></div>
+
+                                      <ul tabindex="0"
+                                        class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-20 -translate-x-3/4">
+                                        <li class="hover:bg-black hover:text-white reply_modify_button"><a>수정</a></li>
+                                        <li class="hover:bg-black hover:text-white reply_delete_button"><a>삭제</a></li>
+                                      </ul>
+                                    </div>
+                                  </div>
+
+                                  <p class="text-gray-700 mb-2 reply_body">코멘트 내용 <br> 엄청 많은 코멘트내용<br><br><br>코멘트</p>
+
+                                  <div class="reply_modify_container hidden">
+                                    <textarea
+                                      class="w-full px-3 py-2 bg-transparent border-0 border-b-2 border-secondary_hard  focus:border-secondary focus:outline-none transition duration-300 placeholder-white items-center"
+                                      rows="1"></textarea>
+                                    <div class="flex-row flex gap-2">
+                                      <button
+                                        class="btn btn-xs flex justify-center border-0 bg-base_white text-secondary_hard
+                              hover:bg-secondary_hard hover:text-bg_main text-md mt-2 transmission_reply_modify_button">전송</button>
+                                      <button
+                                        class="btn btn-xs flex justify-center border-0 bg-base_white text-secondary_hard
+                              hover:bg-secondary_hard hover:text-bg_main text-md mt-2 cancle_reply_modify_button">취소</button>
+                                    </div>
+                                  </div>
+                                  <div class="flex flex-row gap-2 items-center">
+                                    <div class="flex flex-row text-md items-center  w-20">
+                                      <div class="w-8 text-center hover:text-primary cursor-pointer"
+                                        onclick="likeButtonToggleEvent(this); return false" data-reltype="reply"
+                                        data-relId="2" data-state="0">
+                                        <i class="fa-solid fa-heart"></i>
+                                      </div>
+                                      <p>2천만</p>
+
+
+                                    </div>
+
+                                    <button class="btn btn-xs border-0 bg-base_white text-secondary_hard
+                              hover:bg-secondary_hard hover:text-bg_main text-md mt-2 reply_input_open_btn">답글<button>
+                                  </div>
+
+                                </div>
+
+                              </div>
+
+
+
+                              <div class="reply_outer_container pl-14 w-full" data-reltype="reply" data-relId="2"
+                                data-depth="2">
+                                <div class="reply_input_container w-full h-20 mt-4 gap-1 hidden" data-reltype="reply"
+                                  data-relId="2" data-depth="2">
+                                  <div class="flex flex-row">
+                                    <div class="avatar user_avatar">
+                                      <div class="w-9 rounded-full">
+                                        <img src="/images/avatar/boy.webp" />
+                                      </div>
+                                    </div>
+                                    <textarea
+                                      class="w-full px-3 py-2 bg-transparent border-0 border-b-2 border-secondary_hard  focus:border-secondary focus:outline-none transition duration-300 placeholder-white items-center "
+                                      rows="1" placeholder="댓글 추가..."></textarea>
+                                  </div>
+                                  <div class="flex flex-row">
+                                    <button
+                                      class="btn btn-xs flex justify-center border-0 bg-base_white text-secondary_hard
+                            hover:bg-secondary_hard hover:text-bg_main text-md mt-2 transmission_reply_write_button">전송</button>
+                                    <button
+                                      class="btn btn-xs flex justify-center border-0 bg-base_white text-secondary_hard
+                            hover:bg-secondary_hard hover:text-bg_main text-md mt-2 cancle_reply_cancle_button">취소</button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    -->
+
+
+                    </div>
+
+                    <!-- Fixed Input Area at Bottom -->
+                    <div class="reply_input_container w-full h-20 relative bottom-auto left-auto right-auto gap-1 z-10"
+                      data-reltype="trace" data-relId="5" data-depth="0">
+                      <div class="flex flex-row">
+                        <div class="avatar user_avatar">
+                          <div class="w-9 rounded-full">
+                            <img src="/images/avatar/boy.webp" />
+                          </div>
+                        </div>
+                        <textarea
+                          class="w-full px-3 py-2 bg-transparent border-0 border-b-2 border-secondary_hard  focus:border-secondary focus:outline-none transition duration-300 placeholder-white items-center"
+                          rows="1" placeholder="댓글 추가..."></textarea>
+                        <button
+                          class="btn btn-xs flex justify-center border-0 bg-base_white text-secondary_hard
+                        hover:bg-secondary_hard hover:text-bg_main text-md mt-2 transmission_reply_write_button">댓글</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div> <!--drawer end-->
+
+            <dialog id="confirm_for_delete_reply_modal" class="modal text-neutral" data-delete-target-id="-1">
+              <div class="modal-box">
+                <h3 class="font-bold text-lg text-primary">댓글 삭제</h3>
+                <p class="py-4">댓글을 완전히 삭제할까요?</p>
+
+                <div class="modal-action">
+                  <button id="delete_reply_modal_cancle_button" type="button"
+                    class="btn text-neutral delete_reply_modal_cancle_button">취소</button>
+                  <button id="delete_reply_modal_delete_button" type="button"
+                    class="btn text-neutral delete_reply_modal_delete_button">삭제</button>
+                </div>
+              </div>
+            </dialog>
+
+          </li>
+        </ul>
+      </div>
+
+
+      <dialog id="confirm_for_delete_trace_modal" class="modal text-neutral">
+        <div class="modal-box">
+          <h3 class="font-bold text-lg text-primary">정말로 발자취를 삭제하시겠습니까??</h3>
+          <p class="py-4">정말로 삭제를 원하시면 삭제 버튼을 눌러주세요.</p>
+          <div class="modal-action">
+            <form method="dialog ">
+              <!-- if there is a button in form, it will close the modal -->
+              <button class="btn text-neutral"
+                onclick="document.getElementById('confirm_for_delete_trace_modal').close()">취소</button>
+            </form>
+            <button onclick="doDeleteTrace()" class="btn text-neutral">삭제</button>
+          </div>
+        </div>
+      </dialog>
+
+    </div>
+
+    
+
+    
+
+    <!--전체 이미지 모달-->
+    <dialog id="all_mideas_carousels_modal" class="modal">
+      <div class="modal-box">
+        <h3 class="font-bold text-lg">미디어 목록</h3>
+
+        <div class="w-full flex gap-4 flex-wrap justify-center mb-5 image-viewer">
+          <img src="/images/etc/etc1.webp" />
+
+        </div>
+
+        <div class="w-full flex gap-4 flex-wrap justify-center">
+          
+
+          <div class="avatar cursor-pointer ring ring-primary" >
+            <div class="w-24">
+              <img src="/images/etc/etc1.webp" />
+            </div>
+          </div>
+          <div class="avatar">
+            <div class="w-24">
+              <img src="/images/etc/etc2.webp" />
+            </div>
+          </div>
+          <div class="avatar">
+            <div class="w-24">
+              <img src="/images/etc/etc3.webp" />
+            </div>
+          </div>
+          <div class="avatar">
+            <div class="w-24">
+              <img src="/images/etc/etc4.webp" />
+            </div>
+          </div>
+          <div class="avatar">
+            <div class="w-24">
+              <img src="/images/etc/etc5.webp" />
+            </div>
+          </div>
+          <div class="avatar">
+            <div class="w-24">
+              <img src="/images/etc/etc6.webp" />
+            </div>
+          </div>
+          <div class="avatar">
+            <div class="w-24">
+              <img src="/images/etc/etc7.webp" />
+            </div>
+          </div>
+          <div class="avatar">
+            <div class="w-24">
+              <img src="/images/etc/etc8.webp" />
+            </div>
+          </div>
+          <div class="avatar">
+            <div class="w-24">
+              <img src="/images/etc/etc9.webp" />
+            </div>
+          </div>
+          <div class="avatar">
+            <div class="w-24">
+              <img src="/images/etc/etc10.webp" />
+            </div>
+          </div>
+
+
+          
+
+        </div>
+        <div class="modal-action">
+          <form method="dialog">
+            <!-- if there is a button in form, it will close the modal -->
+            <button class="btn">Close</button>
+          </form>
+        </div>
+      </div>
+      <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+      </form>
+    </dialog>
+
+
+
+
+
+</body>
+<script src="/js/header.js"></script>
+<script src="/js/util/replyUtil.js"></script>
+
+<script src="/js_keys.js"></script>
+<script id="script" type="text/javascript" charset="utf-8" defer></script>
+
+<script>
+  (g => { var h, a, k, p = "The Google Maps JavaScript API", c = "google", l = "importLibrary", q = "__ib__", m = document, b = window; b = b[c] || (b[c] = {}); var d = b.maps || (b.maps = {}), r = new Set, e = new URLSearchParams, u = () => h || (h = new Promise(async (f, n) => { await (a = m.createElement("script")); e.set("libraries", [...r] + ""); for (k in g) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]); e.set("callback", c + ".maps." + q); a.src = `https://maps.${c}apis.com/maps/api/js?` + e; d[q] = f; a.onerror = () => h = n(Error(p + " could not load.")); a.nonce = m.querySelector("script[nonce]")?.nonce || ""; m.head.append(a) })); d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n)) })
+    ({ key: getGoogleMapKey(), v: "weekly", region: "KR", language: "ko" });</script>
+
+<!--경로녹화 관련 trace-->
+<script src="/js/trace/traceDetail.js"></script>
+
+
+</html>

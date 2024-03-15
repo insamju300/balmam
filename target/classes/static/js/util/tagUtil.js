@@ -22,35 +22,63 @@ $("#form_tag_name_input").on('keydown', function(event) {
             $(this).val("");
             return;
         }
+        
+        
+        
+		$.ajax({
+		    url: "/tag/findOrInsertTag?tagName=" + tagName,
+		    type: "GET",
+		    processData: false,
+		    contentType: false
+		})
+		.then(function(response) {
+		    // Success handler
+		    let tag = response.data;
+		    // todo: response에서 에러 코드 왔을 때 처리 추가할 것.
+		    let badgeBgColor = tag.color;
+		    
+           let tagNameBadgeContainer = $('<div></div>').addClass("tooltip indicator tag_name_badge_container");
+           let indicatorItem = $('<span></span>').addClass("indicator-item badge p-1 bg-neutral text-base_white text-xs cursor-pointer");
+           let deleteIcon = $('<i></i>').addClass("fa-solid fa-x");
+           indicatorItem.append(deleteIcon);
 
-        let badgeBgColor = generatePastelColorHex();
+           indicatorItem.on("click", function(event) {
+               let deleteTargetTagName = $(this).siblings(".tag_name_badge").text().trim();
+                console.log(deleteTargetTagName);
+                tagNames.delete(deleteTargetTagName);
+                $(this).closest('.tag_name_badge_container').remove();
+           });
 
-        let tagNameBadgeContainer = $('<div></div>').addClass("tooltip indicator tag_name_badge_container");
-        let indicatorItem = $('<span></span>').addClass("indicator-item badge p-1 bg-neutral text-base_white text-xs cursor-pointer");
-        let deleteIcon = $('<i></i>').addClass("fa-solid fa-x");
-        indicatorItem.append(deleteIcon);
+           let tagNameBadge = $('<div></div>').addClass("tag_name_badge text-sm text-neutral rounded-full px-2 bg-primary w-20 overflow-ellipsis whitespace-nowrap overflow-hidden").css("backgroundColor", badgeBgColor).text(tagName);
 
-        indicatorItem.on("click", function(event) {
-            let deleteTargetTagName = $(this).siblings(".tag_name_badge").text().trim();
-            console.log(deleteTargetTagName);
-            tagNames.delete(deleteTargetTagName);
-            $(this).closest('.tag_name_badge_container').remove();
-        });
+           let tooltip = $('<span></span>').addClass("tooltiptext").text(tagName);
 
-        let tagNameBadge = $('<div></div>').addClass("tag_name_badge text-sm text-neutral rounded-full px-2 bg-primary w-20 overflow-ellipsis whitespace-nowrap overflow-hidden").css("backgroundColor", badgeBgColor).text(tagName);
+           tagNameBadgeContainer.append(indicatorItem).append(tagNameBadge).append(tooltip);
 
-        let tooltip = $('<span></span>').addClass("tooltiptext").text(tagName);
+           $("#tag_name_container").append(tagNameBadgeContainer);
 
-        tagNameBadgeContainer.append(indicatorItem).append(tagNameBadge).append(tooltip);
+           tagNames.set(tagName, tag);
+           console.log(tagNames);
+		    
+		  })
+		  .catch(function(xhr, status, error) {
+		      // Error handler
+		      // todo: handle errors
+		      alert("태그 처리에 실패하였습니다.");
+		  });
+		
+		
 
-        $("#tag_name_container").append(tagNameBadgeContainer);
-
-        tagNames.set(tagName, badgeBgColor);
-        console.log(tagNames);
         $("#form_tag_name_validation_message").text("");
         $("#form_tag_name_input").val("");
     }
 });
+
+
+function getTagsList(){
+	return Array.from(tagNames.values());
+}
+
 
 function validateTagNameFormat(tagName) {
     var regex = /^[0-9a-zA-Z가-힣ㄱ-ㅎㅏ-ㅣ\s]{1,20}$/;

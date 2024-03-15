@@ -12,7 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class pathCoordinateEntity {
+public class PathCoordinateEntity {
     private Long id;
     private Timestamp regDate;
     private Timestamp updateDate;
@@ -21,7 +21,7 @@ public class pathCoordinateEntity {
     private BigDecimal lat;
     private BigDecimal lng;
     
-    public pathCoordinateEntity(PathCoordinateDto dto, Long pathCoordinatesGroupId) {
+    public PathCoordinateEntity(PathCoordinateDto dto, Long pathCoordinatesGroupId) {
         this.lat = BigDecimal.valueOf(dto.getLat());
         this.lng = BigDecimal.valueOf(dto.getLng());
         this.time = dto.getTime();

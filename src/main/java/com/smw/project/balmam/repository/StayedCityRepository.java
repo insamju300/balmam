@@ -20,7 +20,6 @@ public interface StayedCityRepository {
         "</foreach>",
         "</script>"
     })
-    @Options(useGeneratedKeys=true, keyProperty="id")
 	public void insertStayedCities(@Param("stayedCities") List<StayedCityEntity> stayedCities);
     
     

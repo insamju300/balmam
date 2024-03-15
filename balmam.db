@@ -6,18 +6,28 @@ CREATE TABLE mediaFiles (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     regDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updateDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    name VARCHAR(255),
+    NAME VARCHAR(255),
     thumbnailName VARCHAR(255),
     size BIGINT,
-    type VARCHAR(50)
+    TYPE VARCHAR(50)
 );
 
+##1
 INSERT INTO mediaFiles SET `name`= 'boy.webp', size = 203486, `type`='image';
+##2
 INSERT INTO mediaFiles SET `name`= 'girl.webp', size = 203486, `type`='image';
+##3
 INSERT INTO mediaFiles SET `name`= 'yongman.webp', size = 203486, `type`='image';
+##4
 INSERT INTO mediaFiles SET `name`= 'youngwoman.webp', size = 203486, `type`='image';
+##5
 INSERT INTO mediaFiles SET `name`= 'grandpa.webp', size = 203486, `type`='image';
+##6
 INSERT INTO mediaFiles SET `name`= 'grandma.webp', size = 203486, `type`='image';
+##7
+INSERT INTO mediaFiles SET `name`= 'defaultFeaturedImage.png', size = 92910, `type`='image'; 
+
+
 
 CREATE TABLE `Member` (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -34,6 +44,8 @@ CREATE TABLE `Member` (
     roleType VARCHAR(50) DEFAULT 'user'
 );
 
+
+## updateDate넣어줄것
 CREATE TABLE EmailAuthentications (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     memberId BIGINT NOT NULL,
@@ -49,18 +61,19 @@ CREATE TABLE trace (
     regDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updateDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     writerId BIGINT UNSIGNED,
-    isDeleted BOOLEAN DEFAULT FALSE,
-    deletedDate TIMESTAMP NULL,
     title VARCHAR(255),
     recordingStartTime TIMESTAMP NULL,
     recordingEndTime TIMESTAMP NULL,
     totalPauseTime BIGINT DEFAULT 0,
+    featuredImageId BIGINT UNSIGNED,
     hitCount INT DEFAULT 0,
     likeCount INT DEFAULT 0,
     bookmarkCount INT DEFAULT 0,
     commentCount INT DEFAULT 0,
     orderPoint BIGINT DEFAULT 0,
-    status VARCHAR(255)
+    STATUS VARCHAR(255),
+    isDeleted BOOLEAN DEFAULT FALSE,
+    deletedDate TIMESTAMP NULL
 );
 
 DELIMITER //
@@ -93,8 +106,8 @@ CREATE TABLE pathCoordinatesGroup(
     regDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updateDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     traceId BIGINT UNSIGNED NOT NULL,
-    order INT NOT NULL
-)
+    `order` INT NOT NULL
+);
 
 ##경로 좌표
 CREATE TABLE pathCoordinate (
@@ -113,18 +126,18 @@ CREATE TABLE StayedCity (
     updateDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     traceId BIGINT UNSIGNED NOT NULL,
     stayedTime BIGINT NOT NULL,
-	name VARCHAR(255) NOT NULL
+	NAME VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE CityTag (
+CREATE TABLE `Tag` (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     regDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updateDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     color VARCHAR(255) NOT NULL,
-    name VARCHAR(255) NOT NULL,
-    UNIQUE(name)
+    `name` VARCHAR(255) NOT NULL,
+    `type` VARCHAR(255) NOT NULL,
+    UNIQUE(NAME, TYPE)  -- Composite unique constraint
 );
-
 
 CREATE TABLE GeoMedia (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -135,7 +148,7 @@ CREATE TABLE GeoMedia (
     traceId BIGINT UNSIGNED, -- traceId의 정확한 사용 목적에 따라 데이터 타입이 조정될 수 있습니다.
     isDeleted BOOLEAN DEFAULT FALSE, -- 삭제 여부를 나타내는 필드입니다. MySQL에서는 BOOLEAN 대신 TINYINT(1)이 사용될 수 있습니다.
     deletedDate TIMESTAMP NULL -- 삭제된 날짜를 나타내는 필드입니다. 삭제되지 않은 경우 NULL 값을 가질 수 있습니다.
-)
+);
 
 CREATE TABLE GeoMediaFile (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -150,15 +163,14 @@ CREATE TABLE GeoMediaFile (
     -- FOREIGN KEY (mediaFileId) REFERENCES MediaFile(id)
 );
 
-
-일단 저장용.
-SELECT *
-FROM trace
-WHERE someCondition = true
-  AND (
-    orderPoint < :currentOrderPoint
-    OR
-    (orderPoint = :currentOrderPoint AND id < :currentId)
-  )
-ORDER BY orderPoint DESC, id DESC
-LIMIT 10;
+CREATE TABLE TagMapping (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    regDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updateDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    relId BIGINT UNSIGNED,
+    relType VARCHAR(255),
+    tagId BIGINT
+    -- 외래 키 제약 조건을 추가할 수 있습니다. 예를 들어:
+    -- FOREIGN KEY (geoMediaId) REFERENCES GeoMedia(id),
+    -- FOREIGN KEY (mediaFileId) REFERENCES MediaFile(id)
+);

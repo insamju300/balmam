@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -53,8 +55,11 @@ class FolderInitializer implements ApplicationListener<ContextRefreshedEvent> {
         }
 
         // 복사할 파일들이 있는 디렉토리의 경로
-        Path sourceDirectoryPath = Paths.get("src/main/resources/static/images/avatar");
-
+        List<Path> sourceDirectoryPaths = new ArrayList<Path>();
+		sourceDirectoryPaths.add(Paths.get("src/main/resources/static/images/avatar"));
+		sourceDirectoryPaths.add(Paths.get("src/main/resources/static/images/default"));
+        
+        for (Path sourceDirectoryPath : sourceDirectoryPaths) {
         // 파일 복사 로직
         try (Stream<Path> paths = Files.walk(sourceDirectoryPath)) {
             paths.filter(Files::isRegularFile).forEach(sourceFilePath -> {
@@ -71,5 +76,7 @@ class FolderInitializer implements ApplicationListener<ContextRefreshedEvent> {
         } catch (IOException e) {
             System.err.println("Failed to access " + sourceDirectoryPath);
         }
+        
+    }
     }
 }

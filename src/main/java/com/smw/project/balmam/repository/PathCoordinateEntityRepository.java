@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 
-import com.smw.project.balmam.entity.pathCoordinateEntity;
+import com.smw.project.balmam.entity.PathCoordinateEntity;
 
 @Mapper
 public interface PathCoordinateEntityRepository {
@@ -20,7 +20,7 @@ public interface PathCoordinateEntityRepository {
         "</script>"
     })
     @Options(useGeneratedKeys=true, keyProperty="id")
-    void insertPathCoordinates(@Param("pathCoordinates") List<pathCoordinateEntity> pathCoordinates);
+    void insertPathCoordinates(@Param("pathCoordinates") List<PathCoordinateEntity> pathCoordinates);
 }
 
 
