@@ -25,6 +25,14 @@
   <link rel="stylesheet" href="/css/common.css">
   <link rel="stylesheet" href="/css/trace.css">
   <script src="/js/common.js"></script>
+	<script th:inline="javascript">
+	  /*<![CDATA[*/
+	  var pathCoordinatesGroups = [[${pathCoordinatesGroups}]];
+	  var geoMedias = [[${geoMedias}]];
+	  console.log(pathCoordinatesGroups);
+	  console.log(geoMedias);
+	  /*]]>*/
+	</script>
 
 
 </head>
@@ -34,6 +42,7 @@
   <header th:insert="/header :: header"></header>
   <header id="ghost_header" class="w-screen">
   </header>
+  <!-- <div id="pathCoordinatesGroupsData" data-path-coordinates-groups="$[{pathCoordinatesGroups}]"></div> -->
 
   <main class="flex w-screen justify-center p-1 md:p-5 text-neutral">
     <div class="md:w-4/6 w-full flex flex-col md:p-6 mt-2 ">
@@ -49,23 +58,23 @@
 
           <div class="w-full h-96 md:flex-row flex-col flex gap-1 mt-2">
             <div class="w-1/2 flex flex-col">
-              <h1 class="text-3xl font-bold">그리스 여행기 </h1>
-              <p>2024-02-25 02:54 ~ 2024-02-25 04:54 </p>
-              <p>(1시간중 실제 녹화 50분)</p>
+              <h1 class="text-3xl font-bold" th:text="${trace.title}">그리스 여행기 </h1>
+              <p th:text="${trace.recordingStartTimeAndEndTime}">2024-02-25 02:54 ~ 2024-02-25 04:54 </p>
+              <p th:text="${trace.totalRecordingTime} + ' 시간 중 실제 녹화 ' + ${trace.actualRecordingTime}">(1시간중 실제 녹화 50분)</p>
               <div class="flex gap-2 flex-col xl:flex-row">
                 <div class="flex flex-row items-center gap-2">
                   <div class="avatar">
                     <div class="w-9 rounded-full">
-                      <img src="/images/avatar/boy.webp" />
+                      <img th:src="${trace.writerProfileImageUrl}" src="/images/avatar/boy.webp" />
                     </div>
                   </div>
-                  <a href="#">가장긴이름가장긴이름</a>
+                  <a href="#" th:text="${trace.writerNickname}">가장긴이름가장긴이름</a>
                 </div>
 
 
-                <button type="button" onclick="subscriptButtonToggleEvent(this);" class="btn bg-base_white btn-xs text-secondary_hard
+<!--                 <button type="button" onclick="subscriptButtonToggleEvent(this);" class="btn bg-base_white btn-xs text-secondary_hard
               hover:bg-secondary_hard hover:text-bg_main text-md mr-5 subscript_btn w-24" data-member-id="1"
-                  data-state="0">구독</button>
+                  data-state="0">구독</button> -->
 
               </div>
 
@@ -117,8 +126,8 @@
             </div>
 
             <div class="w-1/2 flex flex-col md:items-end">
-              <span>1년전</span>
-              <span>1시간 전 수정</span>
+              <span th:text="${trace.regDate}">1년전</span>
+              <span th:text="${trace.updateDate}">1시간 전 수정</span>
               <div class="flex gap-1 mt-2">
                 <button type="button" onclick="location.href='/trace/modifyTraceDetail.html'" class="btn btn-xs bg-base_white text-secondary_hard
                   hover:bg-secondary_hard hover:text-bg_main text-md mr-5">수정</button>
@@ -154,8 +163,8 @@
 
           <li class="flex">
             <div class="w-8 flex justify-center cursor-pointer hover:brightness-125 hover:shadow-outline duration-100"
-              onclick="showAllMideasCarouselsModal()">
-              <img src="/images/icon/camera.png" class="transition duration-300 ease-in-out">
+              onclick="showAllMideasCarouselsModal()" data-is-already-opend="0">
+              <img th:src="@{/images/icon/camera.png}" class="transition duration-300 ease-in-out">
             </div>
           </li>
 
@@ -473,63 +482,64 @@
         <h3 class="font-bold text-lg">미디어 목록</h3>
 
         <div class="w-full flex gap-4 flex-wrap justify-center mb-5 image-viewer">
-          <img src="/images/etc/etc1.webp" />
+          <!-- <img src="/images/etc/etc1.webp" /> -->
 
         </div>
 
-        <div class="w-full flex gap-4 flex-wrap justify-center">
+        <div class="w-full flex gap-4 flex-wrap justify-center media-files">
           
 
-          <div class="avatar cursor-pointer ring ring-primary" >
+          <div th:each="mediaFile,stat : ${mediaFiles}" class="avatar cursor-pointer" th:classappend="${stat.first} ? 'ring ring-primary' : ''">
             <div class="w-24">
-              <img src="/images/etc/etc1.webp" />
+              <img th:if="${mediaFile.type.toString() == 'image'}" th:src="${mediaFile.url}" src="/images/etc/etc1.webp" th:data-type="${mediaFile.type.toString()}"/>
+              <img th:if="${mediaFile.type.toString() == 'video'}" th:src="${mediaFile.thumbnailUrl}" th:data-video-src="${mediaFile.url}" src="/images/etc/etc1.webp" th:data-type="${mediaFile.type.toString}"/>
             </div>
           </div>
-          <div class="avatar">
-            <div class="w-24">
-              <img src="/images/etc/etc2.webp" />
-            </div>
-          </div>
-          <div class="avatar">
-            <div class="w-24">
-              <img src="/images/etc/etc3.webp" />
-            </div>
-          </div>
-          <div class="avatar">
-            <div class="w-24">
-              <img src="/images/etc/etc4.webp" />
-            </div>
-          </div>
-          <div class="avatar">
-            <div class="w-24">
-              <img src="/images/etc/etc5.webp" />
-            </div>
-          </div>
-          <div class="avatar">
-            <div class="w-24">
-              <img src="/images/etc/etc6.webp" />
-            </div>
-          </div>
-          <div class="avatar">
-            <div class="w-24">
-              <img src="/images/etc/etc7.webp" />
-            </div>
-          </div>
-          <div class="avatar">
-            <div class="w-24">
-              <img src="/images/etc/etc8.webp" />
-            </div>
-          </div>
-          <div class="avatar">
-            <div class="w-24">
-              <img src="/images/etc/etc9.webp" />
-            </div>
-          </div>
-          <div class="avatar">
-            <div class="w-24">
-              <img src="/images/etc/etc10.webp" />
-            </div>
-          </div>
+<!--           <div class="avatar  ring ring-primary"> -->
+<!--             <div class="w-24"> -->
+<!--               <img src="/images/etc/etc2.webp" /> -->
+<!--             </div> -->
+<!--           </div> -->
+<!--           <div class="avatar"> -->
+<!--             <div class="w-24"> -->
+<!--               <img src="/images/etc/etc3.webp" /> -->
+<!--             </div> -->
+<!--           </div> -->
+<!--           <div class="avatar"> -->
+<!--             <div class="w-24"> -->
+<!--               <img src="/images/etc/etc4.webp" /> -->
+<!--             </div> -->
+<!--           </div> -->
+<!--           <div class="avatar"> -->
+<!--             <div class="w-24"> -->
+<!--               <img src="/images/etc/etc5.webp" /> -->
+<!--             </div> -->
+<!--           </div> -->
+<!--           <div class="avatar"> -->
+<!--             <div class="w-24"> -->
+<!--               <img src="/images/etc/etc6.webp" /> -->
+<!--             </div> -->
+<!--           </div> -->
+<!--           <div class="avatar"> -->
+<!--             <div class="w-24"> -->
+<!--               <img src="/images/etc/etc7.webp" /> -->
+<!--             </div> -->
+<!--           </div> -->
+<!--           <div class="avatar"> -->
+<!--             <div class="w-24"> -->
+<!--               <img src="/images/etc/etc8.webp" /> -->
+<!--             </div> -->
+<!--           </div> -->
+<!--           <div class="avatar"> -->
+<!--             <div class="w-24"> -->
+<!--               <img src="/images/etc/etc9.webp" /> -->
+<!--             </div> -->
+<!--           </div> -->
+<!--           <div class="avatar"> -->
+<!--             <div class="w-24"> -->
+<!--               <img src="/images/etc/etc10.webp" /> -->
+<!--             </div> -->
+<!--           </div> -->
 
 
           

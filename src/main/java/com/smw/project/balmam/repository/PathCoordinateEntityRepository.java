@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import com.smw.project.balmam.entity.PathCoordinateEntity;
 
@@ -21,6 +22,17 @@ public interface PathCoordinateEntityRepository {
     })
     @Options(useGeneratedKeys=true, keyProperty="id")
     void insertPathCoordinates(@Param("pathCoordinates") List<PathCoordinateEntity> pathCoordinates);
+    
+    @Select("""
+    SELECT pc.*
+    FROM pathCoordinatesGroup pcg
+    JOIN pathCoordinate pc ON pcg.id = pc.pathCoordinatesGroupId
+    WHERE pcg.traceId = #{traceId}
+    ORDER BY pcg.`order` ASC, pc.`time` ASC;
+    """)
+    List<PathCoordinateEntity> findPathCoordinatesByTraceIdInPathCoordinatesGroup(Long traceId);
+    
+    	
 }
 
 

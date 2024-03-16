@@ -105,6 +105,20 @@ public class TraceService {
 		tagMappingRepository.insertTagMappings(tagMappings);
 		
 	}
+
+	public List<PathCoordinateEntity> findPathCoordinatesByTraceIdInPathCoordinatesGroup(Long id) {
+		return pathCoordinatesRepository.findPathCoordinatesByTraceIdInPathCoordinatesGroup(id);
+		
+	}
+
+	public List<MediaFileEntity> findGeoMedaFilesByTraceId(Long id) {
+		// TODO Auto-generated method stub
+		return geoMediaFileRepository.findGeoMedaFilesByTraceId(id);
+	}
+	
+	public TraceEntity findTraceByIdAndUserIdForPrintDetial(Long traceId, Long userId){
+		return traceRepository.findTraceByIdAndUserIdForPrintDetial(traceId, userId);
+	}
 	
 	
 	

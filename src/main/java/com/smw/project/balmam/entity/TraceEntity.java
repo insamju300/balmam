@@ -1,5 +1,6 @@
 package com.smw.project.balmam.entity;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import com.smw.project.balmam.dto.RouteRecordingDTO;
@@ -31,6 +32,16 @@ public class TraceEntity {
     private TraceStatus status;
     private Boolean isDeleted;
     private Timestamp deletedDate;
+    
+    
+    private String extra__writerNickname;
+    private Long extra__writerProfileImageId;
+    private String extra__writerProfileImageName;
+
+    private Boolean extra__isLiked;
+    private Boolean extra__isBookmarked;
+    private Boolean extra__isAccessible;
+    
     
     public TraceEntity(RouteRecordingDTO routeRecordingDTO, Long writerId) {
 		this.recordingStartTime = routeRecordingDTO.getRecordingStartTime();

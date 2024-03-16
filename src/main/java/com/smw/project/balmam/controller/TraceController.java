@@ -1,6 +1,9 @@
 package com.smw.project.balmam.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,14 +15,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.smw.project.balmam.dto.CoordinateDto;
 import com.smw.project.balmam.dto.GeoMediasDto;
 import com.smw.project.balmam.dto.LoginInfoDTO;
 import com.smw.project.balmam.dto.MediaFileDto;
 import com.smw.project.balmam.dto.PathCoordinateDto;
+import com.smw.project.balmam.dto.PathCoordinateOutputDto;
 import com.smw.project.balmam.dto.ResultData;
 import com.smw.project.balmam.dto.RouteRecordingDTO;
 import com.smw.project.balmam.dto.StayedCityDto;
 import com.smw.project.balmam.dto.TagOutputDto;
+import com.smw.project.balmam.dto.TraceOutputDto;
 import com.smw.project.balmam.dto.UserDto;
 import com.smw.project.balmam.dto.WriteOrModifyTraceDetailDto;
 import com.smw.project.balmam.entity.GeoMediaEntity;
@@ -141,6 +147,8 @@ public class TraceController {
 	    //3. dto만들어서 뿌려주기
 		List<MediaFileDto> mediaFileDtos = mediaFileEntitys.stream().map(entity-> new MediaFileDto(entity, path)).toList();
 		
+
+		
 		model.addAttribute("mediaFiles", mediaFileDtos);
 		model.addAttribute("traceId", id);
 				
@@ -181,12 +189,72 @@ public class TraceController {
 		
 				
         String redirectUrl = "/trace/traceDetail?id="+writeOrModifyTraceDto.getId(); // 원하는 리다이렉트 경로
+        System.err.println(redirectUrl);
         return ResultData.ofData("S-1", "Success", "redirectUrl", redirectUrl);
 	}
 	
 	@GetMapping("/trace/traceDetail")
-	public String showTraceDetail(Long id, Model model) {
+	public String showTraceDetail(Long id, Model model, HttpServletRequest request) {
+		LoginInfoDTO loginInfo = (LoginInfoDTO)request.getAttribute("loginInfo");
+		UserDto user = loginInfo.getUserDto();
+		Long userId = user.getId();
 		
+		TraceEntity traceEntity = traceService.findTraceByIdAndUserIdForPrintDetial(id, userId);
+		
+		//todo trace가 null인경우 처리
+		
+		TraceOutputDto trace = new TraceOutputDto(traceEntity, path);
+		
+		
+		List<PathCoordinateEntity> pathCoordinateEntities= traceService.findPathCoordinatesByTraceIdInPathCoordinatesGroup(id);
+		
+		List<List<PathCoordinateOutputDto>> pathCoordinates = new ArrayList<>();
+		List<PathCoordinateOutputDto> currentGroup = null;
+		Long currentGroupId = null;
+
+		for (PathCoordinateEntity entity : pathCoordinateEntities) {
+		    Long groupId = entity.getPathCoordinatesGroupId();
+		    
+		    // 현재 그룹 ID가 변경되었는지 확인합니다. 변경되었거나, 첫 번째 요소인 경우 새로운 그룹을 시작합니다.
+		    if (!groupId.equals(currentGroupId)) {
+		        currentGroup = new ArrayList<>();
+		        pathCoordinates.add(currentGroup);
+		        currentGroupId = groupId;
+		    }
+		    
+		    // 현재 그룹에 엔티티를 추가합니다.
+		    if(currentGroup != null) {
+		        currentGroup.add(new PathCoordinateOutputDto(entity));
+		    }
+		}
+		
+		
+		//좌표 이미지들
+		List<MediaFileEntity> mediaFileEntities = traceService.findGeoMedaFilesByTraceId(id);
+		List<MediaFileDto> allMediaFiles = new ArrayList<>();
+
+        Map<CoordinateDto, List<MediaFileDto>> groupedByCoordinates = new HashMap<>();
+
+        for (MediaFileEntity entity : mediaFileEntities) {
+            CoordinateDto coordinate = new CoordinateDto(entity);
+            MediaFileDto mediaFileDto = new MediaFileDto(entity, path);
+            allMediaFiles.add(mediaFileDto);
+
+            groupedByCoordinates.computeIfAbsent(coordinate, k -> new ArrayList<>()).add(mediaFileDto);
+        }
+
+       List<GeoMediasDto> geoMedias = groupedByCoordinates.entrySet().stream()
+                .map(entry -> new GeoMediasDto(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList());
+
+		
+       
+
+
+        model.addAttribute("trace", trace);
+	    model.addAttribute("geoMedias", geoMedias);
+	    model.addAttribute("mediaFiles", allMediaFiles);
+		model.addAttribute("pathCoordinatesGroups", pathCoordinates);
 		return "/trace/traceDetail";
 	}
 //	@PostMapping("/trace/writeTraceDetail")

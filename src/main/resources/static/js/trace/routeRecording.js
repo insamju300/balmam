@@ -164,11 +164,12 @@ async function initMap() {
 }
 
 function handleLocationError(browserHasGeolocation) {
-  console.log(
-    browserHasGeolocation
-      ? "Error: The Geolocation service failed."
-      : "Error: Your browser doesn't support geolocation."
-  );
+	//todo 에러처리 
+//  console.log(
+//    browserHasGeolocation
+//      ? "Error: The Geolocation service failed."
+//      : "Error: Your browser doesn't support geolocation."
+//  );
 }
 
 function resumeTraceRecoding() {

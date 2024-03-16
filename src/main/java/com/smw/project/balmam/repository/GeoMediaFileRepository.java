@@ -15,39 +15,39 @@ import com.smw.project.balmam.entity.MediaFileEntity;
 @Mapper
 public interface GeoMediaFileRepository {
 
-	
-    @Insert({
-        "<script>",
-        "INSERT INTO GeoMediaFile (geoMediaId, mediaFileId) VALUES ",
-        "<foreach collection='geoMediaFiles' item='geoMediaFile' separator=','>",
-            "(#{geoMediaFile.geoMediaId}, #{geoMediaFile.mediaFileId})",
-        "</foreach>",
-        "</script>"
-    })
-    @Options(useGeneratedKeys=true, keyProperty="id")
-    void insertGeoMediaFiles(@Param("geoMediaFiles") List<GeoMediaFileEntity> geoMediaFiles);
+	@Insert({ "<script>", "INSERT INTO GeoMediaFile (geoMediaId, mediaFileId) VALUES ",
+			"<foreach collection='geoMediaFiles' item='geoMediaFile' separator=','>",
+			"(#{geoMediaFile.geoMediaId}, #{geoMediaFile.mediaFileId})", "</foreach>", "</script>" })
+	@Options(useGeneratedKeys = true, keyProperty = "id")
+	void insertGeoMediaFiles(@Param("geoMediaFiles") List<GeoMediaFileEntity> geoMediaFiles);
 
-
-    @Select("""
-    		SELECT mediaFiles.* FROM geoMedia
-			INNER JOIN geoMediaFile 
+	@Select("""
+			 		SELECT mediaFiles.* FROM geoMedia
+			INNER JOIN geoMediaFile
 			ON geoMedia.id = geoMediaFile.geoMediaId AND geoMedia.isDeleted = FALSE AND geoMediaFile.isDeleted = FALSE
 			INNER JOIN mediaFiles ON geoMediaFile.mediaFileId = mediaFiles.id
 			WHERE geomedia.traceId = #{traceId};
-    		""")
+			 		""")
 	List<MediaFileEntity> findAllMedaFileByTraceIdFromGeoMedia(Long traceId);
 
-    
-    @Update({
-        "<script>",
-        "UPDATE GeoMediaFile",
-        "SET isDeleted = TRUE,",
-        "deletedDate = NOW()",
-        "WHERE mediaFileId IN",
-        "<foreach item='mediaFileId' collection='mediaFileIds' open='(' separator=',' close=')'>",
-        "#{mediaFileId}",
-        "</foreach>",
-        "</script>"
-    })
-    void markMediaFilesAsDeleted(@Param("mediaFileIds") List<Long> mediaFileIds);
+	@Update({ "<script>", "UPDATE GeoMediaFile", "SET isDeleted = TRUE,", "deletedDate = NOW()", "WHERE mediaFileId IN",
+			"<foreach item='mediaFileId' collection='mediaFileIds' open='(' separator=',' close=')'>", "#{mediaFileId}",
+			"</foreach>", "</script>" })
+	void markMediaFilesAsDeleted(@Param("mediaFileIds") List<Long> mediaFileIds);
+
+	@Select("""
+			SELECT
+			    mf.*, gm.lat as extra__lat, gm.lng as extra__lng
+			FROM
+			    mediaFiles mf
+			INNER JOIN
+			    GeoMediaFile gmf ON mf.id = gmf.mediaFileId
+			INNER JOIN
+			    GeoMedia gm ON gm.id = gmf.geoMediaId
+			WHERE
+			    gm.traceId = #{traceId}
+			    AND gm.isDeleted = FALSE
+			    AND gmf.isDeleted = FALSE;
+			    		""")
+	List<MediaFileEntity> findGeoMedaFilesByTraceId(Long traceId);
 }

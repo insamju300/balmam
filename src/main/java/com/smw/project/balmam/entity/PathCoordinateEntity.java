@@ -22,8 +22,8 @@ public class PathCoordinateEntity {
     private BigDecimal lng;
     
     public PathCoordinateEntity(PathCoordinateDto dto, Long pathCoordinatesGroupId) {
-        this.lat = BigDecimal.valueOf(dto.getLat());
-        this.lng = BigDecimal.valueOf(dto.getLng());
+        this.lat = dto.getLat();
+        this.lng = dto.getLng();
         this.time = dto.getTime();
         this.pathCoordinatesGroupId = pathCoordinatesGroupId;
     }

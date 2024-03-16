@@ -1,12 +1,12 @@
 package com.smw.project.balmam.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import com.smw.project.balmam.enums.MediaType;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 @Getter
 @NoArgsConstructor
 public class MediaFileEntity {
@@ -18,6 +18,9 @@ public class MediaFileEntity {
     private String thumbnailName;
     private Long size;
     private MediaType type;
+    
+    private BigDecimal extra__lat;
+    private BigDecimal extra__lng;
     
 	public MediaFileEntity(String name, Long size, MediaType type) {
 		super();

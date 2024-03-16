@@ -117,22 +117,19 @@ function traceFormValidationCheck() {
         },
         body: JSON.stringify(writeOrModifyTraceDetailDto)
     })
-    .then(response => response.json()) 
-    .then(result => {
-        if (result.success) {
-            // 서버로부터 받은 리다이렉트 URL로 페이지 이동
-            // 예를 들어, result 객체 내에 redirectUrl 필드가 있다고 가정
-            window.location.href = result.redirectUrl;
-        } else {
-            // 에러 처리 또는 사용자에게 메시지 표시
-            // 서버 응답에 따라 적절한 메시지 표시를 구현
-            alert('Failed: ' + result.message);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('An error occurred, please try again later.');
-    });
+	.then(response => response.json()) // 응답을 JSON으로 파싱
+	.then(result => {
+	    if (result.success) {
+			console.log(result)
+	        window.location.href = result.data; // 서버로부터 받은 리다이렉트 URL로 페이지 이동
+	    } else {
+	        // 에러 처리 또는 사용자에게 메시지 표시
+	        console.error('Failed:', result.message);
+	    }
+	})
+	.catch((error) => {
+	    console.error('Error:', error);
+	});
 
     // 함수가 비동기로 실행되기 때문에, 여기서는 정상 처리됨 메시지를 바로 보여주지 않습니다.
 }

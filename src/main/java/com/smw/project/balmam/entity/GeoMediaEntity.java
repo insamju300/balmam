@@ -24,8 +24,8 @@ public class GeoMediaEntity {
 	
     public GeoMediaEntity(CoordinateDto dto, Long traceId ) {
 		super();
-	    this.lat = BigDecimal.valueOf(dto.getLat());
-	    this.lng = BigDecimal.valueOf(dto.getLng());
+	    this.lat = dto.getLat();
+	    this.lng = dto.getLng();
 	    this.traceId = traceId;
 	}
     

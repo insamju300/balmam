@@ -2,8 +2,8 @@ let map;
 let marker;
 let pathLine;
 let pathLines = [];
-let pathCoordinatesGroups;
-let geoMedias;
+//let pathCoordinatesGroups;
+//let geoMedias;
 let geoMediaMarkers = [];
 let intervalId;
 
@@ -37,13 +37,17 @@ async function initMap() {
   const { Map } = await google.maps.importLibrary("maps");
   const jsonFilePath = "/testData/traceData.json"; // Update the path to your JSON file
   const jsonData = await loadJsonFile(jsonFilePath);
-  pathCoordinatesGroups = jsonData.pathCoordinatesGroups;
-  geoMedias = jsonData.geoMedias;
+//  pathCoordinatesGroups = jsonData.pathCoordinatesGroups;
+//  const pathCoordinatesGroupsElement = document.getElementById("pathCoordinatesGroupsData");
+//  const pathCoordinatesGroups = JSON.parse(pathCoordinatesGroupsElement.getAttribute('data-path-coordinates-groups'));
+  console.log(pathCoordinatesGroups);
+
+//  geoMedias = jsonData.geoMedias;
   let mapId = "originMapId1";
 
   map = new Map(document.getElementById("map"), {
     center: pathCoordinatesGroups[0][0],
-    zoom: 20,
+    zoom: 19,
     mapId: mapId,
   });
 
@@ -126,7 +130,7 @@ async function loadJsonFile(filePath) {
 function animatePath(path) {
   // 애니메이션이 완료되면 해결되는 프로미스를 반환합니다.
   return new Promise((resolve) => {
-    const step = path.length / 25; // 경로 길이를 기반으로 애니메이션 단계를 계산합니다.
+    const step = path.length / 50; // 경로 길이를 기반으로 애니메이션 단계를 계산합니다.
     let index = 0; // 애니메이션 진행 상황을 추적하기 위해 인덱스를 초기화합니다.
 
     // 다음 세그먼트를 그리기 위한 함수를 정의합니다.
@@ -142,7 +146,7 @@ function animatePath(path) {
         // 지도 중심을 최신 위치로 설정합니다.
         map.setCenter(currentPos);
         // 상세한 뷰를 위해 확대합니다.
-        map.setZoom(20);
+        map.setZoom(19);
         // 다음 애니메이션 프레임을 위해 인덱스를 증가시킵니다.
         index += step;
         // 다음 세그먼트를 그리기 위해 다음 애니메이션 프레임을 요청합니다.
@@ -181,11 +185,14 @@ async function createMarkers() {
   );
 
   // geoMedias 객체의 키(위치 정보)를 순회합니다.
-  Object.keys(geoMedias).forEach((location) => {
+    geoMedias.forEach((geoMedia) => {
     // 위치 정보 문자열을 객체로 파싱합니다.
-    const { lat, lng } = JSON.parse(location);
+    const { lat, lng } = geoMedia.coordinate;
     // 현재 위치에 해당하는 미디어 목록을 가져옵니다.
-    const medias = geoMedias[location];
+    const medias = geoMedia.mediaFiles;
+
+
+
 
     // 이미지 요소를 생성합니다.
     let img = document.createElement("img");
@@ -195,13 +202,20 @@ async function createMarkers() {
     console.log(src === null);
 
     // 현재 위치의 미디어 목록을 순회합니다.
-    medias.forEach((media) => {
-      // 미디어 타입이 비디오가 아니고, src가 아직 null일 때
-      if (media.mediaType != "video" && src === null) {
-        // src에 미디어 URL을 할당합니다.
-        src = media.url;
-      }
-    });
+    let firstMedia = medias[0];
+    if(firstMedia.type == "video"){
+		src = firstMedia.thumbnailUrl;
+	}
+	if(firstMedia.type == "image"){
+		src = firstMedia.url;
+	}
+//    medias.forEach((media) => {
+//      // 미디어 타입이 비디오가 아니고, src가 아직 null일 때
+//      if (media.type != "video" && src === null) {
+//        // src에 미디어 URL을 할당합니다.
+//        src = media.url;
+//      }
+//    });
 
     // 이미지의 소스를 설정합니다.
     img.src = src;
@@ -252,17 +266,18 @@ function deleteAnimationToMarker(mediaMarker) {
 }
 
 function createSlideImageForMediaMarker(geoMediaList, mediaMarker) {
+	console.log(geoMediaList);
   let slideIdCount = 1;
   let carousel = document.createElement("div");
 
   carousel.classList.add("carousel", "w-full");
 
-  const geoMediaListWithoutThumbnail = geoMediaList.filter(
-    (geoMedia) => geoMedia.mediaType != "thumbnail"
-  );
+//  const geoMediaListWithoutThumbnail = geoMediaList.filter(
+//    (geoMedia) => geoMedia.mediaType != "thumbnail"
+//  );
 
-  geoMediaListWithoutThumbnail.forEach(function (geoMedia) {
-    if (geoMedia.mediaType === "video") {
+  geoMediaList.forEach(function (geoMedia) {
+    if (geoMedia.type === "video") {
       const carouselItem = document.createElement("div");
       carouselItem.classList.add("carousel-item", "relative", "w-full");
       carouselItem.id = "slide" + slideIdCount++;
@@ -272,7 +287,7 @@ function createSlideImageForMediaMarker(geoMediaList, mediaMarker) {
       videoElement.controls = true;
       videoElement.classList.add("w-full", "h-auto");
       carouselItem.appendChild(videoElement);
-      if (geoMediaListWithoutThumbnail.length > 1) {
+      if (geoMediaList.length > 1) {
         const carouselBtns = document.createElement("div");
         carouselBtns.classList.add(
           "absolute",
@@ -286,10 +301,10 @@ function createSlideImageForMediaMarker(geoMediaList, mediaMarker) {
         );
         let beforSlideId = slideIdCount - 2;
         if (beforSlideId < 1) {
-          beforSlideId = geoMediaListWithoutThumbnail.length;
+          beforSlideId = geoMediaList.length;
         }
         let afterSlideId = slideIdCount;
-        if (afterSlideId > geoMediaListWithoutThumbnail.length) {
+        if (afterSlideId > geoMediaList.length) {
           afterSlideId = 1;
         }
 
@@ -309,7 +324,7 @@ function createSlideImageForMediaMarker(geoMediaList, mediaMarker) {
         carouselItem.appendChild(carouselBtns);
       }
       carousel.appendChild(carouselItem);
-    } else if (geoMedia.mediaType === "photo") {
+    } else if (geoMedia.type === "image") {
       const carouselItem = document.createElement("div");
       carouselItem.classList.add("carousel-item", "relative", "w-full");
       carouselItem.id = "slide" + slideIdCount++;
@@ -319,7 +334,7 @@ function createSlideImageForMediaMarker(geoMediaList, mediaMarker) {
       img.classList.add("w-full", "h-auto");
       carouselItem.appendChild(img);
 
-      if (geoMediaListWithoutThumbnail.length > 1) {
+      if (geoMediaList.length > 1) {
         const carouselBtns = document.createElement("div");
         carouselBtns.classList.add(
           "absolute",
@@ -333,10 +348,10 @@ function createSlideImageForMediaMarker(geoMediaList, mediaMarker) {
         );
         let beforSlideId = slideIdCount - 2;
         if (beforSlideId < 1) {
-          beforSlideId = geoMediaListWithoutThumbnail.length;
+          beforSlideId = geoMediaList.length;
         }
         let afterSlideId = slideIdCount;
-        if (afterSlideId > geoMediaListWithoutThumbnail.length) {
+        if (afterSlideId > geoMediaList.length) {
           afterSlideId = 1;
         }
 
@@ -372,21 +387,52 @@ $(document).ready(function () {
   $("main").on("click", "#all_mideas_carousels_modal .avatar", function () {
     $("#all_mideas_carousels_modal .avatar").removeClass("ring ring-primary");
     $(this).addClass("ring ring-primary");
+    setImageViewer($(this).find("img"));
 
     // Replace the src attribute of img within .image-viewer with the src of the clicked img
-    var clickedImgSrc = $(this).find("img").attr("src");
-
-    $("#all_mideas_carousels_modal .image-viewer img").attr(
-      "src",
-      clickedImgSrc
-    );
+//    var clickedImgSrc = $(this).find("img").attr("src");
+//
+//    $("#all_mideas_carousels_modal .image-viewer img").attr(
+//      "src",
+//      clickedImgSrc
+//    );
   });
 });
 
+function setImageViewer(imgEle){
+	var dataType = imgEle.attr('data-type');
+
+	if(dataType==="image"){
+		var imgSrc = imgEle.attr('src');
+        var imageView = $('<img>').attr('src', imgSrc);
+        $('.image-viewer').empty().append(imageView);
+	}else if(dataType==="video"){
+		var videoSrc = imgEle.attr('data-video-src');
+        var videoElement = $('<video>').attr({
+            'src': videoSrc,
+            'autoplay': 'autoplay',
+            'controls': 'controls'
+        });
+        $('.image-viewer').empty().append(videoElement);
+	}
+}
+
+//모든 미디어를 담고있는 모달창 열기
 function showAllMideasCarouselsModal() {
   var modal = document.querySelector("#all_mideas_carousels_modal");
+  var firstImg = $(".media-files > .avatar:first-child > div > img");
+  if(!firstImg.length){
+	  return;
+  }
+  
+  setImageViewer(firstImg);
+  
 
   modal.showModal();
+  
+  
+  
+  
 
   // Scroll to the top - 수정된 부분
   document.querySelector(
@@ -396,6 +442,7 @@ function showAllMideasCarouselsModal() {
 
 
 
+//유저 현재 위치 보여주기
 async function showUserCurrentLocation() {
   const { AdvancedMarkerElement} = await google.maps.importLibrary(
     "marker"
