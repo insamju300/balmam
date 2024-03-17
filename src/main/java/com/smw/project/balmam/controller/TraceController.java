@@ -196,8 +196,14 @@ public class TraceController {
 	@GetMapping("/trace/traceDetail")
 	public String showTraceDetail(Long id, Model model, HttpServletRequest request) {
 		LoginInfoDTO loginInfo = (LoginInfoDTO)request.getAttribute("loginInfo");
-		UserDto user = loginInfo.getUserDto();
-		Long userId = user.getId();
+		Long userId = null;
+		System.err.println(loginInfo);
+		if(loginInfo.isLogined()) {
+			UserDto user = loginInfo.getUserDto();
+			userId = user.getId();	
+		}
+		System.err.println("userId: " + userId);
+		
 		
 		TraceEntity traceEntity = traceService.findTraceByIdAndUserIdForPrintDetial(id, userId);
 		
@@ -248,9 +254,15 @@ public class TraceController {
                 .collect(Collectors.toList());
 
 		
+       List<TagEntity> tagEntitys = tagService.findTagsByRelInfoAndTagType(id, RelType.trace, TagType.commons);
+       List<TagOutputDto> tags= tagEntitys.stream().map(entity-> new TagOutputDto(entity)).toList();
        
+       List<TagEntity> cityTagEntitys =  tagService.findTagsByRelInfoAndTagTypeForStayedCities(id,  TagType.city);
+       List<TagOutputDto> cityTags = cityTagEntitys.stream().map(entity-> new TagOutputDto(entity)).toList();
 
 
+       model.addAttribute("tags", tags);
+       model.addAttribute("cityTags", cityTags);
         model.addAttribute("trace", trace);
 	    model.addAttribute("geoMedias", geoMedias);
 	    model.addAttribute("mediaFiles", allMediaFiles);

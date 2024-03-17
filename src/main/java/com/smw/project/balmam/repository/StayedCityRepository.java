@@ -6,8 +6,12 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import com.smw.project.balmam.entity.StayedCityEntity;
+import com.smw.project.balmam.entity.TagEntity;
+import com.smw.project.balmam.enums.RelType;
+import com.smw.project.balmam.enums.TagType;
 
 @Mapper
 public interface StayedCityRepository {
@@ -22,6 +26,9 @@ public interface StayedCityRepository {
     })
 	public void insertStayedCities(@Param("stayedCities") List<StayedCityEntity> stayedCities);
     
+    
+
+
     
 
 }

@@ -12,6 +12,7 @@ CREATE TABLE mediaFiles (
     TYPE VARCHAR(50)
 );
 
+
 ##1
 INSERT INTO mediaFiles SET `name`= 'boy.webp', size = 203486, `type`='image';
 ##2
@@ -43,6 +44,15 @@ CREATE TABLE `Member` (
     emailVerified BOOLEAN DEFAULT FALSE,
     roleType VARCHAR(50) DEFAULT 'user'
 );
+DELIMITER $$
+CREATE TRIGGER BeforeMemberInsert
+BEFORE INSERT ON `Member`
+FOR EACH ROW
+BEGIN
+    SET NEW.updateDate = NEW.regDate;
+END;
+$$
+DELIMITER ;
 
 
 ## updateDate넣어줄것

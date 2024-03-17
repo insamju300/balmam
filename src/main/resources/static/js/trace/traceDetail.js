@@ -130,11 +130,12 @@ async function loadJsonFile(filePath) {
 function animatePath(path) {
   // 애니메이션이 완료되면 해결되는 프로미스를 반환합니다.
   return new Promise((resolve) => {
-    const step = path.length / 50; // 경로 길이를 기반으로 애니메이션 단계를 계산합니다.
-    let index = 0; // 애니메이션 진행 상황을 추적하기 위해 인덱스를 초기화합니다.
+    const step = path.length / 100; //  함수는 전체 경로 길이를 50으로 나누어 애니메이션의 각 단계에서 얼마나 많은 세그먼트를 그릴지 결정합니다. 이는 애니메이션의 전체 길이와 속도를 조절하는 데 사용됩니다.
+    //보통 프레임 단위인데 현대 브라우저는 초당 약 60프레임으로 리프래시됨. 약 16.67초 간격으로 하나의 프레임이 실행됨을 의미
+    let index = 0; // 애니메이션 진행 상황 추적: index 변수를 사용하여 현재 애니메이션의 진행 상황을 추적합니다. 이는 경로의 어느 부분까지 그려졌는지 나타냅니다.
 
     // 다음 세그먼트를 그리기 위한 함수를 정의합니다.
-    function drawNextSegment() {
+    function drawNextSegment() { //drawNextSegment 함수는 현재 index에 기반하여 경로의 다음 부분을 그립니다. index가 전체 경로 길이보다 작은 동안 계속해서 세그먼트를 그립니다.
       // 더 그릴 세그먼트가 있는지 확인합니다.
       if (index < path.length) {
         // 그려질 현재 경로 세그먼트를 계산합니다.

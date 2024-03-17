@@ -11,8 +11,11 @@ import com.smw.project.balmam.entity.MediaFileEntity;
 import com.smw.project.balmam.entity.PathCoordinateEntity;
 import com.smw.project.balmam.entity.PathCoordinatesGroupEntity;
 import com.smw.project.balmam.entity.StayedCityEntity;
+import com.smw.project.balmam.entity.TagEntity;
 import com.smw.project.balmam.entity.TagMappingEntity;
 import com.smw.project.balmam.entity.TraceEntity;
+import com.smw.project.balmam.enums.RelType;
+import com.smw.project.balmam.enums.TagType;
 import com.smw.project.balmam.repository.GeoMediaFileRepository;
 import com.smw.project.balmam.repository.GeoMediaRepository;
 import com.smw.project.balmam.repository.PathCoordinateEntityRepository;
@@ -119,6 +122,8 @@ public class TraceService {
 	public TraceEntity findTraceByIdAndUserIdForPrintDetial(Long traceId, Long userId){
 		return traceRepository.findTraceByIdAndUserIdForPrintDetial(traceId, userId);
 	}
+
+
 	
 	
 	

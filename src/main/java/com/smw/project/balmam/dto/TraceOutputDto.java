@@ -40,16 +40,17 @@ public class TraceOutputDto {
 		// TODO Auto-generated constructor stub
 		this.id = traceEntity.getId();
 		this.regDate = Ut.getTimeAgo(traceEntity.getRegDate());
+		System.err.println(traceEntity.getRegDate() + ", " +traceEntity.getUpdateDate());
 		this.updateDate = Ut.getTimeAgo(traceEntity.getUpdateDate());
-		if(regDate != updateDate) {
-			updateDate += " 수정됨";
-		}
+//		if(regDate != updateDate) {
+//			updateDate += " 수정됨";
+//		}
 		this.title = traceEntity.getTitle();
 		this.recordingStartTimeAndEndTime =  Ut.convertTimestampToDateTimeFormattedString(traceEntity.getRecordingStartTime());
 		this.recordingStartTimeAndEndTime +=" ~ " + Ut.convertTimestampToDateTimeFormattedString(traceEntity.getRecordingEndTime());
 
 		Duration totalRecordingTimeDuration =Duration.between(traceEntity.getRecordingStartTime().toInstant(), traceEntity.getRecordingEndTime().toInstant());
-		Duration puseTimeDuration = Duration.ofSeconds(traceEntity.getTotalPauseTime());
+		Duration puseTimeDuration = Duration.ofMillis(traceEntity.getTotalPauseTime());
 		this.totalRecordingTime = Ut.formatDuration(totalRecordingTimeDuration);
 		this.actualRecordingTime = Ut.formatDuration(totalRecordingTimeDuration.minus(puseTimeDuration));
 		this.hitCount = traceEntity.getHitCount();
@@ -61,7 +62,11 @@ public class TraceOutputDto {
 		this.writerNickname = traceEntity.getExtra__writerNickname();
 	    this.writerProfileImageUrl = path + "/" + traceEntity.getExtra__writerProfileImageName();
 				//Ut.formatDuration();
-		
+	    
+	    this.isLiked = traceEntity.getExtra__isLiked();
+	    this.isBookmarked = traceEntity.getExtra__isBookmarked();
+	    this.isAccessible = traceEntity.getExtra__isAccessible();
+	    System.err.println(this.isAccessible);
 		
 	}
 

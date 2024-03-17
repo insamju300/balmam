@@ -59,5 +59,7 @@ public interface TraceRepository {
 		        "LEFT JOIN mediaFiles mf ON m.profileImageId = mf.id " +
 		        "WHERE t.id = #{traceId} AND t.isDeleted = FALSE")
 	    TraceEntity findTraceByIdAndUserIdForPrintDetial(@Param("traceId") Long traceId, @Param("userId") Long userId);
+	    
+	    
 
 }
