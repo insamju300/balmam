@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import com.smw.project.balmam.dto.RouteRecordingDTO;
+import com.smw.project.balmam.enums.MediaType;
 import com.smw.project.balmam.enums.TraceStatus;
 
 import lombok.Getter;
@@ -28,7 +29,7 @@ public class TraceEntity {
     private Integer likeCount;
     private Integer bookmarkCount;
     private Integer commentCount;
-    private Integer orderPoint;
+    private Long orderPoint;
     private TraceStatus status;
     private Boolean isDeleted;
     private Timestamp deletedDate;
@@ -36,7 +37,11 @@ public class TraceEntity {
     
     private String extra__writerNickname;
     private Long extra__writerProfileImageId;
-    private String extra__writerProfileImageName;
+    private String extra__writerProfileImageName;    
+    private String extra__featuredImageName;
+    private MediaType extra__featuredImageType;
+    private String extra__featuredImageThumbnailName;
+    
 
     private Boolean extra__isLiked;
     private Boolean extra__isBookmarked;

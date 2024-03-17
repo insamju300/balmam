@@ -1,39 +1,62 @@
 $(document).ready(function () {
-  appendToScreenFromTraceCardList();
-  observeCards(); // Intersection Observer를 사용해 카드 관찰을 시작하는 함수 호출
+  appendToScreenFromTraceCardList(null, null).then(() => {
+    observeCards(); // 데이터 로딩과 카드 추가가 완료된 후 카드 관찰을 시작
+  });
 });
 
-function appendToScreenFromTraceCardList() {
-  const traceCardList = getTraceCardList();
+async function appendToScreenFromTraceCardList(lastItemTraceId, lastItemOrderPoint) {
+  const traceCardList = await getTraceCardList(lastItemTraceId, lastItemOrderPoint);
   traceCardList.forEach((traceCard) => {
-    $(traceCard).css({ opacity: 0 }).addClass("hiddenCard"); /// 각 카드를 투명하게 처리하고 'hiddenCard' 클래스를 추가
     $("#trace_card_container").append(traceCard);
+    // Anime.js 애니메이션 효과를 여기서 적용
+    anime({
+      targets: traceCard,
+      opacity: [0, 1], // 투명에서 불투명으로
+      translateY: [50, 0], // 아래에서 위로 이동
+      delay: anime.stagger(100), // 연속적인 애니메이션에 대한 지연 시간 설정
+      duration: 1000,
+      begin: function() {
+        $(traceCard).removeClass("hiddenCard");
+      }
+    });
   });
 }
 
-function getTraceCardList() {
-  const traceCardList = [];
-  for (let step = 0; step < 16; step++) {
-    let traceCard = createTraceCard();
-    traceCardList.push(traceCard);
-  }
-  return traceCardList;
-}
 
-//후에 아작스로 처리할 부분
-function getTraceCardList() {
-  const traceCardList = [];
-  for (step = 0; step < 8; step++) {
-    let traceCard = createTraceCard();
-    traceCardList.push(traceCard);
+async function getTraceCardList(lastItemTraceId, lastItemOrderPoint) {
+  const limit = 16;
+  const url = '/trace/traceList';
+  const data = { lastItemTraceId, lastItemOrderPoint, limit };
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  });
+
+  if (!response.ok) {
+    throw new Error(`Request failed: ${response.status}`);
   }
 
-  return traceCardList;
+  const resultData = await response.json();
+  return resultData.data.map(trace => createTraceCard(trace));
 }
+////후에 아작스로 처리할 부분
+//function getTraceCardList() {
+//  const traceCardList = [];
+//  for (step = 0; step < 8; step++) {
+//    let traceCard = createTraceCard();
+//    traceCardList.push(traceCard);
+//  }
+//
+//  return traceCardList;
+//}
 
-function createTraceCard() {
+function createTraceCard(trace) {
   // card 요소 생성
-  const card = $("<div>").addClass("card xl:w-1/4 md:w-1/2 w-full p-5 m-0");
+	const card = $("<div>").addClass("card xl:w-1/4 md:w-1/2 w-full p-5 m-0")
+	                       .attr("data-id", trace.id)
+	                       .attr("data-order-point", trace.orderPoint);
+  
   //todo card에 데이터 컬럼 추가.
 
   // 카드 상단 부분
@@ -41,12 +64,12 @@ function createTraceCard() {
   const avatarAndName = $("<div>").addClass("flex items-center");
   const avatar = $("<div>").addClass("avatar");
   const avatarInnerImgContainer = $("<div>").addClass("w-9 rounded-full");
-  const avatarInnerImg = $("<img>").attr("src", "/images/avatar/boy.webp");
+  const avatarInnerImg = $("<img>").attr("src", trace.writerProfileImageUrl);
   avatarInnerImgContainer.append(avatarInnerImg);
   avatar.append(avatarInnerImgContainer);
 
-  const name = $("<a>").attr("href", "#").text("가장긴이름가장긴이름");
-  const time = $("<div>").addClass("flex items-center").html("<p>1일전</p>");
+  const name = $("<a>").attr("href", "/member/detail?id="+trace.writerId).text(trace.writerNickname);
+  const time = $("<div>").addClass("flex items-center").html("<p>"+trace.regDate+"</p>");
 
   avatarAndName.append(avatar, name);
   cardTop.append(avatarAndName, time);
@@ -55,7 +78,7 @@ function createTraceCard() {
   const image = $("<div>")
     .addClass("w-full flex justify-center")
     .html(
-      '<figure class="w-9/12"><img src="/images/etc/etc2.webp" class="masked"></figure>'
+      '<figure class="w-9/12"><img src="' + trace.featuredImageUrl + '" class="masked"></figure>'
     );
 
   // 카드 본문
@@ -64,7 +87,7 @@ function createTraceCard() {
     .addClass(
       "w-full overflow-ellipsis whitespace-nowrap overflow-hidden font-bold text-lg text-center mt-2 text-primary hover:text-primary_hard cursor-pointer"
     )
-    .html('<a href="#">여행을 떠나보았다고는 하지만 나는 이제부터 무엇을</a>');
+    .html('<a href="/trace/traceDetail?id='+trace.id+'">' + trace.title + '</a>');
 
   // 태그 컨테이너
   const tagContainer = $("<div>")
@@ -112,10 +135,10 @@ function createTraceCard() {
     );
   // 예제 상호작용 아이콘들
   const interactions = [
-    { icon: "fa-eye", count: 12 },
-    { icon: "fa-heart", count: 50 },
-    { icon: "fa-bookmark", count: 40 },
-    { icon: "fa-comment", count: 32 },
+    { icon: "fa-eye", count: trace.hitCount },
+    { icon: "fa-heart", count: trace.likeCount },
+    { icon: "fa-bookmark", count: trace.bookmarkCount },
+    { icon: "fa-comment", count: trace.commentCount },
   ];
   interactions.forEach((interaction) => {
     const item = $("<div>").addClass(
@@ -128,50 +151,46 @@ function createTraceCard() {
   });
 
   // 요소들을 card 내부에 추가
-  cardBody.append(title, tagContainer, cityContainer, interactionContainer);
+  cardBody.append(title, interactionContainer);
+//  cardBody.append(title, tagContainer, cityContainer, interactionContainer);
   card.append(cardTop, image, cardBody);
 
   return card;
 }
 
-// 카드가 뷰포트에 들어올 때 페이드인 처리를 위해 Intersection Observer API를 사용하는 함수
+
 function observeCards() {
-  const observer = new IntersectionObserver(
-    (entries, observer) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting && !$(entry.target).hasClass("animated")) {
-          // 이미 애니메이션이 적용된 요소는 건너뜁니다.
-          $(entry.target).addClass("animated"); // 애니메이션이 적용됨을 표시
-          observer.unobserve(entry.target); // 관찰을 종료합니다.
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        anime({
+          targets: entry.target,
+          opacity: [0, 1], // 투명에서 불투명으로
+          scale: [0.5, 1], // 크기 축소에서 원래 크기로
+          easing: 'easeInOutQuad',
+          duration: 800,
+          complete: function(anim) {
+            $(entry.target).addClass("animated"); // 애니메이션이 적용됨을 표시
+          }
+        });
+        observer.unobserve(entry.target); // 애니메이션 적용 후 관찰 종료
+      }
+    });
+  }, { threshold: 0.1 });
 
-          anime({
-            targets: entry.target,
-            opacity: [0, 0.8, 1],
-            //translateY: [-100, 0 ],
-            scale: [0.5, 1.1, 1],
-            duration: 1000
-          });
-        }
-      });
-    },
-    { threshold: 0.1 }
-  );
-
-  $(".hiddenCard").each(function () {
-    if (!$(this).hasClass("animated")) {
-      // 애니메이션이 이미 적용되지 않은 요소만 관찰 대상으로 등록합니다.
-      observer.observe(this);
-    }
+  $("#trace_card_container .card:not(.animated)").each(function () {
+    observer.observe(this);
   });
 }
 
-// 스크롤 이벤트를 통해 무한 스크롤 기능 구현
-$(window).scroll(function () {
-  var documentHeight = $(document).height(); // 문서의 전체 높이
-  var scrollPosition = $(window).height() + $(window).scrollTop(); // 현재 스크롤 위치
+$(window).scroll(async function () {
+  var documentHeight = $(document).height();
+  var scrollPosition = $(window).height() + $(window).scrollTop();
   if (scrollPosition >= documentHeight - 10) {
-    // 스크롤이 문서의 끝에 도달했는지 확인
-    appendToScreenFromTraceCardList(); // 추가 카드 로드 함수 호출
+    const lastCard = $("#trace_card_container .card").last();
+    const lastCardId = lastCard.data("id");
+    const lastCardOrderPoint = lastCard.data("order-point");
+    await appendToScreenFromTraceCardList(lastCardId, lastCardOrderPoint);
     observeCards(); // 새로 추가된 카드에 대해 관찰 시작
   }
 });

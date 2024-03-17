@@ -206,11 +206,11 @@ public class MemberController {
 
 		UserDto userDto = new UserDto(findMember, path);
 		session.setAttribute("userDto", userDto);
-//		String previouseUrl = loginInfo.getPreviousUrl();
-		if(previouseUrl == null || previouseUrl.split("/").length<2) {
-			previouseUrl="/";
-		}
-		return "redirect:"+previouseUrl;
+//		if(previouseUrl == null || previouseUrl.split("/").length<2) {
+//			previouseUrl="/";
+//		}
+		//todo 이전화면 돌아가기
+		return "redirect:/";
 	}
 	
 	//로그아웃 처리

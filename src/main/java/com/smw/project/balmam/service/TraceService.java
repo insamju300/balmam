@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.smw.project.balmam.dto.TraceListRequestDto;
 import com.smw.project.balmam.entity.GeoMediaEntity;
 import com.smw.project.balmam.entity.GeoMediaFileEntity;
 import com.smw.project.balmam.entity.MediaFileEntity;
@@ -121,6 +122,11 @@ public class TraceService {
 	
 	public TraceEntity findTraceByIdAndUserIdForPrintDetial(Long traceId, Long userId){
 		return traceRepository.findTraceByIdAndUserIdForPrintDetial(traceId, userId);
+	}
+
+	public List<TraceEntity> findTracesForPrintList(TraceListRequestDto traceListRequestDto) {
+		// TODO Auto-generated method stub
+		return traceRepository.findTracesForPrintList(traceListRequestDto);
 	}
 
 

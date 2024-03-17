@@ -1,5 +1,7 @@
 package com.smw.project.balmam.repository;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
@@ -7,6 +9,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import com.smw.project.balmam.dto.TraceListRequestDto;
 import com.smw.project.balmam.entity.TraceEntity;
 
 @Mapper
@@ -60,6 +63,29 @@ public interface TraceRepository {
 		        "WHERE t.id = #{traceId} AND t.isDeleted = FALSE")
 	    TraceEntity findTraceByIdAndUserIdForPrintDetial(@Param("traceId") Long traceId, @Param("userId") Long userId);
 	    
+	    
+	    @Select("<script>" +
+	            "SELECT " +
+	            "   t.*, " +
+	            "   m.nickname AS extra__writerNickname, " +
+	            "   m.profileImageId AS extra__writerProfileImageId, " +
+	            "   mf.name AS extra__writerProfileImageName, " +
+	            "   mf2.name AS extra__featuredImageName, " +
+	            "   mf2.type AS extra__featuredImageType, " +
+	            "   mf2.thumbnailName AS extra__featuredImageThumbnailName " +
+	            "FROM trace t " +
+	            "LEFT JOIN Member m ON t.writerId = m.id " +
+	            "LEFT JOIN mediaFiles mf ON m.profileImageId = mf.id " +
+	            "LEFT JOIN mediaFiles mf2 ON t.featuredImageId = mf2.id " +
+	            "WHERE t.isDeleted = FALSE AND t.status = 'done' " +
+	            "<if test='lastItemTraceId != null and lastItemOrderPoint != null'>" +
+	            "   AND (t.orderPoint &lt; #{lastItemOrderPoint} OR (t.orderPoint = #{lastItemOrderPoint} AND t.id &lt; #{lastItemTraceId})) " +
+	            "</if>" +
+	            "ORDER BY t.orderPoint DESC, t.id DESC " +
+	            "LIMIT #{limit}" +
+	            "</script>")
+	    List<TraceEntity> findTracesForPrintList(TraceListRequestDto traceListRequestDto);
+	   
 	    
 
 }

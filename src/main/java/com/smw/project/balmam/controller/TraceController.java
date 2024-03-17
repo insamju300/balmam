@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -25,6 +26,8 @@ import com.smw.project.balmam.dto.ResultData;
 import com.smw.project.balmam.dto.RouteRecordingDTO;
 import com.smw.project.balmam.dto.StayedCityDto;
 import com.smw.project.balmam.dto.TagOutputDto;
+import com.smw.project.balmam.dto.TraceListOutputDto;
+import com.smw.project.balmam.dto.TraceListRequestDto;
 import com.smw.project.balmam.dto.TraceOutputDto;
 import com.smw.project.balmam.dto.UserDto;
 import com.smw.project.balmam.dto.WriteOrModifyTraceDetailDto;
@@ -269,6 +272,27 @@ public class TraceController {
 		model.addAttribute("pathCoordinatesGroups", pathCoordinates);
 		return "/trace/traceDetail";
 	}
+	
+	@GetMapping("/trace/traceList")
+	public String showTraceList() {
+		return "/trace/traceList";
+	}
+	
+	@PostMapping("/trace/traceList")
+	@ResponseBody
+	public ResultData<List<TraceListOutputDto>> getTraceList(@RequestBody TraceListRequestDto traceListRequestDto){
+		
+		System.err.println(traceListRequestDto);
+		List<TraceEntity> traceEntitys =  traceService.findTracesForPrintList(traceListRequestDto);
+		List<TraceListOutputDto> traces = traceEntitys.stream().map(entity -> new TraceListOutputDto(entity, path)).toList();
+		System.err.println(traces);
+		
+		
+		return ResultData.ofData("S-1", "success", "traces", traces);
+	}
+	
+
+
 //	@PostMapping("/trace/writeTraceDetail")
 //	public String doWriteTraceDetail(Long id, Model model) {
 //		//1. trace 가지고 오기

@@ -10,8 +10,9 @@
     width: 100%;
     height: 100%;
     mask-image: url(/images/mask/trace.png);
-    mask-size: 100%; 
+    mask-size: 70%; 
     mask-repeat: no-repeat; 
+    mask-position: center;
 }
 
 @keyframes drop {
