@@ -36,6 +36,7 @@
 	  var geoMedias = [[${geoMedias}]];
 	  console.log(pathCoordinatesGroups);
 	  console.log(geoMedias);
+	  var traceId = [[${trace.id}]];
 	  /*]]>*/
 	</script>
 
@@ -142,7 +143,7 @@
 
 						<div class="w-1/2 flex flex-col md:items-end">
 							<span th:text="${trace.regDate}">1년전</span>
-							<span th:text="'최종수정 ' + ${trace.updateDate}">최종수정 1시간 전</span>
+<!-- 							<span th:text="'최종수정 ' + ${trace.updateDate}">최종수정 1시간 전</span> -->
 							<div th:if="${trace.isAccessible}" class="flex gap-1 mt-2">
 								<button type="button"
 									onclick="location.href='/trace/modifyTraceDetail.html'"
@@ -234,7 +235,7 @@
 										data-isFirst="0">
 										<i class="fa-solid fa-comment"></i>
 									</div>
-									<p id="comment-count-p" th:text="${trace.bookmarkCount}">200</p>
+									<p id="comment-count-p" th:text="${trace.commentCount}">200</p>
 
 								</label>
 							</div>

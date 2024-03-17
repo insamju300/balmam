@@ -186,7 +186,7 @@ CREATE TABLE TagMapping (
 );
 
 
-CREATE TABLE BookmarkEntity (
+CREATE TABLE Bookmark (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     regDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updateDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -195,7 +195,7 @@ CREATE TABLE BookmarkEntity (
     memberId BIGINT
 );
 
-CREATE TABLE LikeEntity (
+CREATE TABLE `Like` (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     regDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updateDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -206,26 +206,6 @@ CREATE TABLE LikeEntity (
 
 
 ##테스트 데이터
-CREATE TABLE trace (
-    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    regDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updateDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    writerId BIGINT UNSIGNED,
-    title VARCHAR(255),
-    recordingStartTime TIMESTAMP NULL,
-    recordingEndTime TIMESTAMP NULL,
-    totalPauseTime BIGINT DEFAULT 0,
-    featuredImageId BIGINT UNSIGNED,
-    hitCount INT DEFAULT 0,
-    likeCount INT DEFAULT 0,
-    bookmarkCount INT DEFAULT 0,
-    commentCount INT DEFAULT 0,
-    orderPoint BIGINT DEFAULT 0,
-    STATUS VARCHAR(255),
-    isDeleted BOOLEAN DEFAULT FALSE,
-    deletedDate TIMESTAMP NULL
-);
-
 
 INSERT  INTO `trace`(`id`,`regDate`,`updateDate`,`writerId`,`title`,`recordingStartTime`,`recordingEndTime`,`totalPauseTime`,`featuredImageId`,`hitCount`,`likeCount`,`bookmarkCount`,`commentCount`,`orderPoint`,`STATUS`,`isDeleted`,`deletedDate`) VALUES 
 (1,'2024-03-17 21:00:20','2024-03-17 21:00:29',1,'테스트용 발자취','2024-03-17 20:59:44','2024-03-17 21:00:20',0,7,0,0,0,0,6642020,'done',0,NULL),

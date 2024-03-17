@@ -147,7 +147,7 @@ function animatePath(path) {
         // 지도 중심을 최신 위치로 설정합니다.
         map.setCenter(currentPos);
         // 상세한 뷰를 위해 확대합니다.
-        map.setZoom(19);
+        //map.setZoom(19);
         // 다음 애니메이션 프레임을 위해 인덱스를 증가시킵니다.
         index += step;
         // 다음 세그먼트를 그리기 위해 다음 애니메이션 프레임을 요청합니다.
@@ -501,3 +501,39 @@ function getUserLocation(position) {
 
   return userLocation;
 }
+
+
+(() => {
+    function ArticleDetail__doIncreaseHitCount() {
+        const localStorageKey = "article__" + traceId + "__alreadyView";
+        const now = new Date();
+        // 만료 시간을 지금으로부터 24시간으로 설정
+        const expires = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+        
+        // localStorage에서 데이터를 가져오기
+        const viewedData = localStorage.getItem(localStorageKey);
+        if (viewedData) {
+            // 데이터가 있으면, 만료 시간을 확인
+            const parsedViewedData = JSON.parse(viewedData);
+            const expirationDate = new Date(parsedViewedData.expires);
+            
+            if (now < expirationDate) {
+                // 데이터가 아직 만료되지 않았다면, 함수 실행 중지
+                return;
+            }
+        }
+        
+        // 조회수 증가 요청을 GET 메소드로 전송
+        fetch(`/trace/increaseHitCount?id=${traceId}`)
+        .then(response => response.json())
+        .then(data => {
+            $("#hit-count-p").text(data.data);
+            // 만료 시간을 포함하여 localStorage에 저장
+            localStorage.setItem(localStorageKey, JSON.stringify({ viewed: true, expires: expires.toISOString() }));
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(ArticleDetail__doIncreaseHitCount, 500);
+    });
+})();

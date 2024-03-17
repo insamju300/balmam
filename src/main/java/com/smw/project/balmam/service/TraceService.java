@@ -129,6 +129,16 @@ public class TraceService {
 		return traceRepository.findTracesForPrintList(traceListRequestDto);
 	}
 
+	public void increaseHitCount(Long id) {
+		traceRepository.increaseHitCount(id);
+		
+	}
+
+	public Integer getHitCount(Long id) {
+		// TODO Auto-generated method stub
+		return traceRepository.getHitCount(id);
+	}
+
 
 	
 	

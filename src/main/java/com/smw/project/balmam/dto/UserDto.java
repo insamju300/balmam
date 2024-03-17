@@ -5,9 +5,11 @@ import com.smw.project.balmam.entity.MemberEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 @AllArgsConstructor
 public class UserDto {
 	public UserDto(MemberEntity findMember, String path) {

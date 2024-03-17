@@ -54,8 +54,8 @@ public interface TraceRepository {
 		        "m.profileImageId AS extra__writerProfileImageId, " +
 		        "mf.NAME AS extra__writerProfileImageName, " +
 		        // userId가 null일 경우 false 반환, 아닐 경우 조건에 맞는지 검사
-		        "IF(#{userId} IS NULL, FALSE, (SELECT COUNT(*) FROM LikeEntity le WHERE le.relId = t.id AND le.memberId = #{userId} AND le.relType = 'Trace') > 0) AS extra__isLiked, " +
-		        "IF(#{userId} IS NULL, FALSE, (SELECT COUNT(*) FROM BookmarkEntity be WHERE be.relId = t.id AND be.memberId = #{userId} AND be.relType = 'Trace') > 0) AS extra__isBookmarked, " +
+		        "IF(#{userId} IS NULL, FALSE, (SELECT COUNT(*) FROM `Like` le WHERE le.relId = t.id AND le.memberId = #{userId} AND le.relType = 'Trace') > 0) AS extra__isLiked, " +
+		        "IF(#{userId} IS NULL, FALSE, (SELECT COUNT(*) FROM Bookmark be WHERE be.relId = t.id AND be.memberId = #{userId} AND be.relType = 'Trace') > 0) AS extra__isBookmarked, " +
 		        "IF(#{userId} IS NULL, FALSE, t.writerId = #{userId}) AS extra__isAccessible " +
 		        "FROM trace t " +
 		        "JOIN Member m ON t.writerId = m.id " +
@@ -85,6 +85,45 @@ public interface TraceRepository {
 	            "LIMIT #{limit}" +
 	            "</script>")
 	    List<TraceEntity> findTracesForPrintList(TraceListRequestDto traceListRequestDto);
+
+	    @Update("""
+	    		
+	    		UPDATE trace
+	    		SET hitCount = hitCount + 1
+	    		WHERE id = #{id};
+	    		"""
+	    		)
+		void increaseHitCount(Long id);
+
+	    @Select("""
+	    		SELECT hitCount FROM TRACE
+	    		WHERE id = #{id};
+	    		""")
+		Integer getHitCount(Long id);
+
+	    @Update("""
+	    		   Update TRACE SET LIKECOUNT = LIKECOUNT+1
+	    		   WHERE id = #{id};
+	    		""")
+		void increaseLikeCount(Long id);
+
+	    @Update("""
+	    		   Update TRACE SET LIKECOUNT = LIKECOUNT-1
+	    		   WHERE id = #{id};
+	    		""")
+		void descreaseLikeCount(Long id);
+
+	    @Update("""
+	    		   Update TRACE SET BOOKMARKCOUNT = BOOKMARKCOUNT+1
+	    		   WHERE id = #{id};
+	    		""")
+		void increaseBookmarkCount(Long id);
+
+	    @Update("""
+	    		   Update TRACE SET BOOKMARKCOUNT = BOOKMARKCOUNT-1
+	    		   WHERE id = #{id};
+	    		""")
+		void descreaseBookmarkCount(Long id);
 	   
 	    
 

@@ -56,33 +56,53 @@ function likeButtonToggleEvent(ele) {
   console.log("state:", state);
 
   // Get the sibling p element
-  var siblingP = $(ele).next("p");
+//  var siblingP = $(ele).next("p");
 
-  // Check the state
+  // Define the fetch options
+  var fetchOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      relType: relType,
+      relId: relId,
+    }),
+  };
+
+  // Check the state and toggle like
   if (state === 0) {
-    // Toggle classes based on state 0
-    var faSolid = $(ele).find("i.fa-solid");
-    faSolid.addClass("text-primary");
-    faSolid.removeClass("text-neutral");
-
-    // Update data-state attribute
+    // Like increase
+    fetch('/like/increase', fetchOptions)
+      .then(response => response.json())
+      .then(data => {
+        // todo 에러처리
+        $("#like-count-p").text(data.data);
+      });
+    
+    // Visual toggle for UI feedback
+    $(ele).find("i.fa-solid").removeClass("text-neutral").addClass("text-primary");
     $(ele).data("state", 1);
   } else if (state === 1) {
-    // Toggle classes based on state 1
-    var faSolid = $(ele).find("i.fa-solid");
-    faSolid.addClass("text-neutral");
-    faSolid.removeClass("text-primary");
-
-    // Update data-state attribute
+    // Like decrease
+    fetch('/like/decrease', fetchOptions)
+      .then(response => response.json())
+      .then(data => {
+		  //todo 에러처리
+        $("#like-count-p").text(data.data);
+      });
+    
+    // Visual toggle for UI feedback
+    $(ele).find("i.fa-solid").removeClass("text-primary").addClass("text-neutral");
     $(ele).data("state", 0);
   }
 
-  // Update sibling p element with random number between 1 and 100
+  // Update sibling p element with random number between 1 and 100 (for demo purposes)
   var randomNumber = Math.floor(Math.random() * 100) + 1;
-  siblingP.text(randomNumber);
+//  siblingP.text(randomNumber);
 }
 
-//북마크 버튼 이벤트
+// 북마크 버튼 이벤트
 function bookmarkButtonToggleEvent(ele) {
   // Get data attributes
   var relType = $(ele).data("reltype");
@@ -94,62 +114,114 @@ function bookmarkButtonToggleEvent(ele) {
   console.log("relId:", relId);
   console.log("state:", state);
 
-  // Get the sibling p element
-  var siblingP = $(ele).next("p");
+  // Define the fetch options
+  var fetchOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      relType: relType,
+      relId: relId,
+    }),
+  };
 
-  // Check the state
+  // Check the state and toggle bookmark
   if (state === 0) {
-    // Toggle classes based on state 0
-    var faSolid = $(ele).find("i.fa-solid");
-    faSolid.addClass("text-secondary");
-    faSolid.removeClass("text-neutral");
-
-    // Update data-state attribute
+    // Bookmark increase
+    fetch('/bookmark/increase', fetchOptions)
+      .then(response => response.json())
+      .then(data => {
+        // 에러처리
+        $("#bookmark-count-p").text(data.data);
+      });
+    
+    // Visual toggle for UI feedback
+    $(ele).find("i.fa-solid").removeClass("text-neutral").addClass("text-secondary");
     $(ele).data("state", 1);
   } else if (state === 1) {
-    // Toggle classes based on state 1
-    var faSolid = $(ele).find("i.fa-solid");
-    faSolid.addClass("text-neutral");
-    faSolid.removeClass("text-secondary");
-
-    // Update data-state attribute
-    $(ele).data("state", 0);
-  }
-
-  // Update sibling p element with random number between 1 and 100
-  var randomNumber = Math.floor(Math.random() * 100) + 1;
-  siblingP.text(randomNumber);
-}
-
-function subscriptButtonToggleEvent(ele) {
-  var memberId = $(ele).data("memberId");
-  var state = $(ele).data("state");
-
-  if (state === 0) {
-    // Toggle classes based on state 0
-    $(ele)
-      .text("구독 취소")
-      .addClass(
-        "bg-secondary_hard text-bg_main hover:bg-base_white hover:text-secondary_hard"
-      )
-      .removeClass(
-        "bg-base_white text-secondary_hard hover:bg-secondary_hard hover:text-bg_main"
-      );
-
-    // Update data-state attribute
-    $(ele).data("state", 1);
-  } else if (state === 1) {
-    // Toggle classes based on state 1
-    $(ele)
-      .text("구독")
-      .removeClass(
-        "bg-secondary_hard text-bg_main hover:bg-base_white hover:text-secondary_hard"
-      )
-      .addClass(
-        "bg-base_white text-secondary_hard hover:bg-secondary_hard hover:text-bg_main"
-      );
-
-    // Update data-state attribute
+    // Bookmark decrease
+    fetch('/bookmark/decrease', fetchOptions)
+      .then(response => response.json())
+      .then(data => {
+        // 에러처리
+        $("#bookmark-count-p").text(data.data);
+      });
+    
+    // Visual toggle for UI feedback
+    $(ele).find("i.fa-solid").removeClass("text-secondary").addClass("text-neutral");
     $(ele).data("state", 0);
   }
 }
+//
+////북마크 버튼 이벤트
+//function bookmarkButtonToggleEvent(ele) {
+//  // Get data attributes
+//  var relType = $(ele).data("reltype");
+//  var relId = $(ele).data("relid");
+//  var state = $(ele).data("state");
+//
+//  // Log data to console
+//  console.log("relType:", relType);
+//  console.log("relId:", relId);
+//  console.log("state:", state);
+//
+//  // Get the sibling p element
+//  var siblingP = $(ele).next("p");
+//
+//  // Check the state
+//  if (state === 0) {
+//    // Toggle classes based on state 0
+//    var faSolid = $(ele).find("i.fa-solid");
+//    faSolid.addClass("text-secondary");
+//    faSolid.removeClass("text-neutral");
+//
+//    // Update data-state attribute
+//    $(ele).data("state", 1);
+//  } else if (state === 1) {
+//    // Toggle classes based on state 1
+//    var faSolid = $(ele).find("i.fa-solid");
+//    faSolid.addClass("text-neutral");
+//    faSolid.removeClass("text-secondary");
+//
+//    // Update data-state attribute
+//    $(ele).data("state", 0);
+//  }
+//
+//  // Update sibling p element with random number between 1 and 100
+//  var randomNumber = Math.floor(Math.random() * 100) + 1;
+//  siblingP.text(randomNumber);
+//}
+
+//function subscriptButtonToggleEvent(ele) {
+//  var memberId = $(ele).data("memberId");
+//  var state = $(ele).data("state");
+//
+//  if (state === 0) {
+//    // Toggle classes based on state 0
+//    $(ele)
+//      .text("구독 취소")
+//      .addClass(
+//        "bg-secondary_hard text-bg_main hover:bg-base_white hover:text-secondary_hard"
+//      )
+//      .removeClass(
+//        "bg-base_white text-secondary_hard hover:bg-secondary_hard hover:text-bg_main"
+//      );
+//
+//    // Update data-state attribute
+//    $(ele).data("state", 1);
+//  } else if (state === 1) {
+//    // Toggle classes based on state 1
+//    $(ele)
+//      .text("구독")
+//      .removeClass(
+//        "bg-secondary_hard text-bg_main hover:bg-base_white hover:text-secondary_hard"
+//      )
+//      .addClass(
+//        "bg-base_white text-secondary_hard hover:bg-secondary_hard hover:text-bg_main"
+//      );
+//
+//    // Update data-state attribute
+//    $(ele).data("state", 0);
+//  }
+//}

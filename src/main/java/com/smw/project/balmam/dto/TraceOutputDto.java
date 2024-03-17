@@ -15,7 +15,7 @@ import lombok.Setter;
 public class TraceOutputDto {
 	private Long id;
 	private String regDate;
-	private String updateDate;
+//	private String updateDate;
 	private String title;
 	private String recordingStartTimeAndEndTime;
 	private String totalRecordingTime;
@@ -41,7 +41,7 @@ public class TraceOutputDto {
 		this.id = traceEntity.getId();
 		this.regDate = Ut.getTimeAgo(traceEntity.getRegDate());
 		System.err.println(traceEntity.getRegDate() + ", " +traceEntity.getUpdateDate());
-		this.updateDate = Ut.getTimeAgo(traceEntity.getUpdateDate());
+//		this.updateDate = Ut.getTimeAgo(traceEntity.getUpdateDate());
 //		if(regDate != updateDate) {
 //			updateDate += " 수정됨";
 //		}

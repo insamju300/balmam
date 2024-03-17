@@ -76,7 +76,7 @@ function createTraceCard(trace) {
 
   // 이미지 부분
   const image = $("<div>")
-    .addClass("w-full flex justify-center")
+    .addClass("w-full h-48 md:h-72 flex justify-center")
     .html(
       '<figure class="w-9/12"><img src="' + trace.featuredImageUrl + '" class="masked"></figure>'
     );
