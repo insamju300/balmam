@@ -339,3 +339,34 @@ $(document).ready(function () {
 
     return replyItem;
   }
+  
+  
+  
+//  WITH RECURSIVE CommentHierarchy AS (
+//  SELECT
+//    id,
+//    parent_id,
+//    content,
+//    1 AS depth
+//  FROM
+//    comments
+//  WHERE
+//    parent_id IS NULL
+//  
+//  UNION ALL
+//  
+//  SELECT
+//    c.id,
+//    c.parent_id,
+//    c.content,
+//    ch.depth + 1
+//  FROM
+//    comments c
+//    JOIN CommentHierarchy ch ON c.parent_id = ch.id
+//)
+//SELECT
+//  *
+//FROM
+//  CommentHierarchy
+//ORDER BY
+//  depth, id;
