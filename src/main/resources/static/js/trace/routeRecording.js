@@ -20,7 +20,7 @@ let timestampInSeconds = 1000;
 let recodingStartTime;
 let recodingEndTime;
 let recodingLimitTime = 3 * timestampInHours; //3시간
-let recodingMinTime = 0.5 * timestampInMinutes; //todo 개발 후 3분 최저 경로녹화 시간으로 바꿀것
+let recodingMinTime = 3 * timestampInMinutes; //todo 개발 후 3분 최저 경로녹화 시간으로 바꿀것
 
 let puseTime = null;
 let puseTimes = [];
