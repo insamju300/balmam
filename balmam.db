@@ -196,6 +196,20 @@ CREATE TABLE `Like` (
     memberId BIGINT
 );
 
+CREATE TABLE ReplyEntity (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    regDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updateDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    parentId BIGINT,
+    relType VARCHAR(255),
+    relId BIGINT,
+    depth INT,
+    `body` TEXT,
+    writerId BIGINT,
+    isDeleted BOOLEAN,
+    deletedDate TIMESTAMP NULL
+);
+
 
 ##테스트 데이터
 
