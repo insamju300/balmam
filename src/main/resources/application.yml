@@ -35,6 +35,8 @@ file:
   upload:
     realPath: "C:/files/balmam/upload/"
     path: "/files"
+  trace:
+    jsonFiles: "C:/files/balmam/trace/jsonFiles"
   tools:
     ffmpegPath: "C:/files/balmam/tools/ffmpeg/bin/ffmpeg.exe"
     

@@ -31,52 +31,58 @@ public class BalmamApplication {
 class FolderInitializer implements ApplicationListener<ContextRefreshedEvent> {
 
     private final String uploadDirectory;
+    private final String jsonFilesDirectory;
 
-    public FolderInitializer(@Value("${file.upload.realPath}") String uploadDirectory) {
+    public FolderInitializer(@Value("${file.upload.realPath}") String uploadDirectory,
+                             @Value("${file.trace.jsonFiles}") String jsonFilesDirectory) {
         this.uploadDirectory = uploadDirectory;
+        this.jsonFilesDirectory = jsonFilesDirectory;
     }
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        createUploadDirectory();
+        createDirectory(uploadDirectory);
+        createDirectory(jsonFilesDirectory);
+        copyStaticResources();
     }
 
-    private void createUploadDirectory() {
-        File uploadDir = new File(uploadDirectory);
-        if (!uploadDir.exists()) {
-            if (uploadDir.mkdirs()) {
-                System.out.println("Upload directory created successfully.");
+    private void createDirectory(String directoryPath) {
+        File directory = new File(directoryPath);
+        if (!directory.exists()) {
+            if (directory.mkdirs()) {
+                System.out.println(directoryPath + " directory created successfully.");
             } else {
-                System.err.println("Failed to create upload directory.");
+                System.err.println("Failed to create " + directoryPath + " directory.");
                 return;
             }
         } else {
-            System.out.println("Upload directory already exists.");
+            System.out.println(directoryPath + " directory already exists.");
         }
-
-        // 복사할 파일들이 있는 디렉토리의 경로
-        List<Path> sourceDirectoryPaths = new ArrayList<Path>();
-		sourceDirectoryPaths.add(Paths.get("src/main/resources/static/images/avatar"));
-		sourceDirectoryPaths.add(Paths.get("src/main/resources/static/images/default"));
-        
-        for (Path sourceDirectoryPath : sourceDirectoryPaths) {
-        // 파일 복사 로직
-        try (Stream<Path> paths = Files.walk(sourceDirectoryPath)) {
-            paths.filter(Files::isRegularFile).forEach(sourceFilePath -> {
-                Path destFilePath = Paths.get(uploadDirectory, sourceFilePath.getFileName().toString());
-                if (!Files.exists(destFilePath)) { // 대상 경로에 파일이 없는 경우만 복사
-                    try {
-                        Files.copy(sourceFilePath, destFilePath);
-                        System.out.println(sourceFilePath.getFileName() + " was copied to " + uploadDirectory);
-                    } catch (IOException e) {
-                        System.err.println("Failed to copy " + sourceFilePath.getFileName());
-                    }
-                }
-            });
-        } catch (IOException e) {
-            System.err.println("Failed to access " + sourceDirectoryPath);
-        }
-        
     }
+
+    private void copyStaticResources() {
+        // 복사할 파일들이 있는 디렉토리의 경로
+        List<Path> sourceDirectoryPaths = new ArrayList<>();
+        sourceDirectoryPaths.add(Paths.get("src/main/resources/static/images/avatar"));
+        sourceDirectoryPaths.add(Paths.get("src/main/resources/static/images/default"));
+
+        for (Path sourceDirectoryPath : sourceDirectoryPaths) {
+            // 파일 복사 로직
+            try (Stream<Path> paths = Files.walk(sourceDirectoryPath)) {
+                paths.filter(Files::isRegularFile).forEach(sourceFilePath -> {
+                    Path destFilePath = Paths.get(uploadDirectory, sourceFilePath.getFileName().toString());
+                    if (!Files.exists(destFilePath)) { // 대상 경로에 파일이 없는 경우만 복사
+                        try {
+                            Files.copy(sourceFilePath, destFilePath);
+                            System.out.println(sourceFilePath.getFileName() + " was copied to " + uploadDirectory);
+                        } catch (IOException e) {
+                            System.err.println("Failed to copy " + sourceFilePath.getFileName());
+                        }
+                    }
+                });
+            } catch (IOException e) {
+                System.err.println("Failed to access " + sourceDirectoryPath);
+            }
+        }
     }
 }

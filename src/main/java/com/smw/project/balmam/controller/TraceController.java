@@ -66,6 +66,9 @@ public class TraceController {
 
 	@Value("${file.upload.path}")
 	private String path;
+	
+	@Value("${file.trace.jsonFiles}")
+	private String jsonFileFath;
 
 	@PostMapping("/trace/routeRecording")
 	@ResponseBody
