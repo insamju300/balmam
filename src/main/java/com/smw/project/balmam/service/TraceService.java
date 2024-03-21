@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.smw.project.balmam.dto.PathCoordinateDto;
 import com.smw.project.balmam.dto.TraceListRequestDto;
 import com.smw.project.balmam.entity.GeoMediaEntity;
 import com.smw.project.balmam.entity.GeoMediaFileEntity;
@@ -13,11 +14,8 @@ import com.smw.project.balmam.entity.MediaFileEntity;
 import com.smw.project.balmam.entity.PathCoordinateEntity;
 import com.smw.project.balmam.entity.PathCoordinatesGroupEntity;
 import com.smw.project.balmam.entity.StayedCityEntity;
-import com.smw.project.balmam.entity.TagEntity;
 import com.smw.project.balmam.entity.TagMappingEntity;
 import com.smw.project.balmam.entity.TraceEntity;
-import com.smw.project.balmam.enums.RelType;
-import com.smw.project.balmam.enums.TagType;
 import com.smw.project.balmam.repository.GeoMediaFileRepository;
 import com.smw.project.balmam.repository.GeoMediaRepository;
 import com.smw.project.balmam.repository.PathCoordinateEntityRepository;
@@ -25,6 +23,7 @@ import com.smw.project.balmam.repository.PathCoordinatesGroupRepository;
 import com.smw.project.balmam.repository.StayedCityRepository;
 import com.smw.project.balmam.repository.TagMappingRepository;
 import com.smw.project.balmam.repository.TraceRepository;
+import com.smw.project.balmam.utill.JsonFileWriter;
 
 @Service
 public class TraceService {
@@ -56,6 +55,11 @@ public class TraceService {
 	public void insertTrace(TraceEntity traceEntity) {
 		traceRepository.insertTrace(traceEntity);
 		
+	}
+	
+	public void writeToJsonFile(List<List<PathCoordinateDto>> pathCoordinates, Long traceId) {
+		String fullPath = jsonFilePath + "/" + traceId + ".json";
+		JsonFileWriter.writeToJsonFile(pathCoordinates, fullPath);
 	}
 
 	public void insertPathCoordinatesGroup(PathCoordinatesGroupEntity pathCoordinatesGroup) {

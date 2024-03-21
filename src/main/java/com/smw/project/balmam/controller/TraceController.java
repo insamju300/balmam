@@ -88,6 +88,8 @@ public class TraceController {
 		TraceEntity traceEntity = new TraceEntity(routeRecordingDTO, user.getId());
 		traceService.insertTrace(traceEntity);
 		Long traceId = traceEntity.getId();
+		
+		
 
 		// 2단계 좌표 그룹 관련 db insert 처리
 		List<List<PathCoordinateDto>> pathCoordinatesGroups = routeRecordingDTO.getPathCoordinatesGroups();
@@ -107,6 +109,8 @@ public class TraceController {
 			traceService.insertPathCoordinates(pathCoordinateEntities);
 
 		}
+		
+		traceService.writeToJsonFile(pathCoordinatesGroups, traceId);
 
 		// 3단계 방문 도시 관련 db insert 처리
 		List<StayedCityDto> stayedCitiesDto = routeRecordingDTO.getStayedCities();
