@@ -214,12 +214,14 @@ CREATE TABLE NaverAirport(
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     regDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updateDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    region VARCHAR(255),
     city VARCHAR(255),
     country VARCHAR(255),
     `code` CHAR(3),
-    isDparture BOOLEAN,
+    isDeparture BOOLEAN,
     `version` INT
 )
+
 
 
 ##테스트 데이터

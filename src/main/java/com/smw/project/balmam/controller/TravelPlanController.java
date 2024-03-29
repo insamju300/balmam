@@ -5,11 +5,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 
 @Controller
-public class PlanController {
-	@GetMapping("/plan/create")
+public class TravelPlanController {
+	@GetMapping("/travelPlan/create")
 	public String createPlan() {
-		return "/plan/createPlan";
+		return "/travelPlan/createPlan";
 	}
-	
 
 }
