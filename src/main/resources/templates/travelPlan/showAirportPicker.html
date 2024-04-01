@@ -34,6 +34,12 @@
     />
     <script th:src="@{/js/common.js}" src="/js/common.js"></script>
     <script th:src="@{/js/header.js}" src="/js/header.js"></script>
+    <style>
+		.dropDownArcodians > .btn:hover > .dropDownArcodianItems {
+		  display: block;
+		}
+
+    </style>
   </head>
 
   <body>
@@ -42,6 +48,25 @@
 
     <main class="flex w-screen justify-center p-5">
       <div class="2xl:w-2/6 lg:w-2/4 w-full h-full flex p-6 mt-2 gap-2">
+      
+   <div class="dropDownArcodians flex justify-center">
+  <button class="btn btn-ghost relative">출발 공항
+	    <div class="dropDownArcodianItems w-52 absolute top-full left-0 hidden">
+	      <div class="join join-vertical w-full">
+	        <div class="collapse collapse-arrow join-item border border-base-300">
+	          <input type="radio" name="my-accordion-4" />
+	          <div class="collapse-title text-xl font-medium">
+	            국내
+	          </div>
+	          <div class="collapse-content">
+	            <p>hello</p>
+	          </div>
+	          </div>
+	          </div>
+	  </button>
+	
+	</div>
+      
    
    <div class="dropdown dropdown-hover">
 	  <div tabindex="0" role="button" class="btn m-1">출발 공항</div>
