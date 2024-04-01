@@ -29,7 +29,7 @@ public class NaverAirportService {
 		List<ResponseAirportDto> currentResponseNaverAirport = null;
 		
 		for(NaverAirportEntity entity: naverAirportEntities) {
-			if(currentRegion !=  entity.getRegion()) {
+			if(!currentRegion.equals(entity.getRegion())) {
 				currentRegion = entity.getRegion();
 				List<ResponseAirportDto> responseAirportDtos = new ArrayList<>();
 				ResponseNaverAirportDto responseNaverAirport = new  ResponseNaverAirportDto(currentRegion, responseAirportDtos);

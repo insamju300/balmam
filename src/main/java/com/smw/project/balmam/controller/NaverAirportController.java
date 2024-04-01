@@ -20,7 +20,6 @@ public class NaverAirportController {
 	NaverAirportService airportPickerService;
 	
 	@GetMapping("/travlePlan/showAirportPicker")
-	@ResponseBody
 	public String showAirportPicker(Model model) {
 		List<NaverAirportEntity> latesNaverAirportEntities = airportPickerService.findLatestNaverAirport();
 		
@@ -31,12 +30,10 @@ public class NaverAirportController {
 		
 		model.addAttribute("departureAirports", departureAirportDtos);
 		model.addAttribute("returnAirports", returnAirportDtos);
+		System.err.println();
 		
-		return "/";
+		return "travelPlan/showAirportPicker";
 	}
-	
-	
-	
 	
 
 }

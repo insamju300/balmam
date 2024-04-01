@@ -1,165 +1,275 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="utf-8">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>발맘: 회원정보수정</title>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>발맘: 회원정보수정</title>
+    <!-- 테일윈드 불러오기 -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- daisy ui 불러오기 -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/daisyui/4.6.1/full.css"
+    />
+    <!-- 폰트어썸 불러오기 -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+    />
+    <!-- anime js 불러보기-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
+    <!-- 제이쿼리 불러오기 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
-  <!-- 테일윈드 불러오기 -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- daisy ui 불러오기 -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/daisyui/4.6.1/full.css" />
-  <!-- 폰트어썸 불러오기 -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
-  <!-- anime js 불러보기-->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
-  <!-- 제이쿼리 불러오기 -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <!--공통 및 헤드 css, js-->
+    <link rel="stylesheet" href="/css/common.css" />
+    <link rel="stylesheet" href="/css/member.css" />
+    <script src="/js/common.js"></script>
 
-  <!--공통 및 헤드 css, js-->
-  <link rel="stylesheet" href="/css/common.css">
-  <link rel="stylesheet" href="/css/member.css">
-  <script src="/js/common.js"></script>
+    <script src="/js/member/member.js"></script>
+  </head>
 
-  <script src="/js/member/member.js"></script>
+  <body>
+    <header th:insert="/header :: header"></header>
+    <header id="ghost_header" class="w-screen"></header>
 
-  
+    <main class="flex w-screen justify-center p-5">
+      <div class="2xl:w-2/6 lg:w-2/4 w-full h-full flex flex-col p-6 mt-2">
+        <div class="flex px-3 py-3 justify-center">
+          <!-- 프로필 아바타 관련 처리 시작 -->
+          <div class="dropdown dropdown-hover">
+            <div
+              tabindex="0"
+              role="button"
+              class="btn m-1 bg-transparent hover:bg-transparent border-0"
+            >
+              <div class="avatar">
+                <div class="w-60 rounded-full">
+                  <img
+                    id="form_avatar_img"
+                    th:src="${member.profileImageUrl}"
+                    src="/images/avatar/boy.webp"
+                  />
+                </div>
+              </div>
+            </div>
 
-</head>
+            <input
+              type="file"
+              class="hidden-upload hidden"
+              accept=".jpg, .jpeg, .png, .gif, .webp"
+              required
+              multiple
+            />
 
-<body>
+            <div
+              tabindex="0"
+              class="dropdown-content z-[1] p-2 shadow bg-base-100 rounded-box w-52 flex flex-wrap justify-around translate-x-11"
+            >
+              <div class="avatar m-2">
+                <div
+                  onclick="changeProfileAvatar(this)"
+                  data-profile-img-src="boy"
+                  data-profile-img-id="1"
+                  class="w-12 rounded-full cursor-pointer"
+                >
+                  <img
+                    class="hover:scale-125 duration-100"
+                    th:src="@{/images/avatar/boy.webp}"
+                    src="/images/avatar/boy.webp"
+                  />
+                </div>
+              </div>
+              <div class="avatar m-2">
+                <div
+                  onclick="changeProfileAvatar(this)"
+                  data-profile-img-src="girl"
+                  data-profile-img-id="2"
+                  class="w-12 rounded-full cursor-pointer"
+                >
+                  <img
+                    class="hover:scale-125 duration-100"
+                    th:src="@{/images/avatar/girl.webp}"
+                    src="/images/avatar/girl.webp"
+                  />
+                </div>
+              </div>
+              <div class="avatar m-2">
+                <div
+                  onclick="changeProfileAvatar(this)"
+                  data-profile-img-src="yongman"
+                  data-profile-img-id="3"
+                  class="w-12 rounded-full cursor-pointer"
+                >
+                  <img
+                    class="hover:scale-125 duration-100"
+                    th:src="@{/images/avatar/yongman.webp}"
+                    src="/images/avatar/yongman.webp"
+                  />
+                </div>
+              </div>
+              <div class="avatar m-2">
+                <div
+                  onclick="changeProfileAvatar(this)"
+                  data-profile-img-src="yongwoman"
+                  data-profile-img-id="4"
+                  class="w-12 rounded-full cursor-pointer"
+                >
+                  <img
+                    class="hover:scale-125 duration-100"
+                    th:src="@{/images/avatar/yongwoman.webp}"
+                    src="/images/avatar/yongwoman.webp"
+                  />
+                </div>
+              </div>
+              <div class="avatar m-2">
+                <div
+                  onclick="changeProfileAvatar(this)"
+                  data-profile-img-src="grandpa"
+                  data-profile-img-id="5"
+                  class="w-12 rounded-full cursor-pointer"
+                >
+                  <img
+                    class="hover:scale-125 duration-100"
+                    th:src="@{/images/avatar/grandpa.webp}"
+                    src="/images/avatar/grandpa.webp"
+                  />
+                </div>
+              </div>
+              <div class="avatar m-2">
+                <div
+                  onclick="changeProfileAvatar(this)"
+                  data-profile-img-src="grandma"
+                  data-profile-img-id="6"
+                  class="w-12 rounded-full cursor-pointer"
+                >
+                  <img
+                    class="hover:scale-125 duration-100"
+                    th:src="@{/images/avatar/grandma.webp}"
+                    src="/images/avatar/grandma.webp"
+                  />
+                </div>
+              </div>
 
-  <header th:insert="/header :: header"></header>
-  <header id="ghost_header" class="w-screen">
-  </header>
+              <div class="m-2">
+                <div
+                  onclick="changeProfileAvatar(this)"
+                  data-profile-img-src="upload"
+                  class="w-16 h-16 rounded-full bg-secondary_soft hover:bg-secondary_hard flex justify-center items-center cursor-pointer hover:text-xl duration-100"
+                >
+                  업로드
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- 프로필 아바타 관련 처리 끝 -->
+        </div>
+        <form
+          action="/member/modify"
+          method="post"
+          onsubmit="modifyFormValidationCheck(this); return false;"
+        >
+          <input
+            type="hidden"
+            id="form_profile_image_id"
+            name="profileImageId"
+            th:value="${member.profileImageId}"
+          />
+          <input type="hidden" name="id" th:value="${member.id}" />
 
-  <main class="flex w-screen justify-center p-5">
-    <div class="2xl:w-2/6 lg:w-2/4 w-full h-full flex flex-col p-6 mt-2">
+          <div class="flex md:flex-row flex-col mt-2 text-neutral">
+            <div class="text-2xl mx-2 w-36">Email</div>
+            <p class="text-xl" th:text="${member.email}">
+              travelboy@travle.co.kr
+            </p>
+          </div>
+          <p class="text-accent_hard" id="form_email_validation_message"></p>
 
-      <div class="flex px-3 py-3 justify-center">
-        <!-- 프로필 아바타 관련 처리 시작 -->
- 				<div class="dropdown dropdown-hover">
-					<div tabindex="0" role="button" class="btn m-1 bg-transparent hover:bg-transparent border-0">
-						<div class="avatar">
-							<div class="w-60 rounded-full">
-								<img id="form_avatar_img" th:src="${member.profileImageUrl}" src="/images/avatar/boy.webp" />
-							</div>
-						</div>
-					</div>
+          <div class="flex md:flex-row flex-col mt-2 md:mt-10">
+            <label class="block text-2xl text-neutral mx-2 w-36"
+              >비밀번호</label
+            >
+            <!--임시로 넘겨준 email 나중에 변경 필요.-->
 
+            <button
+              type="button"
+              th:email="${member.email}"
+              onclick="sendMailForPasswordRestoration(this.getAttribute('email'))"
+              class="btn btn-md bg-base_white text-secondary_hard hover:bg-secondary_hard hover:text-bg_main text-md"
+            >
+              비밀번호 변경 링크 전송
+            </button>
+          </div>
 
-					<input type="file" class="hidden-upload hidden" accept=".jpg, .jpeg, .png, .gif, .webp" required multiple>
+          <div class="flex md:flex-row flex-col mt-2 md:mt-10">
+            <label
+              for="form_nickname_input"
+              class="block text-2xl text-neutral mx-2 w-36"
+              >닉네임</label
+            >
+            <div
+              class="input input-bordered flex items-center gap-2 text-neutral text-xl grow"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 16 16"
+                fill="currentColor"
+                class="w-4 h-4 opacity-70"
+              >
+                <path
+                  d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z"
+                />
+              </svg>
+              <input
+                onBlur="nicknameValidationCheck()"
+                id="form_nickname_input"
+                type="text"
+                class="grow"
+                name="nickname"
+                th:data-before-nickname="${member.nickname}"
+                placeholder="닉네임"
+                maxlength="10"
+                autocomplete="off"
+                th:value="${member.nickname}"
+              />
+            </div>
+          </div>
+          <p class="text-accent_hard" id="form_nickname_validation_message"></p>
 
-					<div tabindex="0"
-						class="dropdown-content z-[1] p-2  shadow bg-base-100 rounded-box w-52
-                    flex flex-wrap justify-around translate-x-11">
-						<div class="avatar m-2">
-							<div onclick="changeProfileAvatar(this)" data-profile-img-src="boy" data-profile-img-id="1"
-								class="w-12 rounded-full cursor-pointer">
-								<img class="hover:scale-125 duration-100" th:src="@{/images/avatar/boy.webp}" src="/images/avatar/boy.webp" />
-							</div>
-						</div>
-						<div class="avatar m-2">
-							<div onclick="changeProfileAvatar(this)" data-profile-img-src="girl" data-profile-img-id="2"
-								class="w-12 rounded-full cursor-pointer">
-								<img class="hover:scale-125 duration-100" th:src="@{/images/avatar/girl.webp}" src="/images/avatar/girl.webp" />
-							</div>
-						</div>
-						<div class="avatar m-2">
-							<div onclick="changeProfileAvatar(this)" data-profile-img-src="yongman" data-profile-img-id="3"
-								class="w-12 rounded-full cursor-pointer">
-								<img class="hover:scale-125 duration-100" th:src="@{/images/avatar/yongman.webp}"
-									src="/images/avatar/yongman.webp" />
-							</div>
-						</div>
-						<div class="avatar m-2">
-							<div onclick="changeProfileAvatar(this)" data-profile-img-src="yongwoman" data-profile-img-id="4"
-								class="w-12 rounded-full cursor-pointer">
-								<img class="hover:scale-125 duration-100" th:src="@{/images/avatar/yongwoman.webp}"
-									src="/images/avatar/yongwoman.webp" />
-							</div>
-						</div>
-						<div class="avatar m-2">
-							<div onclick="changeProfileAvatar(this)" data-profile-img-src="grandpa" data-profile-img-id="5"
-								class="w-12 rounded-full cursor-pointer">
-								<img class="hover:scale-125 duration-100" th:src="@{/images/avatar/grandpa.webp}"
-									src="/images/avatar/grandpa.webp" />
-							</div>
-						</div>
-						<div class="avatar m-2">
-							<div onclick="changeProfileAvatar(this)" data-profile-img-src="grandma" data-profile-img-id="6"
-								class="w-12 rounded-full cursor-pointer">
-								<img class="hover:scale-125 duration-100" th:src="@{/images/avatar/grandma.webp}"
-									src="/images/avatar/grandma.webp" />
-							</div>
-						</div>
+          <div class="flex md:flex-row flex-col mt-2 md:mt-10">
+            <label
+              for="form_introduction_text_area"
+              class="block text-2xl text-neutral mx-2 w-36"
+              >자기소개</label
+            >
+            <div
+              class="flex items-center gap-2 text-neutral text-xl grow bg-primary"
+            >
+              <textarea
+                id="form_introduction_text_area"
+                name="introduction"
+                class="textarea textarea-bordered text-xl grow maxlength=200"
+                th:text="${member.introduction}"
+              ></textarea>
+            </div>
+          </div>
 
-						<div class=" m-2">
-							<div onclick="changeProfileAvatar(this)" data-profile-img-src="upload"
-								class="w-16 h-16 rounded-full bg-secondary_soft hover:bg-secondary_hard flex justify-center items-center cursor-pointer hover:text-xl duration-100">
-								업로드</div>
-						</div>
-					</div>
-
-
-				</div>
-        <!-- 프로필 아바타 관련 처리 끝 -->
+          <div class="flex justify-center mt-2 md:mt-10">
+            <button
+              type="submit"
+              class="btn bg-base_white text-secondary_hard hover:bg-secondary_hard hover:text-bg_main text-2xl"
+            >
+              수정하기
+            </button>
+          </div>
+        </form>
       </div>
-      <form action="/member/modify" method="post"  onsubmit="modifyFormValidationCheck(this); return false;">
-		<input type="hidden" id="form_profile_image_id" name="profileImageId" th:value="${member.profileImageId}">
-		<input type="hidden" name="id" th:value="${member.id}">
-
-        <div class="flex md:flex-row flex-col mt-2 text-neutral">
-          <div class="text-2xl  mx-2 w-36">Email</div>
-          <p class="text-xl" th:text="${member.email}">travelboy@travle.co.kr</p>
-        </div>
-        <p class="text-accent_hard" id="form_email_validation_message"></p>
-
-        <div class="flex md:flex-row flex-col mt-2 md:mt-10">
-          <label class="block text-2xl text-neutral mx-2 w-36">비밀번호</label>
-          <!--임시로 넘겨준 email 나중에 변경 필요.-->
-          
-          <button type="button" th:email="${member.email}" onclick="sendMailForPasswordRestoration(this.getAttribute('email'))" class="btn btn-md bg-base_white text-secondary_hard
-      hover:bg-secondary_hard hover:text-bg_main text-md">비밀번호 변경 링크 전송</button>
-
-        </div>
-
-        <div class="flex md:flex-row flex-col mt-2 md:mt-10">
-          <label for="form_nickname_input" class="block text-2xl text-neutral mx-2 w-36">닉네임</label>
-          <div class="input input-bordered flex items-center gap-2 text-neutral text-xl grow">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="w-4 h-4 opacity-70">
-              <path
-                d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" />
-            </svg>
-            <input onBlur="nicknameValidationCheck()" id="form_nickname_input" type="text" class="grow" name="nickname" th:data-before-nickname="${member.nickname}"
-              placeholder="닉네임" maxlength="10" autocomplete="off"  th:value="${member.nickname}" />
-          </div>
-
-        </div>
-        <p class="text-accent_hard" id="form_nickname_validation_message"></p>
-
-
-
-        <div class="flex md:flex-row flex-col mt-2 md:mt-10">
-          <label for="form_introduction_text_area" class="block text-2xl text-neutral mx-2 w-36" >자기소개</label>
-          <div class="flex items-center gap-2 text-neutral text-xl grow bg-primary">
-            <textarea id="form_introduction_text_area" name="introduction" class="textarea textarea-bordered text-xl grow maxlength=200" th:text="${member.introduction}"></textarea>
-          </div>
-        </div>
-
-        <div class="flex justify-center mt-2 md:mt-10">
-          <button type="submit" class="btn bg-base_white text-secondary_hard
-      hover:bg-secondary_hard hover:text-bg_main text-2xl">수정하기</button>
-        </div>
-
-      </form>
-    </div>
-  </main>
-
-  
-</body>
-<script src="/js/header.js"></script>
-
+    </main>
+  </body>
+  <script src="/js/header.js"></script>
 </html>

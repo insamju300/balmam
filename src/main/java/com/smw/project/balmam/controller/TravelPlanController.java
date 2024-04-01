@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class TravelPlanController {
 	@GetMapping("/travelPlan/create")
 	public String createPlan() {
-		return "/travelPlan/createPlan";
+		return "/travelPlan/create";
 	}
 
 }

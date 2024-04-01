@@ -1,44 +1,51 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="utf-8">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>발맘:발자취 목록</title>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>발맘:발자취 목록</title>
+    <!-- 테일윈드 불러오기 -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- daisy ui 불러오기 -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/daisyui/4.6.1/full.css"
+    />
+    <!-- 폰트어썸 불러오기 -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+    />
+    <!-- anime js 불러보기-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
+    <!-- 제이쿼리 불러오기 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
-  <!-- 테일윈드 불러오기 -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- daisy ui 불러오기 -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/daisyui/4.6.1/full.css" />
-  <!-- 폰트어썸 불러오기 -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
-  <!-- anime js 불러보기-->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
-  <!-- 제이쿼리 불러오기 -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <!--지도 그리기 불러오기-->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
 
-  <!--지도 그리기 불러오기-->
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <!--공통 및 헤드 css, js-->
+    <link rel="stylesheet" href="/css/common.css" />
+    <link rel="stylesheet" href="/css/trace.css" />
+    <script src="/js/common.js"></script>
+  </head>
 
-  <!--공통 및 헤드 css, js-->
-  <link rel="stylesheet" href="/css/common.css">
-  <link rel="stylesheet" href="/css/trace.css">
-  <script src="/js/common.js"></script>
+  <body>
+    <header th:insert="/header :: header"></header>
+    <header id="ghost_header" class="w-screen"></header>
 
-
-</head>
-
-<body>
-
- 	<header th:insert="/header :: header"></header>
-	<header id="ghost_header" class="w-screen"> </header>
-
-  <main class="flex w-screen justify-center md:p-5 text-neutral ">
-    <div class="md:w-10/12 w-full p-2 md:p-6 mt-2">
-      <div id="trace_card_container" class="flex flex-wrap justify-center md:flex-row flex-col">
-
-        <!-- <div class="card xl:w-1/4 md:w-1/2 w-full p-5 m-0">
+    <main class="flex w-screen justify-center md:p-5 text-neutral">
+      <div class="md:w-10/12 w-full p-2 md:p-6 mt-2">
+        <div
+          id="trace_card_container"
+          class="flex flex-wrap justify-center md:flex-row flex-col"
+        >
+          <!-- <div class="card xl:w-1/4 md:w-1/2 w-full p-5 m-0">
           <div class="w-full flex justify-between text-md">
             <div class="flex items-center">
               <div class="avatar">
@@ -127,34 +134,25 @@
 
         </div> -->
 
-
-
-
-        <!-- 경계선 -->
-
-
-
-
-
-      </div>
-      <div th:if="${loginInfo.isLogined}" onclick="location.href='/trace/routeRecording.html'" class="fixed md:inset-y-1/4 inset-y-3/4  right-0 z-10 cursor-pointer md:mx-10 mx-3">
-        <div class="relative hover:drop-shadow-md hover:scale-110 duration-100">
-        <img src="/images/icon/trace.png" class="w-20">
-        <div class="absolute inset-0 flex justify-center items-center">
-          <span class="font-bold">새 발자취</span>
+          <!-- 경계선 -->
+        </div>
+        <div
+          th:if="${loginInfo.isLogined}"
+          onclick="location.href='/trace/routeRecording.html'"
+          class="fixed md:inset-y-1/4 inset-y-3/4 right-0 z-10 cursor-pointer md:mx-10 mx-3"
+        >
+          <div
+            class="relative hover:drop-shadow-md hover:scale-110 duration-100"
+          >
+            <img src="/images/icon/trace.png" class="w-20" />
+            <div class="absolute inset-0 flex justify-center items-center">
+              <span class="font-bold">새 발자취</span>
+            </div>
+          </div>
         </div>
       </div>
-      </div>
-     
-
-    </div>
-
-
-  </main>
-
-</body>
-<script src="/js/header.js"></script>
-<script src="/js/trace/traceList.js"></script>
-
+    </main>
+  </body>
+  <script src="/js/header.js"></script>
+  <script src="/js/trace/traceList.js"></script>
 </html>
-

@@ -220,7 +220,7 @@ CREATE TABLE NaverAirport(
     `code` CHAR(3),
     isDeparture BOOLEAN,
     `version` INT
-)
+);
 
 
 

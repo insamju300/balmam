@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="utf-8">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>발맘: 회원가입</title>
+
+    <!-- 테일윈드 불러오기 -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- daisy ui 불러오기 -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/daisyui/4.6.1/full.css"
+    />
+    <!-- 폰트어썸 불러오기 -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+    />
+    <!-- anime js 불러보기-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
+    <!-- 제이쿼리 불러오기 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <!--공통 및 헤드 css, js-->
+    <link
+      rel="stylesheet"
+      th:href="@{/css/common.css}"
+      href="/css/common.css"
+    />
+    <script th:src="@{/js/common.js}" src="/js/common.js"></script>
+    <script th:src="@{/js/header.js}" src="/js/header.js"></script>
+  </head>
+
+  <body>
+    <header th:insert="/header :: header"></header>
+    <header id="ghost_header" class="w-screen"></header>
+
+    <main class="flex w-screen justify-center p-5">
+      <div class="2xl:w-2/6 lg:w-2/4 w-full h-full flex p-6 mt-2 gap-2">
+   
+   <div class="dropdown dropdown-hover">
+	  <div tabindex="0" role="button" class="btn m-1">출발 공항</div>
+	  <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+	    <li th:each="departureAirport : ${departureAirports}">
+	    <div class="collapse bg-base-200">
+		  <input type="radio" name="my-accordion-1" /> 
+		  <div class="collapse-title text-xl font-medium" th:text="${departureAirport.region}">
+		    Click to open this one and close others
+		  </div>
+		  <div class="collapse-content "> 
+		    <div class="flex" th:each="airport: ${departureAirport.airports}"> <p th:text="${airport.city}">hello</p> <p th:text="${airport.country}">hello</p> <p th:text="${airport.code}">hello</p> 
+		    </div>
+		  </div>
+		</div>
+	    </li>
+	  </ul>
+	</div>
+
+	<div class="dropdown dropdown-hover">
+	  <div tabindex="0" role="button" class="btn m-1">Hover</div>
+	  <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+	    <li><a>Item 1</a></li>
+	    <li><a>Item 2</a></li>
+	  </ul>
+	</div>
+
+      </div>
+    </main>
+  </body>
+</html>
