@@ -40,6 +40,12 @@
 		}
 
     </style>
+    <script>
+        function test(ele, code){
+        	console.log(code);
+        	$(ele).parents('button').find('.airport-selector').html($(ele).html())
+        }
+    </script>
   </head>
 
   <body>
@@ -49,50 +55,42 @@
     <main class="flex w-screen justify-center p-5">
       <div class="2xl:w-2/6 lg:w-2/4 w-full h-full flex p-6 mt-2 gap-2">
       
-   <div class="dropDownArcodians flex justify-center">
-  <button class="btn btn-ghost relative">출발 공항
-	    <div class="dropDownArcodianItems w-52 absolute top-full left-0 hidden">
-	      <div class="join join-vertical w-full">
-	        <div class="collapse collapse-arrow join-item border border-base-300">
-	          <input type="radio" name="my-accordion-4" />
-	          <div class="collapse-title text-xl font-medium">
-	            국내
-	          </div>
-	          <div class="collapse-content">
-	            <p>hello</p>
-	            </div>
-	            </div>
-	          </div>
-	  </button>
-	
-	</div>
-      
-   
-   <div class="dropdown dropdown-hover">
-	  <div tabindex="0" role="button" class="btn m-1">출발 공항</div>
-	  <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-	    <li th:each="departureAirport : ${departureAirports}">
-	    <div class="collapse bg-base-200">
-		  <input type="radio" name="my-accordion-1" /> 
-		  <div class="collapse-title text-xl font-medium" th:text="${departureAirport.region}">
-		    Click to open this one and close others
-		  </div>
-		  <div class="collapse-content "> 
-		    <div class="flex" th:each="airport: ${departureAirport.airports}"> <p th:text="${airport.city}">hello</p> <p th:text="${airport.country}">hello</p> <p th:text="${airport.code}">hello</p> 
+		<div class="dropDownArcodians flex justify-center">
+		  <button class="btn btn-neutral relative w-52"> <span class="airport-selector"> 출발 공항</span>
+		    <div class="dropDownArcodianItems w-52 absolute top-full left-0 bg-white  hidden text-black max-h-96 overflow-scroll">
+		      <div class="join join-vertical w-full">
+		        <div class="collapse collapse-arrow join-item border border-base-300"  th:each="departureAirport : ${departureAirports}">
+		          <input type="radio" name="my-accordion-4" />
+		          <div class="collapse-title text-lg font-medium" th:text="${departureAirport.region}">
+		            국내
+		          </div>
+		          <div class="collapse-content" >
+		            <div th:each="airport: ${departureAirport.airports}" class="flex flex-col">
+		            <div class="flex justify-center items-center h-12 hover:bg-gray-300"
+					   th:code="${airport.code}"
+					    onClick="test(this, this.getAttribute('code'))">
+		                <span th:text="${airport.city}">서울</span>,<span th:text="${airport.country}">대한민국</span> &nbsp; &nbsp; <span th:text="${airport.code}" class="text-blue-300">SEL<span />
+		            </div>
+		            </div>
+		          </div>
+		        </div>
+		      </div>
 		    </div>
-		  </div>
+		  </button>
 		</div>
-	    </li>
-	  </ul>
-	</div>
-
-	<div class="dropdown dropdown-hover">
-	  <div tabindex="0" role="button" class="btn m-1">Hover</div>
-	  <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-	    <li><a>Item 1</a></li>
-	    <li><a>Item 2</a></li>
-	  </ul>
-	</div>
+		
+		<div th:each="departureAirport : ${departureAirports}">
+          <div th:text="${departureAirport.region}">
+            국내
+          </div>
+          
+           <div th:each="airport: ${departureAirport.airports}">
+            <span th:text="${airport.city}">서울</span>,<span th:text="${airport.country}">대한민국</span> <span th:text="${airport.code}" class="text-blue-300">SEL<span />
+          </div>
+		</div>
+		
+   
+  
 
       </div>
     </main>
