@@ -25,6 +25,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
     <!-- 제이쿼리 불러오기 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <!-- 자바스크립트ui불러오기 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
 
     <!--공통 및 헤드 css, js-->
     <link
@@ -34,17 +36,87 @@
     />
     <script th:src="@{/js/common.js}" src="/js/common.js"></script>
     <script th:src="@{/js/header.js}" src="/js/header.js"></script>
+    
+    
     <style>
 		.dropDownArcodians > .btn:hover > .dropDownArcodianItems {
 		  display: block;
 		}
+		#ui-datepicker-div{
+		 background-color:white;
+		 width: 14rem;
+		 
+		}
+		
+		.ui-datepicker-header{
+		 display:flex;
+		 justify-content:space-around;
+		 flex-wrap: wrap;
+		}
+		.ui-datepicker-prev, .ui-datepicker-next{
+		 width:50%;
+		 cursor: pointer;
+		 display:flex;
+		 justify-content: center;
+		 
+		}
+		.ui-datepicker-prev:hover, .ui-datepicker-next:hover{
+		 background-color:black;
+		}
+		
+		#ui-datepicker-div{
+				 display:flex;
+		 justify-content:center;
+		 flex-direction: column;
+		}
+		.ui-datepicker-title{
+		 display:flex;
+		 justify-content:center;
+		 flex-direction: row-reverse;
+		}
+		
+		.ui-datepicker-year:after{
+		content:"년";
+		}
 
     </style>
     <script>
-        function test(ele, code){
-        	console.log(code);
-        	$(ele).parents('button').find('.airport-selector').html($(ele).html())
+        let departureAirport = null;
+        let returnAirport = null;
+   
+        function setAirportCode(ele, code, isDepartureAirport){
+        	
+        	if(isDepartureAirport){
+        		departureAirport = code;
+        	}else{
+        		returnAirport = code;
+        	}
+        	
+        	$(ele).parents('button').find('.airport-selector').html($(ele).html());
+        	
+        	console.log("departureAirport : " + departureAirport + ", returnAirport : "+ returnAirport);
         }
+        
+        $(document).ready(function(){               
+            $.datepicker.setDefaults({
+            closeText: "닫기",
+            currentText: "오늘",
+            prevText: '이전 달',
+            nextText: '다음 달',
+            monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+            monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+            dayNames: ['일', '월', '화', '수', '목', '금', '토'],
+            dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
+            dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+            weekHeader: "주",
+            yearSuffix: ''
+            });    
+         });
+        
+        $(function(){
+          $('.datepicker').datepicker({minDate: "+1D", maxDate: "+1Y", dateFormat: 'yy/mm/dd'});
+        })
+        
     </script>
   </head>
 
@@ -53,11 +125,11 @@
     <header id="ghost_header" class="w-screen"></header>
 
     <main class="flex w-screen justify-center p-5">
-      <div class="2xl:w-2/6 lg:w-2/4 w-full h-full flex p-6 mt-2 gap-2">
+      <div class="2xl:w-2/6 lg:w-2/4 w-full h-full flex p-6 mt-2 gap-2 justify-center">
       
 		<div class="dropDownArcodians flex justify-center">
-		  <button class="btn btn-neutral relative w-52"> <span class="airport-selector"> 출발 공항</span>
-		    <div class="dropDownArcodianItems w-52 absolute top-full left-0 bg-white  hidden text-black max-h-96 overflow-scroll">
+		  <button class="btn btn-neutral relative w-72"> <span class="airport-selector"> 출발 공항</span>
+		    <div class="dropDownArcodianItems w-72 absolute top-full left-0 bg-white  hidden text-black max-h-96 overflow-scroll">
 		      <div class="join join-vertical w-full">
 		        <div class="collapse collapse-arrow join-item border border-base-300"  th:each="departureAirport : ${departureAirports}">
 		          <input type="radio" name="my-accordion-4" />
@@ -68,7 +140,7 @@
 		            <div th:each="airport: ${departureAirport.airports}" class="flex flex-col">
 		            <div class="flex justify-center items-center h-12 hover:bg-gray-300"
 					   th:code="${airport.code}"
-					    onClick="test(this, this.getAttribute('code'))">
+					    onClick="setAirportCode(this, this.getAttribute('code'), true)">
 		                <span th:text="${airport.city}">서울</span>,<span th:text="${airport.country}">대한민국</span> &nbsp; &nbsp; <span th:text="${airport.code}" class="text-blue-300">SEL<span />
 		            </div>
 		            </div>
@@ -79,18 +151,35 @@
 		  </button>
 		</div>
 		
-		<div th:each="departureAirport : ${departureAirports}">
-          <div th:text="${departureAirport.region}">
-            국내
-          </div>
-          
-           <div th:each="airport: ${departureAirport.airports}">
-            <span th:text="${airport.city}">서울</span>,<span th:text="${airport.country}">대한민국</span> <span th:text="${airport.code}" class="text-blue-300">SEL<span />
-          </div>
-		</div>
 		
-   
-  
+		
+		<div class="dropDownArcodians flex justify-center">
+		  <button class="btn btn-neutral relative w-72"> <span class="airport-selector"> 도착 공항</span>
+		    <div class="dropDownArcodianItems w-72 absolute top-full left-0 bg-white  hidden text-black max-h-96 overflow-scroll">
+		      <div class="join join-vertical w-full">
+		        <div class="collapse collapse-arrow join-item border border-base-300"  th:each="returnAirport : ${returnAirports}">
+		          <input type="radio" name="my-accordion-4" />
+		          <div class="collapse-title text-lg font-medium" th:text="${returnAirport.region}">
+		            국내
+		          </div>
+		          <div class="collapse-content" >
+		            <div th:each="airport: ${returnAirport.airports}" class="flex flex-col">
+		            <div class="flex justify-center items-center h-12 hover:bg-gray-300"
+					   th:code="${airport.code}"
+					    onClick="setAirportCode(this, this.getAttribute('code'), false)">
+		                <span th:text="${airport.city}">서울</span>,<span th:text="${airport.country}">대한민국</span> &nbsp; &nbsp; <span th:text="${airport.code}" class="text-blue-300">SEL<span />
+		            </div>
+		            </div>
+		          </div>
+		        </div>
+		      </div>
+		    </div>
+		  </button>
+		</div>		
+		
+		
+		<p>출발 날짜: <input type="text" class="datepicker w-56"></p>
+		<p>도착 날짜: <input type="text" class="datepicker w-56"></p>
 
       </div>
     </main>
