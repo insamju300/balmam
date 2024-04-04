@@ -76,25 +76,46 @@
 		}
 		
 		.ui-datepicker-year:after{
-		content:"년";
+		 content:"년";
 		}
+		
+		td{
+		    text-align: center;
+		}
+		
+		td:not(.ui-state-disabled ){
+		 color:black;
+		 cursor:pointer;
+		 
+		}
+		
+		td:not(.ui-state-disabled ):hover{
+		  color:white;
+		  background-color:black;
+		  
+		}
+		
+		.ui-datepicker-header, th{
+		  color:black;
+		}
+		
 
     </style>
     <script>
-        let departureAirport = null;
-        let returnAirport = null;
+        let departureAirportCode = null;
+        let returnAirportCode = null;
+        let departureDayStr = null;
+        let returnDayStr = null;
    
         function setAirportCode(ele, code, isDepartureAirport){
         	
         	if(isDepartureAirport){
-        		departureAirport = code;
+        		departureAirportCode = code;
         	}else{
-        		returnAirport = code;
+        		returnAirportCode = code;
         	}
         	
         	$(ele).parents('button').find('.airport-selector').html($(ele).html());
-        	
-        	console.log("departureAirport : " + departureAirport + ", returnAirport : "+ returnAirport);
         }
         
         $(document).ready(function(){               
@@ -116,6 +137,64 @@
         $(function(){
           $('.datepicker').datepicker({minDate: "+1D", maxDate: "+1Y", dateFormat: 'yy/mm/dd'});
         })
+        
+        function dateCorrection(){
+        	departureDayStr = $("#departureDay").val();
+        	returnDayStr = $("#returnDay").val();
+        	
+        	if(!departureDayStr || !returnDayStr){
+        		return;
+        	}
+        	
+        	let departureDay = Date.parse(departureDayStr);
+        	let returnDay = Date.parse(returnDayStr);
+        	
+        	if(returnDay<departureDay){
+        		$("#returnDay").val("");
+        		 $("#departureDay").val(returnDayStr);
+        		 departureDayStr=returnDayStr;
+        		 returnDayStr = "";
+        	}
+        	
+        }
+        
+        
+        function searchAirlineTicket() {
+            // Replace the URL with your actual endpoint
+            
+        	if(!departureAirportCode || !returnAirportCode || !departureDayStr || !returnDayStr){
+        		commonsAlert("입력되지 않은 항목이 있습니다.");
+        		return;
+        	}
+        	let departureDay = departureDayStr.replace(/\//g, "");
+            let returnDay = returnDayStr.replace(/\//g, "");
+            const url =`http://127.0.0.1:8000/travelPlan/crawlingFlightList?departureAirportCode=${departureAirportCode}&returnAirportCode=${returnAirportCode}&departureDay=${departureDay}&returnDay=${returnDay}`;
+            console.log("되는겨?");
+
+            fetch(url)
+              .then((response) => {
+                if (!response.ok) {
+                  throw new Error("Network response was not ok");
+                }
+                return response.json();
+              })
+              .then((data) => {
+                // Assuming the data is the plan you want to display
+                // For demonstration, simply showing the JSON as a string.
+                // You might want to format this display based on your data structure
+               console.log(data);
+               
+               let flightInfoTagList = data.flightInfoList.map((flightInfo)=>{
+            	   
+               });
+              })
+              .catch((error) => {
+                console.error(
+                  "There has been a problem with your fetch operation:",
+                  error
+                );
+              });
+          }
         
     </script>
   </head>
@@ -178,8 +257,9 @@
 		</div>		
 		
 		
-		<p>출발 날짜: <input type="text" class="datepicker w-56"></p>
-		<p>도착 날짜: <input type="text" class="datepicker w-56"></p>
+		<p class="text-black">출발 날짜: <input id="departureDay" type="text" class="datepicker w-56" onChange="dateCorrection()"></p>
+		<p class="text-black">도착 날짜: <input id="returnDay" type="text" class="datepicker w-56"  onChange="dateCorrection()"></p>
+		<button class="btn" onClick="searchAirlineTicket()">항공권 검색</button>
 
       </div>
     </main>
