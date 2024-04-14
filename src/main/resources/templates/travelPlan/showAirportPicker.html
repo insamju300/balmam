@@ -146,6 +146,7 @@ td:not(.ui-state-disabled ):hover {
         
         async function searchAirlineTicket() {
             // Replace the URL with your actual endpoint
+             
             
         	if(!departureAirportCode || !returnAirportCode || !departureDayStr || !returnDayStr){
         		commonsAlert("입력되지 않은 항목이 있습니다.");
@@ -160,6 +161,9 @@ td:not(.ui-state-disabled ):hover {
                 throw new Error(`Network response was not ok: ${response.statusText}`);
             }
             const resultData = await response.json();
+            
+            const flightInfoResultView = $("#flightInfoResultView");
+            flightInfoResultView.empty();
             
             resultData.flightInfoList.forEach((flightInfo)=>{
          	   let index = flightInfo.index;
@@ -176,47 +180,65 @@ td:not(.ui-state-disabled ):hover {
                 let returnToAirport = flightInfo.returnToAirport;
                 let returnRouteInfo = flightInfo.returnRouteInfo;
                 let paymentMethod = flightInfo.paymentMethod;
+                let pay = flightInfo.pay;
                 
                 
                 
 
                 // flightInfo 정보를 담을 div 요소 생성
                 let flightInfoDiv = $("<div>");
-                flightInfoDiv.addClass("flightInfoItem");
+                flightInfoDiv.addClass("flightInfoItem flex w-full shadow-lg text-black p-3 cursor-pointer");
                 flightInfoDiv.attr("data-index", flightInfo.index);
+                
+                
+                flightInfoDiv.click(function() {
+                    // Code to execute when flightInfoDiv is clicked
+		            const flightInfoResultView = $("#flightInfoResultView");
+		            flightInfoResultView.empty();
+                   //필요한 정보 1. index
+		            const url =`http://127.0.0.1:8000/travelPlan/crawlingFlightList?departureAirportCode=${departureAirportCode}&returnAirportCode=${returnAirportCode}&departureDay=${departureDay}&returnDay=${returnDay}`;
+		            const response = fetch(url);
+		            
+                   
+                   // 2. 출발 시간
+                   // 3. 도착 시간
+                   // 4. 출발 공항 정확한 코드
+                   // 5. 도착 공항 정확한 코드
+                    // Add your desired code here
+                });
 
                 // flightInfo 정보를 template literals로 생성
                 let flightInfoContent = `
-                  <div class="flex flex-col">
+                  <div class="flex flex-col w-1/6 gap-3">
                     <p>${flightInfo.departureAirline}</p>
                     <p>${flightInfo.returnAirLine}</p>
                  </div>
                  
-                 <div class="flex flex-col">
+                 <div class="flex flex-col  w-3/6 gap-3">
                    <div class="flex gap-3">
-	                      <p>${flightInfo.departureFromTime}</p>
-	                      <p class="text-blue-400">${flightInfo.departureFromAirport}</p>
+	                      <p>${departureFromTime}</p>
+	                      <p class="text-blue-400">${departureFromAirport}</p>
 	                      <i class="fa-solid fa-plane"></i>
-	                      <p>${flightInfo.departureToTime}</p>
-	                      <p class="text-blue-400">${flightInfo.departureToAirport}</p>
+	                      <p>${departureToTime}</p>
+	                      <p class="text-blue-400">${departureToAirport}</p>
                    </div>
                    <div class="flex gap-3">
-                   <p>${flightInfo.returnFromTime}</p>
-                   <p class="text-blue-400">${flightInfo.returnFromAirport}</p>
+                   <p>${returnFromTime}</p>
+                   <p class="text-blue-400">${returnFromAirport}</p>
                    <i class="fa-solid fa-plane"></i>
-                   <p>${flightInfo.returnToTime}</p>
-                   <p class="text-blue-400">${flightInfo.returnToAirport}</p>
+                   <p>${returnToTime}</p>
+                   <p class="text-blue-400">${returnToAirport}</p>
                    </div>
                  </div>
                  
-                 <div class="flex flex-col">
-	                    <p>${flightInfo.departureRouteInfo}</p>
-	                    <p>${flightInfo.returnRouteInfo}</p>
+                 <div class="flex flex-col  w-2/6 gap-3">
+	                    <p>${departureRouteInfo}</p>
+	                    <p>${returnRouteInfo}</p>
 	                 </div> 
                     
 	                 <div class="flex flex-col">
-                    <p>${flightInfo.paymentMethod}</p>
-                    <p>${flightInfo.pay}</p>
+                    <p>${paymentMethod}</p>
+                    <p>${pay}</p>
                   </div>`;
                   
                   // flightInfoDiv에 flightInfo 정보 추가
@@ -236,8 +258,8 @@ td:not(.ui-state-disabled ):hover {
 	<header th:insert="/header :: header"></header>
 	<header id="ghost_header" class="w-screen"></header>
 
-	<main class="flex w-screen justify-center p-5">
-		<div class="2xl:w-2/6 lg:w-2/4 w-full h-full flex p-6 mt-2 gap-2 justify-center">
+	<main class="flex w-screen justify-center p-5 flex-col items-center">
+		<div class="2xl:w-2/6 lg:w-2/4 w-full h-full flex p-6 mt-2 gap-2 justify-center ">
 
 			<div class="dropDownArcodians flex justify-center">
 				<button class="btn btn-neutral relative w-72">
@@ -300,8 +322,10 @@ td:not(.ui-state-disabled ):hover {
 			<button class="btn" onClick="searchAirlineTicket()">항공권 검색</button>
 
 		</div>
-
-		<div id="flightInfoResultView"></div>
+		<div class="2xl:w-5/6 lg:w-4/6 w-full h-full flex p-6 mt-2 gap-2 justify-center ">
+            <div id="flightInfoResultView" class="flex flex-col gap-5 items-center w-full"></div>
+        </div>
+		
 	</main>
 </body>
 </html>
