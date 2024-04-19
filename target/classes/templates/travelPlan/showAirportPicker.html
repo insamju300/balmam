@@ -190,23 +190,6 @@ td:not(.ui-state-disabled ):hover {
                 flightInfoDiv.addClass("flightInfoItem flex w-full shadow-lg text-black p-3 cursor-pointer");
                 flightInfoDiv.attr("data-index", flightInfo.index);
                 flightInfoDiv.click(() => handleFlightInfoClick(departureDay, returnDay, index));
-                
-                
-                flightInfoDiv.click(function() {
-                    // Code to execute when flightInfoDiv is clicked
-		            const flightInfoResultView = $("#flightInfoResultView");
-		            flightInfoResultView.empty();
-                   //필요한 정보 1. index
-		            const url =`http://127.0.0.1:8000/travelPlan/crawlingFlightList?departureAirportCode=${departureAirportCode}&returnAirportCode=${returnAirportCode}&departureDay=${departureDay}&returnDay=${returnDay}`;
-		            const response = fetch(url);
-		            
-                   
-                   // 2. 출발 시간
-                   // 3. 도착 시간
-                   // 4. 출발 공항 정확한 코드
-                   // 5. 도착 공항 정확한 코드
-                    // Add your desired code here
-                });
 
                 // flightInfo 정보를 template literals로 생성
                 let flightInfoContent = `
@@ -265,7 +248,18 @@ td:not(.ui-state-disabled ):hover {
                 const resultData = await response.json(); // JSON 데이터도 비동기적으로 처리
 
                 console.log(resultData); // 서버로부터 받은 데이터 로깅
-                console.log(`Clicked flight index: ${flightInfo.index}`);
+                
+                const flightTicketing = $("<a>");
+                flightTicketing.attr("href", resultData.url);
+                flightTicketing.attr("target", "_blank");
+                flightTicketing.addClass("text-black hover:text-primary");
+                flightTicketing.text("항공권 예매하러 가기");
+                
+                
+               
+                
+                flightInfoResultView.append(flightTicketing);
+                
             } catch (error) {
                 console.error(`Error fetching data: ${error.message}`);
             }
