@@ -255,10 +255,45 @@ td:not(.ui-state-disabled ):hover {
                 flightTicketing.addClass("text-black hover:text-primary");
                 flightTicketing.text("항공권 예매하러 가기");
                 
+                const tagInputs = $("<div>");
+                tagInputs.addClass("mt-2 w-full")
+                tagInputs.append(` <div class="flex lg:flex-row flex-col w-full">
+                        <label
+                        for="form_tag_name_input"
+                        class="block text-2xl text-neutral mx-2 w-36 flex items-center"
+                        >키워드를 3개까지 입력해주세요.(여행지명, 여행 테마 등)</label
+                      >
+                      <div
+                        id="form_tag_name_label"
+                        class="input input-bordered flex gap-2 lg:flex-row flex-col p-3 h-auto grow mt-2"
+                      >
+                        <div
+                          id="tag_name_container"
+                          class="flex-nowrap flex gap-3"
+                        ></div>
+
+                        <input
+                          id="form_tag_name_input"
+                          type="text"
+                          class="grow text-neutral"
+                          placeholder="태그 입력 후 enter"
+                          maxlength="20"
+                        />
+
+                        <!--enter을 칠때마다 text안의 내용이 div클래스에 추가된다.-->
+                      </div>
+                    </div>
+                    <p
+                      class="text-error w-full flex justify-end text-lg"
+                      id="form_tag_name_validation_message"
+                    ></p>
+                    <button class="btn">여행 플랜 추천받기</btn>`)
+                
                 
                
                 
                 flightInfoResultView.append(flightTicketing);
+                flightInfoResultView.append(tagInputs);
                 
             } catch (error) {
                 console.error(`Error fetching data: ${error.message}`);
@@ -342,4 +377,5 @@ td:not(.ui-state-disabled ):hover {
 		
 	</main>
 </body>
+<script src="/js/util/tagUtil.js"></script>
 </html>
