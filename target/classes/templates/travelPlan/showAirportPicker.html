@@ -87,6 +87,7 @@ td:not(.ui-state-disabled ):hover {
 }
 </style>
 <script>
+        let tagList = ['apple', 'banana', 'orange'];
         let departureAirportCode = null;
         let returnAirportCode = null;
         let departureDayStr = null;
@@ -227,6 +228,7 @@ td:not(.ui-state-disabled ):hover {
                   
                   // flightInfoDiv에 flightInfo 정보 추가
                   flightInfoDiv.append(flightInfoContent);
+                  flightInfoResultView.append()
 
                   // flightInfoDiv를 flightInfoResultView div에 추가
                   flightInfoResultView.append(flightInfoDiv);    
@@ -255,17 +257,22 @@ td:not(.ui-state-disabled ):hover {
                 flightTicketing.addClass("text-black hover:text-primary");
                 flightTicketing.text("항공권 예매하러 가기");
                 
+                const tagsContainer = $("<div>");
+                tagsContainer.attr("id", "tag_name_container");
+                
+                
                 const tagInputs = $("<div>");
                 tagInputs.addClass("mt-2 w-full")
-                tagInputs.append(` <div class="flex lg:flex-row flex-col w-full">
-                        <label
+                tagInputs.append(`<label
                         for="form_tag_name_input"
-                        class="block text-2xl text-neutral mx-2 w-36 flex items-center"
+                        class="block text-2xl text-neutral mx-2 w-full flex items-center"
                         >키워드를 3개까지 입력해주세요.(여행지명, 여행 테마 등)</label
-                      >
+                      >`)
+                tagInputs.append(`<div class="flex lg:flex-row flex-col w-full gap-3"> 
                       <div
                         id="form_tag_name_label"
                         class="input input-bordered flex gap-2 lg:flex-row flex-col p-3 h-auto grow mt-2"
+                        
                       >
                         <div
                           id="tag_name_container"
@@ -277,6 +284,7 @@ td:not(.ui-state-disabled ):hover {
                           type="text"
                           class="grow text-neutral"
                           placeholder="태그 입력 후 enter"
+                          onkeypress="appendTag(event)"
                           maxlength="20"
                         />
 
@@ -293,13 +301,69 @@ td:not(.ui-state-disabled ):hover {
                
                 
                 flightInfoResultView.append(flightTicketing);
+                flightInfoResultView.append(tagsContainer);
                 flightInfoResultView.append(tagInputs);
+                
                 
             } catch (error) {
                 console.error(`Error fetching data: ${error.message}`);
             }
         }
         
+        
+        function appendTag(event){
+        	let tagNameInput = $("#form_tag_name_input");
+        	
+        	//엔터가 아니면 돌아감.
+        	if (event.which != 13) return;
+        	
+        	
+            if (tagNames.size >= maxTagNameCount) {
+                $("#form_tag_name_validation_message").text(`최대 태그 등록수(${maxTagNameCount})에 달하여 더이상 태그를 등록할 수 없습니다.`);
+                $("#form_tag_name_input").val("");
+                return;
+            }
+            
+            let tagName = $(tagNameInput).val().trim();
+            console.log(tagName);
+            if (!validateTagNameFormat(tagName)) {
+                $("#form_tag_name_validation_message").text(`태그는 앞뒤 여백 제외 1자에서 20자의 한영숫자띄어쓰기 조합으로만 생성할 수 있습니다.`);
+                $(tagNameInput).val("");
+                return;
+            }
+
+            if (tagNames.has(tagName)) {
+                $("#form_tag_name_validation_message").text(`이미 등록하신 태그입니다.`);
+                $(tagNameInput).val("");
+                return;
+            }
+            
+            
+            
+            let tagNameBadgeContainer = $('<div></div>').addClass("tooltip indicator tag_name_badge_container");
+            let indicatorItem = $('<span></span>').addClass("indicator-item badge p-1 bg-neutral text-base_white text-xs cursor-pointer");
+            let deleteIcon = $('<i></i>').addClass("fa-solid fa-x");
+            indicatorItem.append(deleteIcon);
+
+            indicatorItem.on("click", function(event) {
+                let deleteTargetTagName = $(this).siblings(".tag_name_badge").text().trim();
+                 console.log(deleteTargetTagName);
+                 tagNames.delete(deleteTargetTagName);
+                 $(this).closest('.tag_name_badge_container').remove();
+            });
+
+            let tagNameBadge = $('<div></div>').addClass("tag_name_badge text-sm text-neutral rounded-full px-2 bg-primary w-20 overflow-ellipsis whitespace-nowrap overflow-hidden").css("backgroundColor", badgeBgColor).text(tagName);
+
+            let tooltip = $('<span></span>').addClass("tooltiptext").text(tagName);
+
+            tagNameBadgeContainer.append(indicatorItem).append(tagNameBadge).append(tooltip);
+            
+            $("#tag_name_container").append(tagNameBadgeContainer);
+
+            
+        }
+        
+
     </script>
 </head>
 
