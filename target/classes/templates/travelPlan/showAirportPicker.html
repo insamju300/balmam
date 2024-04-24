@@ -87,12 +87,17 @@ td:not(.ui-state-disabled ):hover {
 }
 </style>
 <script>
-        let tagList = ['apple', 'banana', 'orange'];
+        let tagList = [];
+        let enterDate = null;
+        let enterAirPlane = null;
+        let removeDate = null;
+        let removeAirplane = null;
+        
         let departureAirportCode = null;
         let returnAirportCode = null;
         let departureDayStr = null;
         let returnDayStr = null;
-   
+        
         function setAirportCode(ele, code, isDepartureAirport){
         	
         	if(isDepartureAirport){
@@ -146,6 +151,12 @@ td:not(.ui-state-disabled ):hover {
         
         
         async function searchAirlineTicket() {
+        	//초기화.
+            tagList = [];
+            enterDate = null;
+            enterAirPlane = null;
+            removeDate = null;
+            removeAirplane = null;
             // Replace the URL with your actual endpoint
              
             
@@ -190,7 +201,13 @@ td:not(.ui-state-disabled ):hover {
                 let flightInfoDiv = $("<div>");
                 flightInfoDiv.addClass("flightInfoItem flex w-full shadow-lg text-black p-3 cursor-pointer");
                 flightInfoDiv.attr("data-index", flightInfo.index);
-                flightInfoDiv.click(() => handleFlightInfoClick(departureDay, returnDay, index));
+                flightInfoDiv.click(() => {
+                    enterDate = departureToTime;
+                    enterAirPlane = departureToAirport;
+                    removeDate = returnFromTime;
+                    removeAirplane = returnFromAirport;
+                	
+                	handleFlightInfoClick(departureDay, returnDay, index);});
 
                 // flightInfo 정보를 template literals로 생성
                 let flightInfoContent = `
@@ -231,13 +248,16 @@ td:not(.ui-state-disabled ):hover {
                   flightInfoResultView.append()
 
                   // flightInfoDiv를 flightInfoResultView div에 추가
-                  flightInfoResultView.append(flightInfoDiv);    
+                  flightInfoResultView.append(flightInfoDiv);
                 
             });
 
           }
         
         async function handleFlightInfoClick(departureDay, returnDay, index) {
+
+        	
+        	
             const flightInfoResultView = $("#flightInfoResultView");
             flightInfoResultView.empty();
 
@@ -259,19 +279,20 @@ td:not(.ui-state-disabled ):hover {
                 
                 const tagsContainer = $("<div>");
                 tagsContainer.attr("id", "tag_name_container");
+                tagsContainer.addClass("justify-center items-center h-48");
                 
                 
                 const tagInputs = $("<div>");
                 tagInputs.addClass("mt-2 w-full")
                 tagInputs.append(`<label
                         for="form_tag_name_input"
-                        class="block text-2xl text-neutral mx-2 w-full flex items-center"
+                        class="block text-2xl text-neutral mx-2 w-5/6 flex items-center"
                         >키워드를 3개까지 입력해주세요.(여행지명, 여행 테마 등)</label
                       >`)
                 tagInputs.append(`<div class="flex lg:flex-row flex-col w-full gap-3"> 
                       <div
                         id="form_tag_name_label"
-                        class="input input-bordered flex gap-2 lg:flex-row flex-col p-3 h-auto grow mt-2"
+                        class="input input-bordered flex gap-3 lg:flex-row flex-col p-3 h-auto grow mt-2"
                         
                       >
                         <div
@@ -295,7 +316,7 @@ td:not(.ui-state-disabled ):hover {
                       class="text-error w-full flex justify-end text-lg"
                       id="form_tag_name_validation_message"
                     ></p>
-                    <button class="btn">여행 플랜 추천받기</btn>`)
+                    <button class="btn mt-3">여행 플랜 추천받기</btn>`)
                 
                 
                
@@ -318,7 +339,8 @@ td:not(.ui-state-disabled ):hover {
         	if (event.which != 13) return;
         	
         	
-            if (tagNames.size >= maxTagNameCount) {
+        	
+            if (tagList.size >= maxTagNameCount) {
                 $("#form_tag_name_validation_message").text(`최대 태그 등록수(${maxTagNameCount})에 달하여 더이상 태그를 등록할 수 없습니다.`);
                 $("#form_tag_name_input").val("");
                 return;
@@ -332,7 +354,7 @@ td:not(.ui-state-disabled ):hover {
                 return;
             }
 
-            if (tagNames.has(tagName)) {
+            if (tagList.includes(tagName)) {
                 $("#form_tag_name_validation_message").text(`이미 등록하신 태그입니다.`);
                 $(tagNameInput).val("");
                 return;
@@ -350,19 +372,29 @@ td:not(.ui-state-disabled ):hover {
                  console.log(deleteTargetTagName);
                  tagNames.delete(deleteTargetTagName);
                  $(this).closest('.tag_name_badge_container').remove();
+                 
+                 
+                 const index = array.indexOf(deleteTargetTagName);
+                 tagList.splice(index, 1);
+                 
             });
 
-            let tagNameBadge = $('<div></div>').addClass("tag_name_badge text-sm text-neutral rounded-full px-2 bg-primary w-20 overflow-ellipsis whitespace-nowrap overflow-hidden").css("backgroundColor", badgeBgColor).text(tagName);
+            let tagNameBadge = $('<div></div>').addClass("tag_name_badge text-sm text-neutral rounded-full px-2 bg-primary w-20 overflow-ellipsis whitespace-nowrap overflow-hidden").css("backgroundColor", "#F2F2F2").text(tagName);
 
             let tooltip = $('<span></span>').addClass("tooltiptext").text(tagName);
 
             tagNameBadgeContainer.append(indicatorItem).append(tagNameBadge).append(tooltip);
+            
+            tagList.push(tagName)
             
             $("#tag_name_container").append(tagNameBadgeContainer);
 
             
         }
         
+        
+        
+
 
     </script>
 </head>
