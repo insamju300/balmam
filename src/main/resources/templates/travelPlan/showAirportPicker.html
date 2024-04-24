@@ -392,6 +392,32 @@ td:not(.ui-state-disabled ):hover {
             
         }
         
+        function creatPlan(){
+            // Data to be sent
+            var data = {
+            };
+            data.enterDate = enterDate;
+            data.enterAirplane = enterAirplane;
+            data.removeDate = removeDate;
+            data.removeAirplane = removeAirplane;
+            data.keywords = tagList;
+            
+
+            // AJAX request to the FastAPI backend
+            $.ajax({
+                url: 'http://127.0.0.1:8000/travelPlan/createPlan',
+                type: 'GET', // This should be 'POST' if your endpoint is designed to use POST method
+                data: dataToSend,
+                traditional: true, // This ensures that arrays are serialized properly
+                success: function(response) {
+                    console.log('Success:', response);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', error);
+                }
+            });
+        }
+        
         
         
 
