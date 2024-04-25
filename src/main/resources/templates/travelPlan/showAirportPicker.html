@@ -89,9 +89,8 @@ td:not(.ui-state-disabled ):hover {
 <script>
         let tagList = [];
         let enterDate = null;
-        let enterAirPlane = null;
+        let targetAirplane = null;
         let removeDate = null;
-        let removeAirplane = null;
         
         let departureAirportCode = null;
         let returnAirportCode = null;
@@ -154,9 +153,8 @@ td:not(.ui-state-disabled ):hover {
         	//초기화.
             tagList = [];
             enterDate = null;
-            enterAirPlane = null;
+            targetAirplane = null;
             removeDate = null;
-            removeAirplane = null;
             // Replace the URL with your actual endpoint
              
             
@@ -203,9 +201,8 @@ td:not(.ui-state-disabled ):hover {
                 flightInfoDiv.attr("data-index", flightInfo.index);
                 flightInfoDiv.click(() => {
                     enterDate = departureToTime;
-                    enterAirPlane = departureToAirport;
+                    targetAirplane = departureToAirport;
                     removeDate = returnFromTime;
-                    removeAirplane = returnFromAirport;
                 	
                 	handleFlightInfoClick(departureDay, returnDay, index);});
 
@@ -316,7 +313,7 @@ td:not(.ui-state-disabled ):hover {
                       class="text-error w-full flex justify-end text-lg"
                       id="form_tag_name_validation_message"
                     ></p>
-                    <button class="btn mt-3">여행 플랜 추천받기</btn>`)
+                    <button class="btn mt-3" onClick="creatPlan()">여행 플랜 추천받기</btn>`)
                 
                 
                
@@ -393,21 +390,22 @@ td:not(.ui-state-disabled ):hover {
         }
         
         function creatPlan(){
-            // Data to be sent
+            // date에 날짜 정보 빠져있음. 이미지 파일 가져와서 그냥 테이블처럼 찍어줄 것. 저장 기능 넣을 것.
             var data = {
             };
             data.enterDate = enterDate;
-            data.enterAirplane = enterAirplane;
+            data.targetAirplane = targetAirplane;
             data.removeDate = removeDate;
-            data.removeAirplane = removeAirplane;
             data.keywords = tagList;
             
+            
+            console.log(enterDate, targetAirplane, removeDate)
 
             // AJAX request to the FastAPI backend
             $.ajax({
                 url: 'http://127.0.0.1:8000/travelPlan/createPlan',
                 type: 'GET', // This should be 'POST' if your endpoint is designed to use POST method
-                data: dataToSend,
+                data: data,
                 traditional: true, // This ensures that arrays are serialized properly
                 success: function(response) {
                     console.log('Success:', response);
