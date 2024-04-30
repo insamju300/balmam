@@ -276,7 +276,7 @@ td:not(.ui-state-disabled ):hover {
                 
                 const tagsContainer = $("<div>");
                 tagsContainer.attr("id", "tag_name_container");
-                tagsContainer.addClass("justify-center items-center h-48");
+                tagsContainer.addClass("flex justify-center items-center h-48 gap-3");
                 
                 
                 const tagInputs = $("<div>");
@@ -385,6 +385,9 @@ td:not(.ui-state-disabled ):hover {
             tagList.push(tagName)
             
             $("#tag_name_container").append(tagNameBadgeContainer);
+            
+            $("#form_tag_name_input").val("");
+            $("#form_tag_name_validation_message").text("");
 
             
         }
@@ -393,9 +396,9 @@ td:not(.ui-state-disabled ):hover {
             // date에 날짜 정보 빠져있음. 이미지 파일 가져와서 그냥 테이블처럼 찍어줄 것. 저장 기능 넣을 것.
             var data = {
             };
-            data.enterDate = enterDate;
+            data.enterDate = departureDayStr + enterDate;
             data.targetAirplane = targetAirplane;
-            data.removeDate = removeDate;
+            data.removeDate = returnDayStr + removeDate;
             data.keywords = tagList;
             
             
