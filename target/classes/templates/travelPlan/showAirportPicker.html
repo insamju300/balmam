@@ -411,7 +411,78 @@ td:not(.ui-state-disabled ):hover {
                 data: data,
                 traditional: true, // This ensures that arrays are serialized properly
                 success: function(response) {
+                	const flightInfoResultView = document.querySelector("#flightInfoResultView");
+                	flightInfoResultView.innerHTML = '';
+                    // ul 요소 생성
+                    const ul = document.createElement('ul');
+                    ul.className = 'timeline timeline-snap-icon max-md:timeline-compact timeline-vertical text-gray-700';
+
+                    response.data1.forEach((plan, index)=>{
+                        // li 요소 생성
+                        const li = document.createElement('li');
+
+                        // timeline-middle div 생성 및 SVG 추가
+                        const timelineMiddle = document.createElement('div');
+                        timelineMiddle.className = 'timeline-middle';
+
+                        
+                        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                        svg.setAttribute('viewBox', '0 0 20 20');
+                        svg.setAttribute('fill', 'currentColor');
+                        svg.classList.add('h-5', 'w-5');
+                        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                        path.setAttribute('d', 'M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z');
+                        path.setAttribute('clip-rule', 'evenodd');
+                        svg.appendChild(path);
+                        timelineMiddle.appendChild(svg);
+
+                        // timeline-start div 생성
+                        const timelineStart = document.createElement('div');
+                        
+                        if(index%2==0){
+                            timelineStart.className = 'timeline-start md:text-end mb-10';
+                        }else{
+                        	timelineStart.className = "timeline-end mb-10";	
+                        }
+                        
+                        
+                        
+                        // time 요소 추가
+                        const time = document.createElement('time');
+                        time.className = 'font-mono italic';
+                        time.textContent = plan.date + " " +  plan.time;
+                        timelineStart.appendChild(time);
+
+                        // 이름 div 추가
+                        const nameDiv = document.createElement('div');
+                        nameDiv.className = 'text-lg font-black';
+                        nameDiv.textContent = plan.placeName;
+                        timelineStart.appendChild(nameDiv);
+
+                        // 설명 div 추가
+                        const descriptionDiv = document.createElement('div');
+                        descriptionDiv.className = 'flex w-full';
+                        //const img = document.createElement('img');
+                        //img.src = plan.imageUrl;
+                        //img.className = 'w-4/12';
+                        //descriptionDiv.appendChild(img);
+                        const textNode = document.createTextNode(plan.description);
+                        descriptionDiv.appendChild(textNode);
+                        timelineStart.appendChild(descriptionDiv);
+
+                        // 구조 조립
+                        li.appendChild(timelineMiddle);
+                        li.appendChild(timelineStart);
+                        li.appendChild(document.createElement('hr'));
+                        ul.appendChild(li);
+                    })
+                    
+                    flightInfoResultView.appendChild(ul);
+
+
+                	
                     console.log('Success:', response);
+                    
                 },
                 error: function(xhr, status, error) {
                     console.error('Error:', error);
@@ -437,7 +508,7 @@ td:not(.ui-state-disabled ):hover {
 				<button class="btn btn-neutral relative w-72">
 					<span class="airport-selector"> 출발 공항</span>
 					<div
-						class="dropDownArcodianItems w-72 absolute top-full left-0 bg-white  hidden text-black max-h-96 overflow-scroll">
+						class="dropDownArcodianItems w-72 absolute top-full left-0 bg-white  hidden text-black max-h-96 overflow-scroll z-50">
 						<div class="join join-vertical w-full">
 							<div class="collapse collapse-arrow join-item border border-base-300"
 								th:each="departureAirport : ${departureAirports}">
@@ -464,7 +535,7 @@ td:not(.ui-state-disabled ):hover {
 				<button class="btn btn-neutral relative w-72">
 					<span class="airport-selector"> 도착 공항</span>
 					<div
-						class="dropDownArcodianItems w-72 absolute top-full left-0 bg-white  hidden text-black max-h-96 overflow-scroll">
+						class="dropDownArcodianItems w-72 absolute top-full left-0 bg-white  hidden text-black max-h-96 overflow-scroll z-50">
 						<div class="join join-vertical w-full">
 							<div class="collapse collapse-arrow join-item border border-base-300" th:each="returnAirport : ${returnAirports}">
 								<input type="radio" name="my-accordion-4" />
