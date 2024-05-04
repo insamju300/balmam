@@ -96,6 +96,7 @@ td:not(.ui-state-disabled ):hover {
         let returnAirportCode = null;
         let departureDayStr = null;
         let returnDayStr = null;
+        let planDatas = null;
         
         function setAirportCode(ele, code, isDepartureAirport){
         	
@@ -413,9 +414,42 @@ td:not(.ui-state-disabled ):hover {
                 success: function(response) {
                 	const flightInfoResultView = document.querySelector("#flightInfoResultView");
                 	flightInfoResultView.innerHTML = '';
+                	
+                	const form = document.createElement('form');
+                	form.action = '/travlePlan/createPlan';
+                	form.method = 'POST';
+
+                	
+                	const label = document.createElement('label');
+                	label.htmlFor = 'planInput';
+                	label.textContent = 'Input:';
+
+                	const input = document.createElement('input');
+                	input.type = 'text';
+                	input.id = 'planInput';
+                	input.name = 'planInput';
+                	input.placeholder = '플랜 명';
+
+                	const hiddenInput = document.createElement('input');
+                	hiddenInput.type = 'hidden';
+                	hiddenInput.name = 'plans';
+                	hiddenInput.value = JSON.stringify(response.data1);
+
+                	const submitButton = document.createElement('input');
+                	submitButton.type = 'submit';
+                	submitButton.value = '플랜 생성';
+
+                	form.appendChild(label);
+                	form.appendChild(input);
+                	form.appendChild(hiddenInput);
+                	form.appendChild(submitButton);
+
+                	document.body.appendChild(form);
+                	
                     // ul 요소 생성
                     const ul = document.createElement('ul');
                     ul.className = 'timeline timeline-snap-icon max-md:timeline-compact timeline-vertical text-gray-700';
+                    planDatas = data1;
 
                     response.data1.forEach((plan, index)=>{
                         // li 요소 생성
