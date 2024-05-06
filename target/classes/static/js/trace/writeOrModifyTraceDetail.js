@@ -133,3 +133,42 @@ function traceFormValidationCheck() {
 
     // 함수가 비동기로 실행되기 때문에, 여기서는 정상 처리됨 메시지를 바로 보여주지 않습니다.
 }
+
+function traceFormValidationCheckForModify(){
+	    if (!titleValidationCheck()) {
+        alert("너냐");
+        $("#form_title_input").focus();
+        return false; // 함수 실행을 여기서 중단
+    }
+
+    // 데이터 수집
+    const writeOrModifyTraceDetailDto = {
+        id: $('#form_id_input').val(),
+        title: $('#form_title_input').val(),
+        featuredImageId: featuredImageId,
+        deletedMediaFileIds: [...deletedMediaFileIds],
+        tags: getTagsList()
+    };
+
+    // fetch API를 사용하여 서버에 POST 요청 보내기
+    fetch('/trace/doModifyTraceDetail', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(writeOrModifyTraceDetailDto)
+    })
+	.then(response => response.json()) // 응답을 JSON으로 파싱
+	.then(result => {
+	    if (result.success) {
+			console.log(result)
+	        window.location.href = result.data; // 서버로부터 받은 리다이렉트 URL로 페이지 이동
+	    } else {
+	        // 에러 처리 또는 사용자에게 메시지 표시
+	        console.error('Failed:', result.message);
+	    }
+	})
+	.catch((error) => {
+	    console.error('Error:', error);
+	});
+}

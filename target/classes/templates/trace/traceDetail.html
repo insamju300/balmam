@@ -146,7 +146,7 @@
 <!-- 							<span th:text="'최종수정 ' + ${trace.updateDate}">최종수정 1시간 전</span> -->
 							<div th:if="${trace.isAccessible}" class="flex gap-1 mt-2">
 								<button type="button"
-									onclick="location.href='/trace/modifyTraceDetail.html'"
+									th:onclick="|location.href='@{/trace/showModifyTraceDetail(id=${trace.id})}'|"
 									class="btn btn-xs bg-base_white text-secondary_hard
                   hover:bg-secondary_hard hover:text-bg_main text-md mr-5">수정</button>
 								<button type="button"
@@ -221,13 +221,11 @@
 						<p id="bookmark-count-p" th:text="${trace.bookmarkCount}">200</p>
 					</li>
 
-					<li class="flex">
-						<!--drawer start-->
+					<!--<li class="flex">
 						<div class="drawer drawer-end">
 							<input id="my-drawer" type="checkbox" class="drawer-toggle" />
 
 							<div class="drawer-content">
-								<!-- Page content here -->
 								<label for="my-drawer"
 									class="drawer-button flex md:flex-row flex-col">
 									<div class="w-8 text-center hover:text-accent cursor-pointer "
@@ -244,17 +242,16 @@
 									<label for="my-drawer" aria-label="close sidebar"
 										class="drawer-overlay"></label>
 									<div class="p-5 md:w-96 w-full min-h-full glass flex flex-col">
-										<!-- Top Icon -->
 										<div onclick="$('#my-drawer').click()"
 											class="text-neutral flex justify-end cursor-pointer text-3xl hover:brightness-125 mb-4">
 											<i class="fa-solid fa-circle-xmark"></i>
 										</div>
 
-										<!-- Contents Area depth 0 -->
+
 										<div
 											class="reply_container flex-grow overflow-auto justify-start md:pb-0 pb-20"
 											data-reltype="trace" data-relId="5" data-depth="0">
-											<!--
+											
                       <div class="reply_item py-5" data-id="1">
 
                         <div class="flex flex-row items-stretch ">
@@ -441,12 +438,12 @@
                           </div>
                         </div>
                       </div>
-                    -->
+                    
 
 
 										</div>
 
-										<!-- Fixed Input Area at Bottom -->
+
 										<div
 											class="reply_input_container w-full h-20 relative bottom-auto left-auto right-auto gap-1 z-10"
 											data-reltype="trace" data-relId="5" data-depth="0">
@@ -468,7 +465,7 @@
 								</div>
 							</div>
 						</div>
-						<!--drawer end-->
+
 
 						<dialog id="confirm_for_delete_reply_modal"
 							class="modal text-neutral" data-delete-target-id="-1">
@@ -485,7 +482,7 @@
 						</div>
 						</dialog>
 
-					</li>
+					</li>-->
 				</ul>
 			</div>
 
@@ -501,7 +498,7 @@
 						<button class="btn text-neutral"
 							onclick="document.getElementById('confirm_for_delete_trace_modal').close()">취소</button>
 					</form>
-					<button onclick="doDeleteTrace()" class="btn text-neutral">삭제</button>
+					<button th:onclick="|location.href='@{/trace/deleteTrace(id=${trace.id})}'|" class="btn text-neutral">삭제</button>
 				</div>
 			</div>
 			</dialog>

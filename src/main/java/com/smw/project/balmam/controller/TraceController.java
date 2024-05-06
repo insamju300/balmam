@@ -14,11 +14,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.smw.project.balmam.dto.CoordinateDto;
 import com.smw.project.balmam.dto.GeoMediasDto;
 import com.smw.project.balmam.dto.LoginInfoDTO;
 import com.smw.project.balmam.dto.MediaFileDto;
+import com.smw.project.balmam.dto.MessageResponse;
 import com.smw.project.balmam.dto.PathCoordinateDto;
 import com.smw.project.balmam.dto.PathCoordinateOutputDto;
 import com.smw.project.balmam.dto.ResultData;
@@ -57,7 +59,7 @@ public class TraceController {
 
 	@Autowired
 	TagService tagService;
-
+ 
 	// 회원가입
 	@GetMapping("/trace/routeRecording")
 	public String showRouteRecording() {
@@ -73,7 +75,7 @@ public class TraceController {
 	@PostMapping("/trace/routeRecording")
 	@ResponseBody
 	public ResultData<String> doRouteRecording(@RequestBody RouteRecordingDTO routeRecordingDTO,
-			HttpServletRequest request) {
+			HttpServletRequest request, RedirectAttributes redirectAttributes) {
 		LoginInfoDTO loginInfo = (LoginInfoDTO) request.getAttribute("loginInfo");
 		UserDto user = loginInfo.getUserDto();
 
@@ -186,9 +188,12 @@ public class TraceController {
 		}
 
 		List<TagOutputDto> tags = writeOrModifyTraceDto.getTags();
-		List<TagMappingEntity> tagMappings = tags.stream()
-				.map(tag -> new TagMappingEntity(traceId, RelType.trace, tag.getId())).toList();
-		traceService.insertTagMappings(tagMappings);
+		if(tags!=null && tags.size()>0) {
+			System.err.println("tags.size() : " + tags.size());
+			List<TagMappingEntity> tagMappings = tags.stream()
+					.map(tag -> new TagMappingEntity(traceId, RelType.trace, tag.getId())).toList();
+			traceService.insertTagMappings(tagMappings);
+		}
 
 		String redirectUrl = "/trace/traceDetail?id=" + writeOrModifyTraceDto.getId(); // 원하는 리다이렉트 경로
 		System.err.println(redirectUrl);
@@ -204,7 +209,7 @@ public class TraceController {
 			UserDto user = loginInfo.getUserDto();
 			userId = user.getId();
 		}
-		System.err.println("userId: " + userId);
+		
 
 		TraceEntity traceEntity = traceService.findTraceByIdAndUserIdForPrintDetial(id, userId);
 
@@ -254,6 +259,7 @@ public class TraceController {
 
 		List<TagEntity> tagEntitys = tagService.findTagsByRelInfoAndTagType(id, RelType.trace, TagType.commons);
 		List<TagOutputDto> tags = tagEntitys.stream().map(entity -> new TagOutputDto(entity)).toList();
+		System.err.println("tagEntitys.size(): " + tagEntitys.size());
 
 		List<TagEntity> cityTagEntitys = tagService.findTagsByRelInfoAndTagTypeForStayedCities(id, TagType.city);
 		List<TagOutputDto> cityTags = cityTagEntitys.stream().map(entity -> new TagOutputDto(entity)).toList();
@@ -295,6 +301,59 @@ public class TraceController {
 		return ResultData.ofData("S-1", "success", "hitCount", hitCount);
 	}
 
+	
+	
+	@GetMapping("/trace/deleteTrace")
+	public String deleteTrace(Long id, HttpServletRequest request, RedirectAttributes redirectAttributes) {
+		// id null인경우 예외처리 할 것
+		LoginInfoDTO loginInfo = (LoginInfoDTO) request.getAttribute("loginInfo");
+		UserDto user = loginInfo.getUserDto();
+		TraceEntity trace = traceService.findTraceById(id);
+		if(id==null || trace == null) {	
+			MessageResponse message = new MessageResponse("ERROR","존재하지 않는 발자국 입니다.", "");
+			redirectAttributes.addFlashAttribute("message", message);
+			return "redirect:/trace/traceList";
+		}
+		
+		if(trace.getWriterId() != loginInfo.getUserId()) {
+			
+			MessageResponse message = new MessageResponse("ERROR","삭제권한이 없는 회원님 입니다.", "");
+			redirectAttributes.addFlashAttribute("message", message);
+			return "redirect:/trace/traceDetail?id="+id;
+		}
+		
+		traceService.updateDeleteFlug(id);
+		
+		MessageResponse message = new MessageResponse("INFO",String.format("%d번 게시그이 삭제되었습니다.", id), "발자국 삭제가 완료되었습니다.");
+		redirectAttributes.addFlashAttribute("message", message);	
+		return "redirect:/trace/traceList";
+	}
+	
+	
+	
+	@GetMapping("/trace/showModifyTraceDetail")
+	public String showModifyTraceDetail(Long id, Model model) {
+		// 1. trace 가지고 오기
+		TraceEntity traceEntity = traceService.findTraceById(id);
+
+		// todo 예외처리 해주기. 작성 권한등 확인.
+
+		// 2. 모든 이미지 들고오기.
+		List<MediaFileEntity> mediaFileEntitys = traceService.findAllMedaFileByTraceIdFromGeoMedia(id);
+
+		// 3. dto만들어서 뿌려주기
+		List<MediaFileDto> mediaFileDtos = mediaFileEntitys.stream().map(entity -> new MediaFileDto(entity, path))
+				.toList();
+		
+		List<TagEntity> tagEntitys = tagService.findTagsByRelInfoAndTagType(id, RelType.trace, TagType.commons);
+		List<TagOutputDto> tags = tagEntitys.stream().map(entity -> new TagOutputDto(entity)).toList();
+
+		model.addAttribute("mediaFiles", mediaFileDtos);
+		model.addAttribute("tags", tags);
+		model.addAttribute("trace", traceEntity);
+
+		return "/trace/modifyTraceDetail";
+	}
 //	@PostMapping("/trace/writeTraceDetail")
 //	public String doWriteTraceDetail(Long id, Model model) {
 //		//1. trace 가지고 오기
@@ -313,5 +372,45 @@ public class TraceController {
 ////				
 ////		return "/trace/writeTraceDetail";
 //	}
+	
+	@PostMapping("/trace/doModifyTraceDetail")
+	@ResponseBody
+	public ResultData<String> doModifyTraceDetail(@RequestBody WriteOrModifyTraceDetailDto writeOrModifyTraceDto) {
+		System.err.println(writeOrModifyTraceDto.toString());
+
+		Long traceId = writeOrModifyTraceDto.getId();
+		TraceEntity traceEntity = traceService.findTraceById(traceId);
+		// 예외처리 todo
+
+		// trace 테이블 갱신
+		String title = writeOrModifyTraceDto.getTitle().trim();
+		traceEntity.setTitle(title);
+
+		Long featuredImageId = writeOrModifyTraceDto.getFeaturedImageId();
+		traceEntity.setFeaturedImageId(featuredImageId);
+		traceEntity.setStatus(TraceStatus.done);
+
+		traceService.updateTrace(traceEntity);
+
+		// 삭제처리된 이미지들 갱신
+		List<Long> deletedMediaFileIds = writeOrModifyTraceDto.getDeletedMediaFileIds();
+		if (deletedMediaFileIds != null && deletedMediaFileIds.size() > 0) {
+			traceService.markMediaFilesAsDeleted(deletedMediaFileIds);
+			traceService.updateGeoMediaDeletionStatusForAllDeletedMediaFiles(writeOrModifyTraceDto.getId());
+		}
+
+		List<TagOutputDto> tags = writeOrModifyTraceDto.getTags();
+		System.err.println("tags.size() : " + tags.size());
+		List<TagMappingEntity> tagMappings = tags.stream()
+				.map(tag -> new TagMappingEntity(traceId, RelType.trace, tag.getId())).toList();
+		
+		traceService.deleteTagMappings(traceId, RelType.trace);
+		traceService.insertTagMappings(tagMappings);
+
+		String redirectUrl = "/trace/traceDetail?id=" + writeOrModifyTraceDto.getId(); // 원하는 리다이렉트 경로
+		System.err.println(redirectUrl);
+		return ResultData.ofData("S-1", "Success", "redirectUrl", redirectUrl);
+	}
+	
 
 }

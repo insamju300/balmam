@@ -1,6 +1,7 @@
 const maxTagNameCount = 3; // 태그 최대 갯수
 let tagNames = new Map();
 
+
 $("#form_tag_name_input").on('keydown', function(event) {
     if (event.which === 13) {
         if (tagNames.size >= maxTagNameCount) {
@@ -35,30 +36,8 @@ $("#form_tag_name_input").on('keydown', function(event) {
 		    // Success handler
 		    let tag = response.data;
 		    // todo: response에서 에러 코드 왔을 때 처리 추가할 것.
-		    let badgeBgColor = tag.color;
-		    
-           let tagNameBadgeContainer = $('<div></div>').addClass("tooltip indicator tag_name_badge_container");
-           let indicatorItem = $('<span></span>').addClass("indicator-item badge p-1 bg-neutral text-base_white text-xs cursor-pointer");
-           let deleteIcon = $('<i></i>').addClass("fa-solid fa-x");
-           indicatorItem.append(deleteIcon);
+		   printTag(tag);
 
-           indicatorItem.on("click", function(event) {
-               let deleteTargetTagName = $(this).siblings(".tag_name_badge").text().trim();
-                console.log(deleteTargetTagName);
-                tagNames.delete(deleteTargetTagName);
-                $(this).closest('.tag_name_badge_container').remove();
-           });
-
-           let tagNameBadge = $('<div></div>').addClass("tag_name_badge text-sm text-neutral rounded-full px-2 bg-primary w-20 overflow-ellipsis whitespace-nowrap overflow-hidden").css("backgroundColor", badgeBgColor).text(tagName);
-
-           let tooltip = $('<span></span>').addClass("tooltiptext").text(tagName);
-
-           tagNameBadgeContainer.append(indicatorItem).append(tagNameBadge).append(tooltip);
-
-           $("#tag_name_container").append(tagNameBadgeContainer);
-
-           tagNames.set(tagName, tag);
-           console.log(tagNames);
 		    
 		  })
 		  .catch(function(xhr, status, error) {
@@ -83,4 +62,32 @@ function getTagsList(){
 function validateTagNameFormat(tagName) {
     var regex = /^[0-9a-zA-Z가-힣ㄱ-ㅎㅏ-ㅣ\s]{1,20}$/;
     return regex.test(tagName);
+}
+
+function printTag(tag){
+		let badgeBgColor = tag.color;
+		let tagName = tag.name;
+	    
+       let tagNameBadgeContainer = $('<div></div>').addClass("tooltip indicator tag_name_badge_container");
+       let theIndicatorItem = $('<span></span>').addClass("indicator-item badge p-1 bg-neutral text-base_white text-xs cursor-pointer");
+       let theDeleteIcon = $('<i></i>').addClass("fa-solid fa-x");
+       theIndicatorItem.append(theDeleteIcon);
+
+       theIndicatorItem.on("click", function(event) {
+           let deleteTargetTagName = $(this).siblings(".tag_name_badge").text().trim();
+            console.log(deleteTargetTagName);
+            tagNames.delete(deleteTargetTagName);
+            $(this).closest('.tag_name_badge_container').remove();
+       });
+
+       let tagNameBadge = $('<div></div>').addClass("tag_name_badge text-sm text-neutral rounded-full px-2 bg-primary w-20 overflow-ellipsis whitespace-nowrap overflow-hidden").css("backgroundColor", badgeBgColor).text(tagName);
+
+       let tooltip = $('<span></span>').addClass("tooltiptext").text(tagName);
+
+       tagNameBadgeContainer.append(theIndicatorItem).append(tagNameBadge).append(tooltip);
+
+       $("#tag_name_container").append(tagNameBadgeContainer);
+
+       tagNames.set(tagName, tag); 
+       console.log(tagNames);
 }

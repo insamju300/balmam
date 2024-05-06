@@ -16,6 +16,8 @@ import com.smw.project.balmam.entity.PathCoordinatesGroupEntity;
 import com.smw.project.balmam.entity.StayedCityEntity;
 import com.smw.project.balmam.entity.TagMappingEntity;
 import com.smw.project.balmam.entity.TraceEntity;
+import com.smw.project.balmam.enums.RelType;
+import com.smw.project.balmam.enums.TagType;
 import com.smw.project.balmam.repository.GeoMediaFileRepository;
 import com.smw.project.balmam.repository.GeoMediaRepository;
 import com.smw.project.balmam.repository.PathCoordinateEntityRepository;
@@ -146,6 +148,19 @@ public class TraceService {
 		// TODO Auto-generated method stub
 		return traceRepository.getHitCount(id);
 	}
+
+	public void updateDeleteFlug(Long id) {
+		traceRepository.updateDeleteFlug(id);
+		
+	}
+
+	public void deleteTagMappings(Long traceId, RelType reltype) {
+		// TODO Auto-generated method stub
+		tagMappingRepository.deleteMappings(traceId, reltype);
+		
+	}
+
+
 
 
 	

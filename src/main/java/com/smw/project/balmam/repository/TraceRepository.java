@@ -124,6 +124,14 @@ public interface TraceRepository {
 	    		   WHERE id = #{id};
 	    		""")
 		void descreaseBookmarkCount(Long id);
+
+	    @Update("""
+	    		   Update TRACE SET isDeleted = True, deletedDate = NOW()
+	    		   WHERE id = #{id};
+	    		""")	    
+		void updateDeleteFlug(Long id);
+
+	    
 	   
 	    
 
