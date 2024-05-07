@@ -50,6 +50,7 @@
 
 .ui-datepicker-prev:hover, .ui-datepicker-next:hover {
 	background-color: black;
+	color:white;
 }
 
 #ui-datepicker-div {
@@ -163,18 +164,32 @@ td:not(.ui-state-disabled ):hover {
         		commonsAlert("입력되지 않은 항목이 있습니다.");
         		return;
         	}
+        	createLoading("항공 정보를 검색 중입니다.");
         	let departureDay = departureDayStr.replace(/\//g, "");
             let returnDay = returnDayStr.replace(/\//g, "");
             const url =`http://127.0.0.1:8000/travelPlan/crawlingFlightList?departureAirportCode=${departureAirportCode}&returnAirportCode=${returnAirportCode}&departureDay=${departureDay}&returnDay=${returnDay}`;
-            console.log("되는겨?");
+            
             const response = await fetch(url);
             if (!response.ok) {
                 throw new Error(`Network response was not ok: ${response.statusText}`);
             }
             const resultData = await response.json();
+            console.log(resultData);
             
             const flightInfoResultView = $("#flightInfoResultView");
+            
             flightInfoResultView.empty();
+            
+            
+            
+            if (resultData.resultCode.startsWith("F")) {
+                const errorBox = $('<div></div>')
+                    .addClass("text-red-500 flex justify-center")
+                    .text(resultData.message);
+                flightInfoResultView.append(errorBox);
+                return;
+            }
+            
             
             resultData.flightInfoList.forEach((flightInfo)=>{
          	   let index = flightInfo.index;
@@ -243,7 +258,6 @@ td:not(.ui-state-disabled ):hover {
                   
                   // flightInfoDiv에 flightInfo 정보 추가
                   flightInfoDiv.append(flightInfoContent);
-                  flightInfoResultView.append()
 
                   // flightInfoDiv를 flightInfoResultView div에 추가
                   flightInfoResultView.append(flightInfoDiv);
@@ -257,14 +271,18 @@ td:not(.ui-state-disabled ):hover {
         	
         	
             const flightInfoResultView = $("#flightInfoResultView");
-            flightInfoResultView.empty();
+            
+            createLoading("항공권 예매 URL을 가져오는 중입니다.");
+            
 
             const url = `http://127.0.0.1:8000/travelPlan/getTicketingUrl?departureAirportCode=${departureAirportCode}&returnAirportCode=${returnAirportCode}&departureDay=${departureDay}&returnDay=${returnDay}&index=${index}`;
+            console.log(url);
             try {
                 const response = await fetch(url); // `await`를 사용하여 비동기 요청을 동기적으로 처리
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
+                flightInfoResultView.empty();
                 const resultData = await response.json(); // JSON 데이터도 비동기적으로 처리
 
                 console.log(resultData); // 서버로부터 받은 데이터 로깅
@@ -401,7 +419,7 @@ td:not(.ui-state-disabled ):hover {
             data.targetAirplane = targetAirplane;
             data.removeDate = returnDayStr + removeDate;
             data.keywords = tagList;
-            
+            createLoading("AI가 여행 계획을 생성 중입니다.");
             
             console.log(enterDate, targetAirplane, removeDate)
 
@@ -415,36 +433,36 @@ td:not(.ui-state-disabled ):hover {
                 	const flightInfoResultView = document.querySelector("#flightInfoResultView");
                 	flightInfoResultView.innerHTML = '';
                 	
-                	const form = document.createElement('form');
-                	form.action = '/travlePlan/createPlan';
-                	form.method = 'POST';
+//                 	const form = document.createElement('form');
+//                 	form.action = '/travlePlan/createPlan';
+//                 	form.method = 'POST';
 
                 	
-                	const label = document.createElement('label');
-                	label.htmlFor = 'planInput';
-                	label.textContent = 'Input:';
+//                 	const label = document.createElement('label');
+//                 	label.htmlFor = 'planInput';
+//                 	label.textContent = 'Input:';
 
-                	const input = document.createElement('input');
-                	input.type = 'text';
-                	input.id = 'planInput';
-                	input.name = 'planInput';
-                	input.placeholder = '플랜 명';
+//                 	const input = document.createElement('input');
+//                 	input.type = 'text';
+//                 	input.id = 'planInput';
+//                 	input.name = 'planInput';
+//                 	input.placeholder = '플랜 명';
 
-                	const hiddenInput = document.createElement('input');
-                	hiddenInput.type = 'hidden';
-                	hiddenInput.name = 'plans';
-                	hiddenInput.value = JSON.stringify(response.data1);
+//                 	const hiddenInput = document.createElement('input');
+//                 	hiddenInput.type = 'hidden';
+//                 	hiddenInput.name = 'plans';
+//                 	hiddenInput.value = JSON.stringify(response.data1);
 
-                	const submitButton = document.createElement('input');
-                	submitButton.type = 'submit';
-                	submitButton.value = '플랜 생성';
+//                 	const submitButton = document.createElement('input');
+//                 	submitButton.type = 'submit';
+//                 	submitButton.value = '플랜 생성';
 
-                	form.appendChild(label);
-                	form.appendChild(input);
-                	form.appendChild(hiddenInput);
-                	form.appendChild(submitButton);
+//                 	form.appendChild(label);
+//                 	form.appendChild(input);
+//                 	form.appendChild(hiddenInput);
+//                 	form.appendChild(submitButton);
 
-                	document.body.appendChild(form);
+//                 	document.body.appendChild(form);
                 	
                     // ul 요소 생성
                     const ul = document.createElement('ul');
@@ -525,6 +543,27 @@ td:not(.ui-state-disabled ):hover {
         }
         
         
+        function createLoading(msg){
+        	const flightInfoResultView = document.querySelector("#flightInfoResultView");
+        	flightInfoResultView.innerHTML = '';
+        	// 부모 요소를 선택합니다.
+        	var parentDiv = document.createElement("div");
+        	parentDiv.classList.add("flex", "flex-col", "items-center");
+
+        	// 첫 번째 span 요소를 생성합니다.
+        	var loadingSpan = document.createElement("span");
+        	loadingSpan.classList.add("loading", "loading-ring", "loading-lg");
+        	parentDiv.appendChild(loadingSpan);
+
+        	// 두 번째 span 요소를 생성합니다.
+        	var messageSpan = document.createElement("span");
+        	messageSpan.textContent = msg;
+        	parentDiv.appendChild(messageSpan);
+
+        	flightInfoResultView.appendChild(parentDiv); 
+        	
+        }
+        
         
 
 
@@ -591,10 +630,10 @@ td:not(.ui-state-disabled ):hover {
 
 
 			<p class="text-black">
-				출발 날짜: <input id="departureDay" type="text" class="datepicker w-56" onChange="dateCorrection()">
+				출발 날짜: <input id="departureDay" type="text" class="datepicker w-56" onChange="dateCorrection()" autocomplete="off">
 			</p>
 			<p class="text-black">
-				도착 날짜: <input id="returnDay" type="text" class="datepicker w-56" onChange="dateCorrection()">
+				도착 날짜: <input id="returnDay" type="text" class="datepicker w-56" onChange="dateCorrection()" autocomplete="off">
 			</p>
 			<button class="btn" onClick="searchAirlineTicket()">항공권 검색</button>
 
