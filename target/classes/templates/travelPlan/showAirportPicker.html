@@ -467,7 +467,7 @@ td:not(.ui-state-disabled ):hover {
                     // ul 요소 생성
                     const ul = document.createElement('ul');
                     ul.className = 'timeline timeline-snap-icon max-md:timeline-compact timeline-vertical text-gray-700';
-                    planDatas = data1;
+                    planDatas = response.data1;
 
                     response.data1.forEach((plan, index)=>{
                         // li 요소 생성
@@ -525,7 +525,9 @@ td:not(.ui-state-disabled ):hover {
                         // 구조 조립
                         li.appendChild(timelineMiddle);
                         li.appendChild(timelineStart);
-                        li.appendChild(document.createElement('hr'));
+                        if (index !== response.data1.length - 1) {
+                            li.appendChild(document.createElement('hr'));
+                        }
                         ul.appendChild(li);
                     })
                     
