@@ -25,7 +25,7 @@ public interface TagMappingRepository {
 	public void insertTagMappings(@Param("tagMappings")List<TagMappingEntity> tagMappings);
 
 	@Delete("""
-	DELETE FROM TagMapping WHERE WHERE relId=#{relId}, relType = #{relType}
+	DELETE FROM TagMapping WHERE relId=#{relId} AND relType = #{relType}
 			
 	 """)
 	public void deleteMappings(Long relId, RelType relType);
