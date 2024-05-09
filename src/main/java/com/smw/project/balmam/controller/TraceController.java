@@ -60,7 +60,6 @@ public class TraceController {
 	@Autowired
 	TagService tagService;
  
-	// 회원가입
 	@GetMapping("/trace/routeRecording")
 	public String showRouteRecording() {
 		return "/trace/routeRecording";
@@ -405,7 +404,9 @@ public class TraceController {
 				.map(tag -> new TagMappingEntity(traceId, RelType.trace, tag.getId())).toList();
 		
 		traceService.deleteTagMappings(traceId, RelType.trace);
-		traceService.insertTagMappings(tagMappings);
+		if(tagMappings!=null && tagMappings.size()>0) {
+		    traceService.insertTagMappings(tagMappings);
+		}
 
 		String redirectUrl = "/trace/traceDetail?id=" + writeOrModifyTraceDto.getId(); // 원하는 리다이렉트 경로
 		System.err.println(redirectUrl);

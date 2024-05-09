@@ -138,7 +138,7 @@
         </div>
         <div
           th:if="${loginInfo.isLogined}"
-          onclick="location.href='/trace/routeRecording.html'"
+          th:onclick="|location.href='/trace/routeRecording'|"
           class="fixed md:inset-y-1/4 inset-y-3/4 right-0 z-10 cursor-pointer md:mx-10 mx-3"
         >
           <div

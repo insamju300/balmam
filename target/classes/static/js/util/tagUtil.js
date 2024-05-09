@@ -68,23 +68,34 @@ function printTag(tag){
 		let badgeBgColor = tag.color;
 		let tagName = tag.name;
 	    
-       let tagNameBadgeContainer = $('<div></div>').addClass("tooltip indicator tag_name_badge_container");
-       let theIndicatorItem = $('<span></span>').addClass("indicator-item badge p-1 bg-neutral text-base_white text-xs cursor-pointer");
-       let theDeleteIcon = $('<i></i>').addClass("fa-solid fa-x");
-       theIndicatorItem.append(theDeleteIcon);
-
-       theIndicatorItem.on("click", function(event) {
-           let deleteTargetTagName = $(this).siblings(".tag_name_badge").text().trim();
-            console.log(deleteTargetTagName);
+       let tagNameBadgeContainer = $('<div></div>').addClass("tooltip indicator tag_name_badge_container cursor-pointer");
+       
+       tagNameBadgeContainer.on("click", function(event) {
+           let deleteTargetTagName = $(this).find(".tag_name_badge").text().trim();
             tagNames.delete(deleteTargetTagName);
             $(this).closest('.tag_name_badge_container').remove();
+            console.log(deleteTargetTagName);
+            console.log(tagNames);
+
        });
+//       let theIndicatorItem = $('<span></span>').addClass("indicator-item badge p-1 bg-neutral text-base_white text-xs cursor-pointer");
+//       let theDeleteIcon = $('<i></i>').addClass("fa-solid fa-x");
+//       theIndicatorItem.append(theDeleteIcon);
+//
+//       theIndicatorItem.on("click", function(event) {
+//           let deleteTargetTagName = $(this).siblings(".tag_name_badge").text().trim();
+//            console.log(deleteTargetTagName);
+//            tagNames.delete(deleteTargetTagName);
+//            $(this).closest('.tag_name_badge_container').remove();
+//       });
 
        let tagNameBadge = $('<div></div>').addClass("tag_name_badge text-sm text-neutral rounded-full px-2 bg-primary w-20 overflow-ellipsis whitespace-nowrap overflow-hidden").css("backgroundColor", badgeBgColor).text(tagName);
 
        let tooltip = $('<span></span>').addClass("tooltiptext").text(tagName);
 
-       tagNameBadgeContainer.append(theIndicatorItem).append(tagNameBadge).append(tooltip);
+//       tagNameBadgeContainer.append(theIndicatorItem).append(tagNameBadge).append(tooltip);
+       
+       tagNameBadgeContainer.append(tagNameBadge).append(tooltip);
 
        $("#tag_name_container").append(tagNameBadgeContainer);
 

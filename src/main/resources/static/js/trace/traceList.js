@@ -53,7 +53,7 @@ async function getTraceCardList(lastItemTraceId, lastItemOrderPoint) {
 
 function createTraceCard(trace) {
   // card 요소 생성
-	const card = $("<div>").addClass("card xl:w-1/4 md:w-1/2 w-full p-5 m-0")
+	const card = $("<div>").addClass("card xl:w-1/4 md:w-1/2 w-full p-5 m-0 glass ")
 	                       .attr("data-id", trace.id)
 	                       .attr("data-order-point", trace.orderPoint);
   
@@ -76,10 +76,12 @@ function createTraceCard(trace) {
 
   // 이미지 부분
   const image = $("<div>")
-    .addClass("w-full h-48 md:h-72 flex justify-center")
+    .addClass("w-full h-48 md:h-72 flex justify-center cursor-pointer")
     .html(
       '<figure class="w-9/12"><img src="' + trace.featuredImageUrl + '" class="masked"></figure>'
-    );
+    ).click(function() {
+        window.location.href = '/trace/traceDetail?id=' + trace.id;
+    });
 
   // 카드 본문
   const cardBody = $("<div>").addClass("card-body p-2");
@@ -138,7 +140,7 @@ function createTraceCard(trace) {
     { icon: "fa-eye", count: trace.hitCount },
     { icon: "fa-heart", count: trace.likeCount },
     { icon: "fa-bookmark", count: trace.bookmarkCount },
-    { icon: "fa-comment", count: trace.commentCount },
+//    { icon: "fa-comment", count: trace.commentCount },
   ];
   interactions.forEach((interaction) => {
     const item = $("<div>").addClass(
