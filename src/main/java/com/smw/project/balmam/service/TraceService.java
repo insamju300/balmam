@@ -160,6 +160,17 @@ public class TraceService {
 		
 	}
 
+	public int getTraceCountFromMemberId(Long writerId) {
+		// TODO Auto-generated method stub
+		return traceRepository.getTraceCountFromMemberId(writerId);
+		
+	}
+	
+	public int getCityCountFromTraceWriterId(Long id) {
+		return stayedCityRepository.getCityCountFromTraceWriterId(id);	
+	}
+	
+
 
 
 

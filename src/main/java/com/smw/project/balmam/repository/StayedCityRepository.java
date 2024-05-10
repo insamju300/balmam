@@ -28,7 +28,9 @@ public interface StayedCityRepository {
     
     
 
-
-    
+    @Select("""
+    		SELECT COUNT(DISTINCT `name`) FROM stayedCity INNER JOIN  trace ON trace.id = stayedCity.traceId
+    		WHERE trace.isDeleted=FALSE AND trace.status = 'done' AND trace.writerId = #{writerId}""")
+    public int getCityCountFromTraceWriterId(Long writerId);
 
 }

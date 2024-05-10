@@ -23,6 +23,7 @@ import com.smw.project.balmam.enums.EmailAuthenticationType;
 import com.smw.project.balmam.service.EmailService;
 import com.smw.project.balmam.service.FileService;
 import com.smw.project.balmam.service.MemberService;
+import com.smw.project.balmam.service.TraceService;
 import com.smw.project.balmam.utill.Ut;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -39,6 +40,9 @@ public class MemberController {
 	
 	@Autowired
 	private FileService fileService;
+	
+	@Autowired
+	private TraceService traceService;
 	
 	@GetMapping("/member/join")
 	public String showJoin(HttpServletRequest req) {
@@ -256,7 +260,18 @@ public class MemberController {
 		
 		MemberEntity findMember = memberService.findMemberById(id);
 		MemberOutputDto member = new MemberOutputDto(findMember, path);
+		//발자취 갯수 가져오기
+		
+		//도시 갯수 가져오기(distinct)
 		model.addAttribute("member", member);
+		
+		int traceCount = traceService.getTraceCountFromMemberId(member.getId());
+		
+		int cityCount = traceService.getCityCountFromTraceWriterId(member.getId());
+		
+		model.addAttribute("cityCount", cityCount);
+		model.addAttribute("traceCount", traceCount);
+		
 		
 		return  "/member/detail";
 	}	

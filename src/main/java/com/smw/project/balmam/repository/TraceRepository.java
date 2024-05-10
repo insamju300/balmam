@@ -132,6 +132,14 @@ public interface TraceRepository {
 		void updateDeleteFlug(Long id);
 
 	    
+	    @Select("""
+	    		   SELECT COUNT(id) FROM trace WHERE isDeleted=FALSE AND `status` = 'done' AND writerId = #{writerId}
+	    		""")
+		int getTraceCountFromMemberId(Long writerId);
+	    
+	    
+
+	    
 	   
 	    
 
