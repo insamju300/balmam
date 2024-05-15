@@ -93,9 +93,10 @@
 								<div class="tooltip tag_name_badge_container"
 									th:each="tag : ${tags}">
 									<div
-										class="tag_name_badge text-sm text-neutral rounded-full px-2 bg-primary w-16 overflow-ellipsis whitespace-nowrap overflow-hidden"
+										class="tag_name_badge text-sm text-neutral rounded-full px-2 bg-primary w-16 overflow-ellipsis whitespace-nowrap overflow-hidden cursor-pointer"
 										th:style="|background-color: ${tag.color}|"
-										th:text="${tag.name}">테스트</div>
+										th:text="${tag.name}"
+										th:onClick="|window.location.href ='/trace/traceList?tagId=${tag.id}'|">테스트</div>
 									<span class="tooltiptext" th:text="${tag.name}">테스트</span>
 								</div>
 

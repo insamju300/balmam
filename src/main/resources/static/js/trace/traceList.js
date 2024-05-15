@@ -91,7 +91,7 @@ function createTraceCard(trace) {
   // 예제 태그들 (실제 사용 시에는 동적으로 생성)
   const tagNames = trace.tags;
   tagNames.forEach((tagObj) => {
-    const tag = $("<div>").addClass("tooltip tag_name_badge_container");
+    const tag = $("<div>").addClass("tooltip tag_name_badge_container cursor-pointer");
     const badge = $("<div>")
       .addClass(
         "tag_name_badge text-sm text-neutral rounded-full px-2 bg-primary w-16 overflow-ellipsis whitespace-nowrap overflow-hidden"
