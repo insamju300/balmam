@@ -153,6 +153,17 @@
       </div>
     </main>
   </body>
+	
+	<script th:inline="javascript">
+	/*<![CDATA[*/
+	
+	 let tagId = [[${tagId}]];
+	if(!tagId){
+		tagId=-1;
+	}
+	
+	/*]]>*/
+	</script>
   <script src="/js/header.js"></script>
   <script src="/js/trace/traceList.js"></script>
 </html>

@@ -1,5 +1,7 @@
 package com.smw.project.balmam.dto;
 
+import java.util.List;
+
 import com.smw.project.balmam.entity.TraceEntity;
 import com.smw.project.balmam.enums.MediaType;
 import com.smw.project.balmam.utill.Ut;
@@ -30,6 +32,8 @@ public class TraceListOutputDto {
     private String featuredImageUrl;
     private Long orderPoint;
     
+    private List<TagOutputDto> tags;
+    private List<TagOutputDto> cityTags;
   
 
 
@@ -57,6 +61,14 @@ public class TraceListOutputDto {
 		
 		
 	}
+
+
+
+
+
+
+
+
 
 
 }

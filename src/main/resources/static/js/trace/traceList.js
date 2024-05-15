@@ -24,9 +24,11 @@ async function appendToScreenFromTraceCardList(lastItemTraceId, lastItemOrderPoi
 
 
 async function getTraceCardList(lastItemTraceId, lastItemOrderPoint) {
+
+    console.log(tagId);
   const limit = 16;
   const url = '/trace/traceList';
-  const data = { lastItemTraceId, lastItemOrderPoint, limit };
+  const data = { lastItemTraceId, lastItemOrderPoint, limit , tagId};
   const response = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -40,16 +42,7 @@ async function getTraceCardList(lastItemTraceId, lastItemOrderPoint) {
   const resultData = await response.json();
   return resultData.data.map(trace => createTraceCard(trace));
 }
-////후에 아작스로 처리할 부분
-//function getTraceCardList() {
-//  const traceCardList = [];
-//  for (step = 0; step < 8; step++) {
-//    let traceCard = createTraceCard();
-//    traceCardList.push(traceCard);
-//  }
-//
-//  return traceCardList;
-//}
+
 
 function createTraceCard(trace) {
   // card 요소 생성
@@ -96,18 +89,25 @@ function createTraceCard(trace) {
     .attr("id", "tag_name_container")
     .addClass("flex-nowrap flex gap-2 justify-center mt-2");
   // 예제 태그들 (실제 사용 시에는 동적으로 생성)
-  const tagNames = ["테스트", "긴 글씨를 쓰면 어떻게", "오늘 날씨가 유독 덥다"];
-  tagNames.forEach((tagName) => {
+  const tagNames = trace.tags;
+  tagNames.forEach((tagObj) => {
     const tag = $("<div>").addClass("tooltip tag_name_badge_container");
     const badge = $("<div>")
       .addClass(
         "tag_name_badge text-sm text-neutral rounded-full px-2 bg-primary w-16 overflow-ellipsis whitespace-nowrap overflow-hidden"
       )
-      .css("background-color", "rgb(237, 206, 205)")
-      .text(tagName);
-    const tooltip = $("<span>").addClass("tooltiptext").text(tagName);
+      .css("background-color", tagObj.color)
+      .text(tagObj.name);
+    const tooltip = $("<span>").addClass("tooltiptext").text(tagObj.name);
     tag.append(badge, tooltip);
+    tag.click(function() {
+		let href = '/trace/traceList?tagId='+tagObj.id;
+		
+        window.location.href = href;
+    });
     tagContainer.append(tag);
+    
+    
   });
 
   // 도시 컨테이너 (이 부분도 동적으로 생성 가능)
@@ -115,16 +115,16 @@ function createTraceCard(trace) {
     .attr("id", "stayed_city_container")
     .addClass("flex-nowrap flex gap-2 justify-center mt-2");
   // 예제 도시들
-  const cityNames = ["도쿄", "교토"];
-  cityNames.forEach((cityName) => {
+  const cityNames = trace.cityTags;
+  cityNames.forEach((tagObj) => {
     const city = $("<div>").addClass("tooltip stayed_city_badge_container");
     const badge = $("<div>")
       .addClass(
         "stayed_city_badge text-sm text-neutral rounded-full px-2 bg-primary w-16 overflow-ellipsis whitespace-nowrap overflow-hidden"
       )
-      .css("background-color", "rgb(181, 148, 140)")
-      .text(cityName);
-    const tooltip = $("<span>").addClass("tooltiptext").text(cityName);
+      .css("background-color", tagObj.color)
+      .text(tagObj.name);
+    const tooltip = $("<span>").addClass("tooltiptext").text(tagObj.name);
     city.append(badge, tooltip);
     cityContainer.append(city);
   });
@@ -153,8 +153,8 @@ function createTraceCard(trace) {
   });
 
   // 요소들을 card 내부에 추가
-  cardBody.append(title, interactionContainer);
-//  cardBody.append(title, tagContainer, cityContainer, interactionContainer);
+  //cardBody.append(title, interactionContainer);
+  cardBody.append(title, tagContainer, cityContainer, interactionContainer);
   card.append(cardTop, image, cardBody);
 
   return card;

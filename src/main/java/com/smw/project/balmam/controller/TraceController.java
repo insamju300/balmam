@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -273,9 +274,13 @@ public class TraceController {
 	}
 
 	@GetMapping("/trace/traceList")
-	public String showTraceList() {
-		return "/trace/traceList";
+	public String showTraceList(@RequestParam(defaultValue = "-1") Integer tagId, Model model) {
+		model.addAttribute("tagId", tagId);
+		System.err.println("tagId" + tagId);
+	    return "/trace/traceList";
 	}
+	
+	
 
 	@PostMapping("/trace/traceList")
 	@ResponseBody
@@ -285,6 +290,21 @@ public class TraceController {
 		List<TraceEntity> traceEntitys = traceService.findTracesForPrintList(traceListRequestDto);
 		List<TraceListOutputDto> traces = traceEntitys.stream().map(entity -> new TraceListOutputDto(entity, path))
 				.toList();
+		
+		
+		
+		for(TraceListOutputDto trace : traces) {
+			List<TagEntity> tagEntitys = tagService.findTagsByRelInfoAndTagType(trace.getId(), RelType.trace, TagType.commons);
+			List<TagOutputDto> tags = tagEntitys.stream().map(entity -> new TagOutputDto(entity)).toList();
+			
+			List<TagEntity> cityTagEntitys = tagService.findTagsByRelInfoAndTagTypeForStayedCities(trace.getId(), TagType.city);
+			List<TagOutputDto> cityTags = cityTagEntitys.stream().map(entity -> new TagOutputDto(entity)).toList();
+			trace.setTags(tags);
+			trace.setCityTags(cityTags);
+		}
+		
+		
+		
 		System.err.println(traces);
 
 		return ResultData.ofData("S-1", "success", "traces", traces);

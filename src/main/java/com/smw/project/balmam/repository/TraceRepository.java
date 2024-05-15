@@ -77,9 +77,15 @@ public interface TraceRepository {
 	            "LEFT JOIN Member m ON t.writerId = m.id " +
 	            "LEFT JOIN mediaFiles mf ON m.profileImageId = mf.id " +
 	            "LEFT JOIN mediaFiles mf2 ON t.featuredImageId = mf2.id " +
+	            "<if test='tagId != -1'>" +
+	            "   LEFT JOIN tagMappingEntity tme ON t.id = tme.relId and tme.relType = trace" +
+	            "</if>" +
 	            "WHERE t.isDeleted = FALSE AND t.status = 'done' " +
 	            "<if test='lastItemTraceId != null and lastItemOrderPoint != null'>" +
 	            "   AND (t.orderPoint &lt; #{lastItemOrderPoint} OR (t.orderPoint = #{lastItemOrderPoint} AND t.id &lt; #{lastItemTraceId})) " +
+	            "</if>" +
+	            "<if test='tagId != -1'>" +
+	            "   tme.tagId = {tagId}" + 
 	            "</if>" +
 	            "ORDER BY t.orderPoint DESC, t.id DESC " +
 	            "LIMIT #{limit}" +

@@ -13,4 +13,6 @@ public class TraceListRequestDto {
 	private Long lastItemTraceId;
 	private Long lastItemOrderPoint;
 	private Integer limit;
+	private Integer tagId;
+	
 }
