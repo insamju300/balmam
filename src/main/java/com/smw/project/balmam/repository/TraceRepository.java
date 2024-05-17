@@ -80,9 +80,17 @@ public interface TraceRepository {
 	            "<if test='tagId != -1'>" +
 	            "   LEFT JOIN tagMapping tm ON t.id = tm.relId and tm.relType = 'trace'" +
 	            "</if>" +
+	            "<if test='!cityName.equals(\"\")'>"+
+	               "LEFT JOIN StayedCity sc "+
+	               "ON sc.traceId = t.id "+
+	            "</if>"+
+	            
 	            "WHERE t.isDeleted = FALSE AND t.status = 'done' " +
 	            "<if test='lastItemTraceId != null and lastItemOrderPoint != null'>" +
 	            "   AND (t.orderPoint &lt; #{lastItemOrderPoint} OR (t.orderPoint = #{lastItemOrderPoint} AND t.id &lt; #{lastItemTraceId})) " +
+	            "</if>" +
+	            "<if test='!cityName.equals(\"\")'>" +
+	            "   AND sc.name = #{cityName}" + 
 	            "</if>" +
 	            "<if test='tagId != -1'>" +
 	            "   AND tm.tagId = #{tagId}" + 

@@ -274,9 +274,10 @@ public class TraceController {
 	}
 
 	@GetMapping("/trace/traceList")
-	public String showTraceList(@RequestParam(defaultValue = "-1") Integer tagId, Model model) {
+	public String showTraceList(@RequestParam(defaultValue = "-1") Integer tagId, @RequestParam(defaultValue = "") String cityName, Model model) {
 		model.addAttribute("tagId", tagId);
-		System.err.println("tagId" + tagId);
+		model.addAttribute("cityName", cityName);
+		System.err.println("cityName" + cityName);
 	    return "/trace/traceList";
 	}
 	
@@ -285,8 +286,10 @@ public class TraceController {
 	@PostMapping("/trace/traceList")
 	@ResponseBody
 	public ResultData<List<TraceListOutputDto>> getTraceList(@RequestBody TraceListRequestDto traceListRequestDto) {
+		
 
-		System.err.println(traceListRequestDto);
+		traceListRequestDto.setDefaultValues();
+		System.err.println("traceListRequestDto: "+traceListRequestDto);
 		List<TraceEntity> traceEntitys = traceService.findTracesForPrintList(traceListRequestDto);
 		List<TraceListOutputDto> traces = traceEntitys.stream().map(entity -> new TraceListOutputDto(entity, path))
 				.toList();

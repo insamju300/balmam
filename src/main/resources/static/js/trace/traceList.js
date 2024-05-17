@@ -25,10 +25,9 @@ async function appendToScreenFromTraceCardList(lastItemTraceId, lastItemOrderPoi
 
 async function getTraceCardList(lastItemTraceId, lastItemOrderPoint) {
 
-    console.log(tagId);
   const limit = 16;
   const url = '/trace/traceList';
-  const data = { lastItemTraceId, lastItemOrderPoint, limit , tagId};
+  const data = { lastItemTraceId, lastItemOrderPoint, limit , tagId, cityName};
   const response = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -117,13 +116,19 @@ function createTraceCard(trace) {
   // 예제 도시들
   const cityNames = trace.cityTags;
   cityNames.forEach((tagObj) => {
-    const city = $("<div>").addClass("tooltip stayed_city_badge_container");
+    const city = $("<div>").addClass("tooltip stayed_city_badge_container cursor-pointer");
     const badge = $("<div>")
       .addClass(
         "stayed_city_badge text-sm text-neutral rounded-full px-2 bg-primary w-16 overflow-ellipsis whitespace-nowrap overflow-hidden"
       )
       .css("background-color", tagObj.color)
       .text(tagObj.name);
+      
+    city.click(function() {
+		let href = '/trace/traceList?cityName='+tagObj.name;
+		
+        window.location.href = href;
+    });
     const tooltip = $("<span>").addClass("tooltiptext").text(tagObj.name);
     city.append(badge, tooltip);
     cityContainer.append(city);

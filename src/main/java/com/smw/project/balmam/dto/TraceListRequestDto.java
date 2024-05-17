@@ -14,5 +14,15 @@ public class TraceListRequestDto {
 	private Long lastItemOrderPoint;
 	private Integer limit;
 	private Integer tagId;
-	
+    private String cityName;
+    
+    public void setDefaultValues() {
+    	if(tagId==null) {
+    		tagId=-1;
+    	}
+    	
+    	if(cityName==null) {
+    		cityName="";
+    	}
+    }
 }

@@ -537,3 +537,8 @@ function getUserLocation(position) {
         setTimeout(ArticleDetail__doIncreaseHitCount, 500);
     });
 })();
+
+function navigateToCity(element) {
+    var cityName = element.getAttribute('data-cityName');
+    window.location.href = '/trace/traceList?cityName=' + encodeURIComponent(cityName);
+}
