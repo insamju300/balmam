@@ -17,19 +17,6 @@
       <div class="navbar-start flex md:justify-start justify-center m-2 ">
         <a th:href="@{/}" href="/main.html"><img th:src="@{/images/logo/logoWithText.png}"  src="/images/logo/logoWithText.png" class="h-14 z-50"></a>
       </div>
-
-<!--       <div class="navbar-center md:w-2/5 w-full m-2 "> -->
-<!--         <label class="input input-bordered flex items-center gap-2 h-14 rounded-3xl w-full"> -->
-<!--           <input type="text" class="grow w-full" placeholder="검색어를 입력해 주세요" autocomplete="off" /> -->
-<!--           <button class="btn btn-ghost btn-circle"> -->
-<!--             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" -->
-<!--               stroke="currentColor"> -->
-<!--               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" -->
-<!--                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /> -->
-<!--             </svg> -->
-<!--           </button> -->
-<!--         </label> -->
-<!--       </div> -->
       <div class="navbar-end md:justify-end justify-center m-2 ">
         <button th:if="${!loginInfo.logined}" onclick="location.href='/member/login'" 
           class="btn btn-ghost btn-circle h-14 w-16 text-4xl text-primary hover:text-primary_hard">

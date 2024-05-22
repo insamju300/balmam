@@ -8,8 +8,8 @@ function showFullScreenMenu() {
 
   // anime.js를 사용하여 글자가 써지는듯한 효과를 구현합니다.
   anime({
-    targets: "path",
-    strokeDashoffset: [anime.setDashoffset, 0],
+    targets: "path", //애니메이션의 대상 요소를 지정. SVG요소 중 path를 대상으로 지정합니다.
+    strokeDashoffset: [anime.setDashoffset, 0], //SVG path 요소의 strokeDashoffset 속성을 애니메이션합니다. anime.setDashoffset은 path의 총 길이로 설정하여 애니메이션 시작 시점의 strokeDashoffset 값을 설정합니다. 이 값이 0으로 애니메이션됩니다.
     easing: "easeInOutSine", //애니메이션의 시작과 끝 모두에서 천천히 시작하여 속도를 높이고 끝으로 갈수록 다시 느려지는 부드러운 전환
     duration: 300, // 300밀리초, 즉 0.3초
     delay: function (el, i) {
