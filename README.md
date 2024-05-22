@@ -140,7 +140,7 @@ ___
 
 #### [항공권 검색]
 ![](https://velog.velcdn.com/images/insamju300/post/ee4ff73a-d2f0-4286-bada-7140e3495ad5/image.png)
-- 출발 공항, 도착 공항, 여행 기간을 입력해서 모든 항공권을 검색합니다.
+- 출발 공항, 도착 공항, 여행 기간을 입력해서 네이버 항공의 모든 항공권을 검색하여 가져옵니다.
 
 #### [항공권 예매 링크 및 여행 플랜 추천 태그 입력]
 ![](https://velog.velcdn.com/images/insamju300/post/eabadd9d-cff6-4351-a361-486d92d121d5/image.png)
